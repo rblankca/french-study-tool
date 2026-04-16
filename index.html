@@ -1746,6 +1746,7 @@ class FrenchApp extends LitElement {
     exCard:{state:true}, exChoices:{state:true}, exAnswered:{state:true},
     exScore:{state:true}, exTotal:{state:true}, exCat:{state:true},
     conjVerb:{state:true}, conjTense:{state:true},
+    grammarView:{state:true},
   };
   createRenderRoot(){return this;}
   constructor(){
@@ -1757,6 +1758,7 @@ class FrenchApp extends LitElement {
     this.exCard=null; this.exChoices=[]; this.exAnswered=null;
     this.exScore=0; this.exTotal=0; this.exCat='';
     this.conjVerb=null; this.conjTense='présent';
+    this.grammarView='topics';
   }
   get filteredVocab(){
     const q=this.vocabSearch.toLowerCase().trim();
@@ -1766,7 +1768,7 @@ class FrenchApp extends LitElement {
       if(this.vocabLvl&&v.lvl!==this.vocabLvl)return false;
       if(q&&!v.fr.toLowerCase().includes(q)&&!v.en.toLowerCase().includes(q)&&!(v.note||'').toLowerCase().includes(q))return false;
       return true;
-    });
+    }).sort((a,b)=>({'A1':0,'A2':1,'B1':2,'B2':3}[a.lvl]||0)-({'A1':0,'A2':1,'B1':2,'B2':3}[b.lvl]||0));
   }
   get _grammarExDeck(){
     const cards=[];
@@ -1943,17 +1945,17 @@ class FrenchApp extends LitElement {
           </thead>
           <tbody>
             ${vocab.map(v=>html`<tr>
-              <td class="font-medium">
-                <div class="flex flex-wrap items-center gap-2">
-                  <span>${v.fr}</span>
-                  ${v.pos==='verb'?html`<button
-                    class="btn btn-xs border border-violet-300 text-violet-700 bg-white hover:bg-violet-50 hover:border-violet-500 font-medium rounded-md t-label leading-none h-auto py-1 px-2 shrink-0"
-                    @click=${(e)=>{e.stopPropagation();this._openConj(v.fr);}}>Tableau de conjugaison</button>`:nothing}
-                </div>
-              </td>
+              <td class="font-medium" style="min-width:200px">${v.fr}</td>
               <td>${v.en}</td>
               <td class="t-caption text-base-content/50 max-w-[14rem]">${this._synFor(v.fr)||''}</td>
-              <td><span class="badge badge-sm ${POS_BADGE[v.pos]}">${POS_LABELS[v.pos]}</span></td>
+              <td>
+                <div class="flex flex-col items-start gap-1">
+                  <span class="badge badge-sm ${POS_BADGE[v.pos]}">${POS_LABELS[v.pos]}</span>
+                  ${v.pos==='verb'?html`<button
+                    class="btn btn-xs border border-violet-300 text-violet-700 bg-white hover:bg-violet-50 hover:border-violet-500 rounded-md t-caption leading-none h-auto py-0.5 px-1.5 shrink-0"
+                    @click=${(e)=>{e.stopPropagation();this._openConj(v.fr);}}>conjugaison</button>`:nothing}
+                </div>
+              </td>
               <td><span class="badge badge-sm ${LVL_BADGE[v.lvl]}">${v.lvl}</span></td>
               <td class="t-caption text-base-content/50">${v.note||''}</td>
             </tr>`)}
@@ -2032,28 +2034,216 @@ class FrenchApp extends LitElement {
     }
     const lvlLabel={A1:'A1 — Foundations',A2:'A2 — Intermediate',B1:'B1 — Upper Intermediate',B2:'B2 — Advanced'};
     return html`
-      ${['A1','A2','B1','B2'].map(lvl=>html`
-        <div class="mb-6">
-          <div class="t-sec text-base-content/40 mb-3">${lvlLabel[lvl]}</div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            ${GRAMMAR_TOPICS.filter(t=>t.level===lvl).map(t=>html`
-              <div class="card card-bordered bg-base-100 cursor-pointer hover:shadow-md transition-all hover:border-base-content/20"
-                @click=${()=>this.grammarId=t.id}>
-                <div class="card-body p-4">
-                  <div class="flex items-start gap-2">
-                    <div class="flex-1 min-w-0">
-                      ${t.hard?html`<div class="badge bg-amber-100 text-amber-700 border-transparent badge-sm mb-2">⚠ Tricky</div>`:nothing}
-                      <h3 class="t-h4 leading-snug">${t.title}</h3>
-                      <p class="t-label text-base-content/50 mt-1">${t.desc}</p>
+      <div class="flex rounded-xl border border-base-300 overflow-hidden w-fit mb-6 text-sm font-medium">
+        <button class="px-4 py-2 transition-colors ${this.grammarView==='topics'?'bg-base-content text-base-100':'bg-base-100 hover:bg-base-200'}"
+          @click=${()=>this.grammarView='topics'}>Sujets</button>
+        <button class="px-4 py-2 transition-colors ${this.grammarView==='cheatsheets'?'bg-base-content text-base-100':'bg-base-100 hover:bg-base-200'}"
+          @click=${()=>this.grammarView='cheatsheets'}>Aide-mémoire</button>
+      </div>
+      ${this.grammarView==='cheatsheets'?this._grammarCheatsheets():html`
+        ${['A1','A2','B1','B2'].map(lvl=>html`
+          <div class="mb-6">
+            <div class="t-sec text-base-content/40 mb-3">${lvlLabel[lvl]}</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              ${GRAMMAR_TOPICS.filter(t=>t.level===lvl).map(t=>html`
+                <div class="card card-bordered bg-base-100 cursor-pointer hover:shadow-md transition-all hover:border-base-content/20"
+                  @click=${()=>this.grammarId=t.id}>
+                  <div class="card-body p-4">
+                    <div class="flex items-start gap-2">
+                      <div class="flex-1 min-w-0">
+                        ${t.hard?html`<div class="badge bg-amber-100 text-amber-700 border-transparent badge-sm mb-2">⚠ Tricky</div>`:nothing}
+                        <h3 class="t-h4 leading-snug">${t.title}</h3>
+                        <p class="t-label text-base-content/50 mt-1">${t.desc}</p>
+                      </div>
+                      <span class="badge badge-sm ${LVL_BADGE[t.level]} shrink-0">${t.level}</span>
                     </div>
-                    <span class="badge badge-sm ${LVL_BADGE[t.level]} shrink-0">${t.level}</span>
                   </div>
                 </div>
-              </div>
-            `)}
+              `)}
+            </div>
           </div>
+        `)}
+      `}
+    `;
+  }
+  _grammarCheatsheets(){
+    const cs=(title,content)=>html`
+      <div class="card card-bordered bg-base-100 mb-6">
+        <div class="card-body p-5">
+          <h2 class="t-h3 mb-4">${title}</h2>
+          ${content}
         </div>
-      `)}
+      </div>
+    `;
+    const th=(cells)=>html`<tr>${cells.map(c=>html`<th class="bg-base-200 text-center px-3 py-2 t-sec text-base-content/60 font-semibold border border-base-300">${c}</th>`)}</tr>`;
+    const tr=(cells,hi=false)=>html`<tr>${cells.map((c,i)=>html`<td class="px-3 py-2 border border-base-300 t-label ${i===0?'font-semibold bg-base-50':''} ${hi?'bg-violet-50':''} text-center">${c}</td>`)}</tr>`;
+
+    // 1. Pronouns
+    const pronounsTable=html`
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead>${th(['Personne','Sujet','COD (Direct)','COI (Indirect)','Tonique','Réfléchi'])}</thead>
+          <tbody>
+            ${tr(['je / j\'','je','me','me','moi','me'])}
+            ${tr(['tu','tu','te','te','toi','te'])}
+            ${tr(['il / elle','il / elle','le / la','lui','lui / elle','se'],true)}
+            ${tr(['nous','nous','nous','nous','nous','nous'])}
+            ${tr(['vous','vous','vous','vous','vous','vous'])}
+            ${tr(['ils / elles','ils / elles','les','leur','eux / elles','se'],true)}
+          </tbody>
+        </table>
+      </div>
+      <p class="t-caption text-base-content/50 mt-3">COD = remplace un objet direct · COI = remplace un objet indirect avec à · Tonique = après une préposition, seul, ou pour insister</p>
+    `;
+
+    // 2. DR MRS VANDERTRAMP
+    const etreVerbs=[
+      {emoji:'👶',verb:'Naître',past:'né(e)',note:'to be born'},
+      {emoji:'🚶',verb:'Partir / Sortir',past:'parti(e) / sorti(e)',note:'to leave / go out'},
+      {emoji:'🧳',verb:'Venir / Revenir / Devenir',past:'venu(e) / revenu(e) / devenu(e)',note:'to come / come back / become'},
+      {emoji:'🏠',verb:'Aller',past:'allé(e)',note:'to go'},
+      {emoji:'🚪',verb:'Entrer / Rentrer',past:'entré(e) / rentré(e)',note:'to enter / return home'},
+      {emoji:'⬇️',verb:'Descendre',past:'descendu(e)',note:'to go down'},
+      {emoji:'⬆️',verb:'Monter',past:'monté(e)',note:'to go up'},
+      {emoji:'🔄',verb:'Retourner / Rester',past:'retourné(e) / resté(e)',note:'to return / stay'},
+      {emoji:'🤒',verb:'Tomber',past:'tombé(e)',note:'to fall'},
+      {emoji:'💀',verb:'Mourir',past:'mort(e)',note:'to die'},
+      {emoji:'🚪',verb:'Arriver',past:'arrivé(e)',note:'to arrive'},
+      {emoji:'🏃',verb:'Passer',past:'passé(e)',note:'to pass by'},
+    ];
+    const etreTable=html`
+      <div class="bg-violet-50 border border-violet-200 rounded-xl p-4 mb-3">
+        <p class="t-label text-violet-700 font-semibold mb-3">Ces verbes utilisent <strong>ÊTRE</strong> comme auxiliaire au passé composé. Le participe passé s'accorde avec le sujet.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          ${etreVerbs.map(v=>html`
+            <div class="flex items-center gap-2 bg-white rounded-lg px-3 py-2 border border-violet-100">
+              <span class="text-xl">${v.emoji}</span>
+              <div class="flex-1 min-w-0">
+                <span class="t-label font-semibold text-violet-800">${v.verb}</span>
+                <span class="t-caption text-violet-500 ml-1">→ ${v.past}</span>
+              </div>
+              <span class="t-caption text-base-content/40">${v.note}</span>
+            </div>
+          `)}
+        </div>
+      </div>
+      <p class="t-caption text-base-content/50">+ tous les verbes pronominaux (se lever, se coucher…) utilisent aussi ÊTRE</p>
+    `;
+
+    // 3. Verb endings table
+    const endingsTable=html`
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead>${th(['Personne','-ER (parler)','-IR (finir)','-RE (vendre)','Irréguliers communs'])}</thead>
+          <tbody>
+            ${tr(['je / j\'','-e','-is','-s','être: suis, avoir: ai, aller: vais, faire: fais'])}
+            ${tr(['tu','-es','-is','-s','être: es, avoir: as, aller: vas, faire: fais'],true)}
+            ${tr(['il / elle','-e','-it','-',  'être: est, avoir: a, aller: va, faire: fait'])}
+            ${tr(['nous','-ons','-issons','-ons','être: sommes, avoir: avons, aller: allons, faire: faisons'],true)}
+            ${tr(['vous','-ez','-issez','-ez', 'être: êtes, avoir: avez, aller: allez, faire: faites'])}
+            ${tr(['ils / elles','-ent','-issent','-ent','être: sont, avoir: ont, aller: vont, faire: font'])}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    // 4. Tense formation formulas
+    const tenseFormulas=[
+      {tense:'Passé composé',formula:'avoir/être (présent) + participe passé',ex:'j\'ai mangé · je suis allé(e)'},
+      {tense:'Imparfait',formula:'radical (nous présent) + -ais/-ais/-ait/-ions/-iez/-aient',ex:'je mangeais · nous allions'},
+      {tense:'Futur simple',formula:'infinitif + -ai/-as/-a/-ons/-ez/-ont',ex:'je mangerai · il ira'},
+      {tense:'Conditionnel',formula:'infinitif + -ais/-ais/-ait/-ions/-iez/-aient',ex:'je mangerais · tu irais'},
+      {tense:'Subjonctif présent',formula:'radical (ils présent) + -e/-es/-e/-ions/-iez/-ent',ex:'que je mange · que nous allions'},
+      {tense:'Plus-que-parfait',formula:'avoir/être (imparfait) + participe passé',ex:'j\'avais mangé · j\'étais allé(e)'},
+    ];
+    const formulasTable=html`
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead>${th(['Temps','Formation','Exemple'])}</thead>
+          <tbody>
+            ${tenseFormulas.map((f,i)=>html`<tr>
+              <td class="px-3 py-2 border border-base-300 t-label font-semibold ${i%2?'bg-base-50':''}">${f.tense}</td>
+              <td class="px-3 py-2 border border-base-300 t-caption font-mono ${i%2?'bg-base-50':''}">${f.formula}</td>
+              <td class="px-3 py-2 border border-base-300 t-caption text-base-content/60 ${i%2?'bg-base-50':''}">${f.ex}</td>
+            </tr>`)}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    // 5. Articles table
+    const articlesTable=html`
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead>${th(['Type','Masc. sing.','Fém. sing.','Pluriel','Exemple'])}</thead>
+          <tbody>
+            ${tr(['Défini (the)','le / l\'','la / l\'','les','le chat · la maison · les amis'])}
+            ${tr(['Indéfini (a/an)','un','une','des','un chat · une maison · des amis'],true)}
+            ${tr(['Partitif (some)','du (de l\')','de la (de l\')','des','du pain · de la chance'])}
+            ${tr(['Négatif (no/not any)','de / d\'','de / d\'','de / d\'','pas de chat · pas d\'argent'],true)}
+          </tbody>
+        </table>
+      </div>
+      <p class="t-caption text-base-content/50 mt-2">Après une négation, tous les articles indéfinis et partitifs → <strong>de/d'</strong></p>
+    `;
+
+    // 6. Negation patterns
+    const negPatterns=[
+      {pattern:'ne … pas','meaning':'not','ex':'Je ne mange pas.'},
+      {pattern:'ne … plus','meaning':'no longer / not anymore','ex':'Il ne travaille plus ici.'},
+      {pattern:'ne … jamais','meaning':'never','ex':'Elle ne boit jamais d\'alcool.'},
+      {pattern:'ne … rien','meaning':'nothing','ex':'Je ne vois rien.'},
+      {pattern:'ne … personne','meaning':'nobody','ex':'Il n\'y a personne.'},
+      {pattern:'ne … que','meaning':'only','ex':'Je ne mange que des légumes.'},
+      {pattern:'ne … ni … ni','meaning':'neither … nor','ex':'Je n\'ai ni faim ni soif.'},
+      {pattern:'ne … aucun(e)','meaning':'not any / none','ex':'Il n\'a aucune idée.'},
+    ];
+    const negTable=html`
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead>${th(['Structure','Sens','Exemple'])}</thead>
+          <tbody>
+            ${negPatterns.map((n,i)=>html`<tr>
+              <td class="px-3 py-2 border border-base-300 t-label font-semibold font-mono ${i%2?'bg-base-50':''}">${n.pattern}</td>
+              <td class="px-3 py-2 border border-base-300 t-caption ${i%2?'bg-base-50':''}">${n.meaning}</td>
+              <td class="px-3 py-2 border border-base-300 t-caption text-base-content/60 italic ${i%2?'bg-base-50':''}">${n.ex}</td>
+            </tr>`)}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    // 7. Comparisons
+    const compTable=html`
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead>${th(['Type','Plus…','Moins…','Aussi…','Exemple'])}</thead>
+          <tbody>
+            ${tr(['Adjectif','plus + adj + que','moins + adj + que','aussi + adj + que','Elle est plus grande que lui.'])}
+            ${tr(['Adverbe','plus + adv + que','moins + adv + que','aussi + adv + que','Il parle plus vite que moi.'],true)}
+            ${tr(['Nom','plus de + nom + que','moins de + nom + que','autant de + nom + que','J\'ai plus d\'amis que toi.'])}
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-3 flex flex-wrap gap-2">
+        ${[['bon','meilleur(e)','le/la meilleur(e)'],['bien','mieux','le mieux'],['mauvais','pire / plus mauvais','le pire'],['mal','pire / plus mal','le pire']].map(([base,comp,sup])=>html`
+          <div class="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 t-caption">
+            <span class="font-semibold text-amber-800">${base}</span>
+            <span class="text-amber-600"> → ${comp} → ${sup}</span>
+          </div>
+        `)}
+      </div>
+      <p class="t-caption text-base-content/50 mt-2">Superlatif: le/la/les + plus/moins + adj (+ de + groupe nominal)</p>
+    `;
+
+    return html`
+      ${cs('Pronoms personnels',pronounsTable)}
+      ${cs('Passé composé avec ÊTRE — verbes clés',etreTable)}
+      ${cs('Terminaisons du présent de l\'indicatif',endingsTable)}
+      ${cs('Formation des temps principaux',formulasTable)}
+      ${cs('Les articles',articlesTable)}
+      ${cs('Structures négatives',negTable)}
+      ${cs('Comparatifs et superlatifs',compTable)}
     `;
   }
   _grammarDetail(t){
