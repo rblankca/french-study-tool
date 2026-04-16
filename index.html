@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>French Vocabulary Tool — Rachel</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{background:#fafafa;color:#111;padding:1rem}
+h1{font-size:20px;font-weight:600;margin-bottom:1rem;color:#111}
+h1 span{font-size:13px;font-weight:400;color:#888;margin-left:8px}
+.tabs{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab{padding:7px 16px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:13px;color:#555;transition:all .15s}
+.tab.active{background:#111;color:#fff;border-color:#111;font-weight:500}
+.section{display:none}.section.active{display:block}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
+.controls select,.controls input{font-size:13px;padding:7px 11px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#111}
+.controls input{flex:1;min-width:150px}
+.badge{font-size:12px;color:#888;white-space:nowrap}
+.tbl-wrap{overflow-x:auto;max-height:60vh;overflow-y:auto;border:1px solid #eee;border-radius:10px}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.07em;padding:8px 10px;border-bottom:1px solid #eee;background:#f9f9f9;position:sticky;top:0;z-index:1}
+.tbl td{padding:8px 10px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#f9f9f9}
+.fw{font-weight:500;min-width:140px}
+.ew{color:#444;min-width:160px}
+.nw{color:#888;font-size:12px;font-style:italic}
+.pb{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;white-space:nowrap;display:inline-block}
+.noun{background:#E6F1FB;color:#185FA5}.verb{background:#EEEDFE;color:#534AB7}.adj{background:#EAF3DE;color:#3B6D11}.adv{background:#FAECE7;color:#993C1D}.exp{background:#FAEEDA;color:#854F0B}.prep{background:#FCEBEB;color:#A32D2D}
+.lb{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;white-space:nowrap;display:inline-block}
+.A1{background:#EAF3DE;color:#3B6D11}.A2{background:#E6F1FB;color:#185FA5}.B1{background:#EEEDFE;color:#534AB7}.B2{background:#FAECE7;color:#993C1D}
+.fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.fc{background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.fh{background:#FCEBEB;padding:.65rem 1rem;display:flex;align-items:center;gap:8px}
+.fword{font-weight:600;font-size:14px;color:#A32D2D}
+.ftag{font-size:10px;background:#F7C1C1;color:#A32D2D;padding:2px 7px;border-radius:10px;font-weight:600}
+.fb{padding:.8rem 1rem}
+.fr{display:flex;gap:8px;margin-bottom:5px;font-size:13px;align-items:flex-start}
+.fl{font-size:10px;font-weight:700;text-transform:uppercase;color:#888;min-width:52px;padding-top:2px;flex-shrink:0}
+.fv{color:#111;line-height:1.5}
+.fw3{background:#FCEBEB;border-left:3px solid #E24B4A;padding:.5rem .75rem;font-size:12px;color:#A32D2D;margin-top:8px;border-radius:0 8px 8px 0;line-height:1.5}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.sc{background:#fff;border:1px solid #eee;border-radius:12px;padding:.9rem 1rem;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.sc h4{font-size:13px;font-weight:600;margin-bottom:.5rem}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-size:12px;padding:3px 10px;border-radius:20px;border:1px solid #ddd;color:#555;background:#fff}
+.chip.m{background:#f0f0f0;font-weight:600;color:#111}
+.sn{font-size:12px;color:#888;margin-top:7px;line-height:1.5}
+.sl{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.07em;margin:1.25rem 0 .6rem}
+.cw{perspective:1000px;height:185px;cursor:pointer;margin-bottom:1rem}
+.ci{position:relative;width:100%;height:100%;transition:transform .4s;transform-style:preserve-3d}
+.ci.flipped{transform:rotateY(180deg)}
+.cf{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;border:1px solid #eee;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.cf.front{background:#fff}
+.cf.back{background:#f5f5f5;transform:rotateY(180deg)}
+.cf .big{font-size:20px;font-weight:600;margin-bottom:6px}
+.cf .sm{font-size:13px;color:#555}
+.cf .hint{font-size:11px;color:#aaa;margin-top:8px}
+.cf .meta{font-size:11px;color:#aaa;margin-bottom:7px}
+.nav{display:flex;gap:8px;align-items:center;justify-content:center}
+.nav button{padding:8px 20px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:13px;color:#111;font-weight:500}
+.nav button:hover{background:#f0f0f0}
+.prog{font-size:12px;color:#888}
+.cc{display:flex;gap:8px;align-items:center;margin-bottom:1rem;flex-wrap:wrap}
+.cc select{font-size:13px;padding:7px 11px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#111}
+</style>
+</head>
+<body>
+<h1>French Vocabulary Tool <span>Rachel's Notes — A1 to B2</span></h1>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('vocab')">📚 All Vocabulary</button>
+  <button class="tab" onclick="showTab('cards')">🃏 Flashcards</button>
+  <button class="tab" onclick="showTab('faux')">⚠️ Faux Amis</button>
+  <button class="tab" onclick="showTab('syn')">🔄 Synonyms & Confusables</button>
+</div>
+
+<!-- ALL VOCABULARY -->
+<div class="section active" id="sec-vocab">
+  <div class="controls">
+    <input type="text" id="search" placeholder="Search French or English…" oninput="rv()">
+    <select id="fc" onchange="rv()">
+      <option value="">All categories</option>
+      <option value="daily">Daily life</option>
+      <option value="body">Body & health</option>
+      <option value="emotions">Emotions & character</option>
+      <option value="food">Food & cooking</option>
+      <option value="fruits">Fruits & vegetables</option>
+      <option value="kitchen">Kitchen & tools</option>
+      <option value="home">Home & housing</option>
+      <option value="clothes">Clothes & fashion</option>
+      <option value="work">Work & career</option>
+      <option value="travel">Travel</option>
+      <option value="nature">Nature & environment</option>
+      <option value="social">Social & relationships</option>
+      <option value="school">School & learning</option>
+      <option value="city">City & places</option>
+      <option value="time">Time expressions</option>
+      <option value="verbs">Key verbs</option>
+      <option value="idioms">Expressions & idioms</option>
+      <option value="media">Media & technology</option>
+      <option value="appearance">Appearance</option>
+    </select>
+    <select id="fp" onchange="rv()">
+      <option value="">All types</option>
+      <option value="noun">Noun</option>
+      <option value="verb">Verb</option>
+      <option value="adj">Adj</option>
+      <option value="adv">Adv</option>
+      <option value="exp">Expression</option>
+    </select>
+    <select id="fl" onchange="rv()">
+      <option value="">All levels</option>
+      <option value="A1">A1</option>
+      <option value="A2">A2</option>
+      <option value="B1">B1</option>
+      <option value="B2">B2</option>
+    </select>
+    <span class="badge" id="cnt">loading…</span>
+  </div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>French</th><th>English</th><th>Type</th><th>Level</th><th>Note</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- FLASHCARDS -->
+<div class="section" id="sec-cards">
+  <div class="cc">
+    <select id="xcat" onchange="loadCards()">
+      <option value="">All vocabulary</option>
+      <option value="daily">Daily life</option>
+      <option value="body">Body & health</option>
+      <option value="emotions">Emotions & character</option>
+      <option value="food">Food & cooking</option>
+      <option value="fruits">Fruits & vegetables</option>
+      <option value="kitchen">Kitchen & tools</option>
+      <option value="home">Home & housing</option>
+      <option value="clothes">Clothes & fashion</option>
+      <option value="work">Work & career</option>
+      <option value="travel">Travel</option>
+      <option value="nature">Nature & environment</option>
+      <option value="social">Social & relationships</option>
+      <option value="school">School & learning</option>
+      <option value="verbs">Key verbs</option>
+      <option value="idioms">Expressions & idioms</option>
+      <option value="media">Media & tech</option>
+      <option value="appearance">Appearance</option>
+    </select>
+    <select id="xlvl" onchange="loadCards()">
+      <option value="">All levels</option>
+      <option value="A1">A1</option>
+      <option value="A2">A2</option>
+      <option value="B1">B1</option>
+      <option value="B2">B2</option>
+    </select>
+    <span class="prog" id="prog">—</span>
+  </div>
+  <div class="cw" onclick="flip()">
+    <div class="ci" id="ci">
+      <div class="cf front">
+        <div class="meta" id="cm1"></div>
+        <div class="big" id="cfr">—</div>
+        <div class="hint">click to reveal</div>
+      </div>
+      <div class="cf back">
+        <div class="meta" id="cm2"></div>
+        <div class="big" id="cen">—</div>
+        <div class="sm" id="cnote"></div>
+      </div>
+    </div>
+  </div>
+  <div class="nav">
+    <button onclick="prev()">← Prev</button>
+    <button onclick="shuf()">Shuffle</button>
+    <button onclick="next()">Next →</button>
+  </div>
+</div>
+
+<!-- FAUX AMIS -->
+<div class="section" id="sec-faux">
+  <div class="fg" id="faux-grid"></div>
+</div>
+
+<!-- SYNONYMS -->
+<div class="section" id="sec-syn">
+  <div id="syn-content"></div>
+</div>
+
+<script>
+const PL={noun:"Noun",verb:"Verb",adj:"Adj",adv:"Adv",exp:"Expr",prep:"Prep"};
+const PC={noun:"noun",verb:"verb",adj:"adj",adv:"adv",exp:"exp",prep:"prep"};
+let cards=[],ci=0,flipped=false;
+
+const V=[
+{fr:"se réveiller",en:"to wake up",pos:"verb",lvl:"A1",cat:"daily",note:"reflexive. ≠ se lever (getting out of bed)"},
+{fr:"se lever",en:"to get out of bed / stand up",pos:"verb",lvl:"A1",cat:"daily",note:""},
+{fr:"s'habiller",en:"to get dressed",pos:"verb",lvl:"A1",cat:"daily",note:"j'habille mes filles = I dress my daughters (non-reflexive)"},
+{fr:"se coucher",en:"to go to bed",pos:"verb",lvl:"A1",cat:"daily",note:"je les ai couchés = I put them to bed"},
+{fr:"s'endormir",en:"to fall asleep",pos:"verb",lvl:"A1",cat:"daily",note:"elle s'est endormie pendant le film"},
+{fr:"faire une sieste",en:"to take a nap",pos:"exp",lvl:"A1",cat:"daily",note:""},
+{fr:"ranger",en:"to tidy up / put things back in place",pos:"verb",lvl:"A1",cat:"daily",note:"≠ nettoyer. Ranger = put away. Nettoyer = clean."},
+{fr:"nettoyer",en:"to clean",pos:"verb",lvl:"A1",cat:"daily",note:""},
+{fr:"trier",en:"to sort out / sort recycling",pos:"verb",lvl:"A2",cat:"daily",note:"trier les vêtements = go through clothes"},
+{fr:"faire la lessive",en:"to do the laundry",pos:"exp",lvl:"A1",cat:"daily",note:"le linge = laundry. la lessive = detergent"},
+{fr:"laver la vaisselle",en:"to do the dishes",pos:"exp",lvl:"A1",cat:"daily",note:""},
+{fr:"passer l'aspirateur",en:"to vacuum",pos:"exp",lvl:"A1",cat:"daily",note:""},
+{fr:"passer la serpillière",en:"to mop the floor",pos:"exp",lvl:"A2",cat:"daily",note:""},
+{fr:"balayer",en:"to sweep",pos:"verb",lvl:"A1",cat:"daily",note:"un balai = a broom"},
+{fr:"les tâches ménagères",en:"household chores",pos:"noun",lvl:"A1",cat:"daily",note:"also: les corvées"},
+{fr:"arroser les plantes",en:"to water the plants",pos:"exp",lvl:"A1",cat:"daily",note:""},
+{fr:"plier",en:"to fold (laundry, paper)",pos:"verb",lvl:"A1",cat:"daily",note:""},
+{fr:"pelleter / déneiger",en:"to shovel snow",pos:"verb",lvl:"A1",cat:"daily",note:"Quebec/Canada specific"},
+{fr:"déménager",en:"to move out",pos:"verb",lvl:"A2",cat:"daily",note:"≠ emménager (to move in)"},
+{fr:"emménager",en:"to move in",pos:"verb",lvl:"A2",cat:"daily",note:"≠ déménager"},
+{fr:"nourrir",en:"to feed",pos:"verb",lvl:"A1",cat:"daily",note:"élever = to raise a child or animal"},
+{fr:"conduire",en:"to drive",pos:"verb",lvl:"A2",cat:"daily",note:"je conduis"},
+{fr:"garer",en:"to park",pos:"verb",lvl:"A2",cat:"daily",note:""},
+{fr:"faire les magasins",en:"to go shopping",pos:"exp",lvl:"A1",cat:"daily",note:"faire du magasinage (Quebec)"},
+{fr:"faire du lèche-vitrine",en:"to window shop",pos:"exp",lvl:"B1",cat:"daily",note:"lit. 'lick the windows'"},
+{fr:"croiser les doigts",en:"to cross one's fingers",pos:"exp",lvl:"A2",cat:"daily",note:""},
+{fr:"le bricolage",en:"DIY / home improvement",pos:"noun",lvl:"A2",cat:"daily",note:"bricoler = to DIY. le bricoleur = handyman"},
+{fr:"les congés payés",en:"paid holidays / paid leave",pos:"noun",lvl:"A2",cat:"daily",note:"un jour de congé = a day off"},
+{fr:"un jour férié",en:"a national/public holiday",pos:"noun",lvl:"A2",cat:"daily",note:""},
+{fr:"se baigner",en:"to relax in water casually",pos:"verb",lvl:"A1",cat:"daily",note:"≠ nager (active swimming)"},
+{fr:"nager",en:"to swim actively / as a sport",pos:"verb",lvl:"A1",cat:"daily",note:""},
+{fr:"économiser / faire des économies",en:"to save money",pos:"verb",lvl:"A2",cat:"daily",note:"gagner de l'argent = to earn money"},
+{fr:"dépenser",en:"to spend money",pos:"verb",lvl:"A2",cat:"daily",note:"la dépense = an expense"},
+{fr:"le covoiturage",en:"carpooling",pos:"noun",lvl:"B1",cat:"daily",note:"faire du covoiturage"},
+{fr:"rembourser",en:"to refund",pos:"verb",lvl:"A2",cat:"daily",note:""},
+{fr:"renouveler",en:"to renew",pos:"verb",lvl:"A2",cat:"daily",note:""},
+{fr:"reprogrammer",en:"to reschedule",pos:"verb",lvl:"B1",cat:"daily",note:""},
+{fr:"se faire tatouer",en:"to get a tattoo",pos:"exp",lvl:"A2",cat:"daily",note:""},
+{fr:"jardiner",en:"to garden",pos:"verb",lvl:"A1",cat:"daily",note:"le jardinage = gardening"},
+{fr:"la menuiserie",en:"woodworking",pos:"noun",lvl:"B1",cat:"daily",note:"le menuisier = the carpenter"},
+{fr:"faire de la couture",en:"to sew",pos:"exp",lvl:"A2",cat:"daily",note:"tricoter = to knit"},
+{fr:"tricoter",en:"to knit",pos:"verb",lvl:"A2",cat:"daily",note:"le tricot = knitting"},
+{fr:"emballer les cadeaux",en:"to wrap presents",pos:"exp",lvl:"A1",cat:"daily",note:""},
+{fr:"la pendaison de crémaillère",en:"a housewarming party",pos:"noun",lvl:"B1",cat:"daily",note:""},
+{fr:"le décalage horaire",en:"jet lag",pos:"noun",lvl:"A2",cat:"daily",note:"le fuseau horaire = time zone"},
+{fr:"la gorge",en:"the throat",pos:"noun",lvl:"A1",cat:"body",note:""},
+{fr:"le cerveau",en:"the brain",pos:"noun",lvl:"A1",cat:"body",note:""},
+{fr:"les orteils",en:"the toes",pos:"noun",lvl:"A1",cat:"body",note:""},
+{fr:"le genou",en:"the knee",pos:"noun",lvl:"A1",cat:"body",note:""},
+{fr:"les sourcils",en:"eyebrows",pos:"noun",lvl:"A2",cat:"body",note:"un sourcil"},
+{fr:"les cils",en:"eyelashes",pos:"noun",lvl:"A2",cat:"body",note:"un cil"},
+{fr:"les joues",en:"cheeks",pos:"noun",lvl:"A2",cat:"body",note:""},
+{fr:"le menton",en:"the chin",pos:"noun",lvl:"B1",cat:"body",note:""},
+{fr:"la fossette",en:"the dimple",pos:"noun",lvl:"B1",cat:"body",note:""},
+{fr:"la peau",en:"skin",pos:"noun",lvl:"A1",cat:"body",note:"la peau et les os = skin and bones"},
+{fr:"le dos",en:"the back",pos:"noun",lvl:"A1",cat:"body",note:""},
+{fr:"le cou",en:"the neck",pos:"noun",lvl:"A1",cat:"body",note:"≠ la gorge (throat inside)"},
+{fr:"le coude",en:"the elbow",pos:"noun",lvl:"A2",cat:"body",note:""},
+{fr:"la cheville",en:"the ankle",pos:"noun",lvl:"A2",cat:"body",note:""},
+{fr:"la cuisse",en:"the thigh",pos:"noun",lvl:"A2",cat:"body",note:""},
+{fr:"l'épaule",en:"the shoulder",pos:"noun",lvl:"A1",cat:"body",note:"feminine"},
+{fr:"les ongles",en:"fingernails / toenails",pos:"noun",lvl:"A1",cat:"body",note:""},
+{fr:"une oreille",en:"an ear",pos:"noun",lvl:"A1",cat:"body",note:"un oreiller = a pillow (you rest your ear on it)"},
+{fr:"avoir mal à",en:"to hurt / to ache",pos:"exp",lvl:"A1",cat:"body",note:"j'ai mal à la tête = I have a headache"},
+{fr:"mal au cœur",en:"nauseous / carsick",pos:"exp",lvl:"A2",cat:"body",note:"≠ heartache. mal au ventre = stomach ache"},
+{fr:"avoir de la fièvre",en:"to have a fever",pos:"exp",lvl:"A1",cat:"body",note:""},
+{fr:"tousser",en:"to cough",pos:"verb",lvl:"A1",cat:"body",note:"la toux = the cough. une crise de toux = coughing fit"},
+{fr:"éternuer",en:"to sneeze",pos:"verb",lvl:"A1",cat:"body",note:""},
+{fr:"attraper un rhume",en:"to catch a cold",pos:"exp",lvl:"A1",cat:"body",note:"attraper froid = catch cold (no article)"},
+{fr:"une grippe",en:"the flu",pos:"noun",lvl:"A1",cat:"body",note:""},
+{fr:"les démangeaisons",en:"itching",pos:"noun",lvl:"A2",cat:"body",note:"gratter = to scratch"},
+{fr:"une ordonnance",en:"a prescription",pos:"noun",lvl:"A2",cat:"body",note:"en vente libre = over the counter"},
+{fr:"la surchauffe mentale",en:"mental overload / burnout",pos:"noun",lvl:"B1",cat:"body",note:"surcharge cognitive = brain overload"},
+{fr:"épuisé(e)",en:"exhausted (or sold out)",pos:"adj",lvl:"B1",cat:"body",note:"double meaning: very tired OR out of stock"},
+{fr:"se soigner",en:"to treat / take care of oneself",pos:"verb",lvl:"B1",cat:"body",note:""},
+{fr:"avoir du mal à",en:"to struggle to",pos:"exp",lvl:"B1",cat:"body",note:"mon cerveau a du mal"},
+{fr:"la douleur / la courbature",en:"pain / ache",pos:"noun",lvl:"A2",cat:"body",note:"avoir mal = to be in pain"},
+{fr:"le nez bouché",en:"stuffy nose",pos:"exp",lvl:"A1",cat:"body",note:"bouché = blocked/stuck"},
+{fr:"piquer",en:"to sting / to prick / to give a shot",pos:"verb",lvl:"A2",cat:"body",note:"une piqûre = injection or sting"},
+{fr:"mordre",en:"to bite",pos:"verb",lvl:"A2",cat:"body",note:"la femme mord ≠ la femme est morte!"},
+{fr:"se moucher",en:"to blow one's nose",pos:"verb",lvl:"A1",cat:"body",note:"un mouchoir = tissue"},
+{fr:"guérir",en:"to heal / recover",pos:"verb",lvl:"A2",cat:"body",note:"bon rétablissement = get well soon"},
+{fr:"s'entraîner",en:"to train yourself",pos:"verb",lvl:"A2",cat:"body",note:"l'entraînement = training"},
+{fr:"souffrir",en:"to suffer",pos:"verb",lvl:"B1",cat:"body",note:""},
+{fr:"soulager",en:"to relieve pain or stress",pos:"verb",lvl:"B1",cat:"body",note:""},
+{fr:"s'étirer",en:"to stretch",pos:"verb",lvl:"A2",cat:"body",note:""},
+{fr:"s'allonger",en:"to lie down",pos:"verb",lvl:"A2",cat:"body",note:"allongé(e) = lying down"},
+{fr:"s'asseoir",en:"to sit down",pos:"verb",lvl:"A1",cat:"body",note:"assis(e) = sitting"},
+{fr:"un cauchemar",en:"a nightmare",pos:"noun",lvl:"A1",cat:"body",note:"faire un rêve = to have a dream"},
+{fr:"manquer de sommeil",en:"to lack sleep",pos:"exp",lvl:"A2",cat:"body",note:""},
+{fr:"se blesser",en:"to hurt oneself",pos:"verb",lvl:"A2",cat:"body",note:"le/la blessé(e) = the injured person"},
+{fr:"être en colère",en:"to be angry",pos:"exp",lvl:"A1",cat:"emotions",note:"colérique = hot-tempered"},
+{fr:"avoir marre",en:"to be fed up",pos:"exp",lvl:"A2",cat:"emotions",note:"j'en ai marre!"},
+{fr:"avoir hâte",en:"to look forward to / can't wait",pos:"exp",lvl:"A2",cat:"emotions",note:"j'ai hâte aux vacances"},
+{fr:"s'énerver",en:"to get annoyed / worked up",pos:"verb",lvl:"A2",cat:"emotions",note:"ça m'énerve = it gets on my nerves"},
+{fr:"c'est formidable",en:"that's amazing / wonderful",pos:"exp",lvl:"A1",cat:"emotions",note:"very positive! Not scary in French."},
+{fr:"être à l'aise",en:"to feel at ease / comfortable",pos:"exp",lvl:"A2",cat:"emotions",note:""},
+{fr:"je m'en fiche",en:"I don't care",pos:"exp",lvl:"A2",cat:"emotions",note:"familiar. je m'en fous = even more casual"},
+{fr:"ravi(e)",en:"delighted",pos:"adj",lvl:"B1",cat:"emotions",note:""},
+{fr:"jaloux / jalouse",en:"jealous",pos:"adj",lvl:"A2",cat:"emotions",note:"envieux = envious"},
+{fr:"la joie / le bonheur",en:"joy / happiness",pos:"noun",lvl:"A2",cat:"emotions",note:"le malheur = misfortune. la tristesse = sadness"},
+{fr:"le chagrin / avoir du chagrin",en:"sorrow / grief",pos:"noun",lvl:"B1",cat:"emotions",note:""},
+{fr:"l'espoir",en:"hope",pos:"noun",lvl:"B1",cat:"emotions",note:"espérer = to hope"},
+{fr:"tendre",en:"tender / gentle",pos:"adj",lvl:"B1",cat:"emotions",note:""},
+{fr:"attachant(e)",en:"endearing / appealing",pos:"adj",lvl:"B1",cat:"emotions",note:""},
+{fr:"troublant(e)",en:"confusing / disturbing",pos:"adj",lvl:"B1",cat:"emotions",note:"je suis troublée = I am confused"},
+{fr:"la gêne",en:"discomfort / embarrassment",pos:"noun",lvl:"B1",cat:"emotions",note:"ça me gêne = it bothers me"},
+{fr:"inoubliable",en:"unforgettable",pos:"adj",lvl:"A2",cat:"emotions",note:"oublier = to forget"},
+{fr:"insupportable",en:"unbearable",pos:"adj",lvl:"A2",cat:"emotions",note:"supportable = bearable"},
+{fr:"remonter le moral",en:"to lift spirits / cheer up",pos:"exp",lvl:"B1",cat:"emotions",note:""},
+{fr:"fainéant(e)",en:"lazy",pos:"adj",lvl:"A2",cat:"emotions",note:""},
+{fr:"têtu(e)",en:"stubborn",pos:"adj",lvl:"A2",cat:"emotions",note:"têtu comme une mule"},
+{fr:"peureux / peureuse",en:"fearful / scared",pos:"adj",lvl:"A2",cat:"emotions",note:""},
+{fr:"discret / discrète",en:"discreet",pos:"adj",lvl:"B1",cat:"emotions",note:""},
+{fr:"menteur / menteuse",en:"a liar",pos:"noun",lvl:"A2",cat:"emotions",note:"mentir = to lie"},
+{fr:"ordonné(e)",en:"organized / tidy",pos:"adj",lvl:"A2",cat:"emotions",note:""},
+{fr:"réfléchi(e)",en:"thoughtful / a thinker (positive)",pos:"adj",lvl:"B1",cat:"emotions",note:""},
+{fr:"autoritaire",en:"bossy / controlling",pos:"adj",lvl:"B1",cat:"emotions",note:""},
+{fr:"chaleureux / chaleureuse",en:"warm / welcoming",pos:"adj",lvl:"B1",cat:"emotions",note:""},
+{fr:"prétentieux / prétentieuse",en:"pretentious",pos:"adj",lvl:"B1",cat:"emotions",note:""},
+{fr:"pénible",en:"painful / annoying / exhausting",pos:"adj",lvl:"A2",cat:"emotions",note:"ils sont chiants (very familiar)"},
+{fr:"gourmand(e)",en:"sweet tooth / food lover",pos:"adj",lvl:"A2",cat:"emotions",note:"≠ gourmet (fancy foodie)"},
+{fr:"être chamboulé(e)",en:"to be shaken / upset (familiar)",pos:"exp",lvl:"B1",cat:"emotions",note:""},
+{fr:"être de mauvaise humeur",en:"to be in a bad mood",pos:"exp",lvl:"A2",cat:"emotions",note:"grincheux = grumpy"},
+{fr:"pleurer",en:"to cry",pos:"verb",lvl:"A1",cat:"emotions",note:"les larmes = tears. fondre en larmes = burst into tears"},
+{fr:"éclater de rire",en:"to burst out laughing",pos:"exp",lvl:"A2",cat:"emotions",note:"rigoler = to laugh / joke around"},
+{fr:"la tristesse",en:"sadness",pos:"noun",lvl:"A2",cat:"emotions",note:"triste = sad. attrister = to sadden"},
+{fr:"s'inquiéter",en:"to worry",pos:"verb",lvl:"A2",cat:"emotions",note:"inquiet / inquiète = worried"},
+{fr:"égoïste",en:"selfish",pos:"adj",lvl:"B1",cat:"emotions",note:""},
+{fr:"fier / fière",en:"proud",pos:"adj",lvl:"A2",cat:"emotions",note:""},
+{fr:"reconnaissant(e)",en:"grateful / thankful",pos:"adj",lvl:"B1",cat:"emotions",note:""},
+{fr:"la recette",en:"a recipe",pos:"noun",lvl:"A1",cat:"food",note:""},
+{fr:"l'assaisonnement",en:"seasoning",pos:"noun",lvl:"B1",cat:"food",note:""},
+{fr:"la cuisson",en:"cooking / degree of doneness",pos:"noun",lvl:"B1",cat:"food",note:"saignant, à point, bien cuit"},
+{fr:"savourer / déguster",en:"to savour / enjoy slowly",pos:"verb",lvl:"B1",cat:"food",note:"la saveur = the flavour"},
+{fr:"goûter",en:"to taste",pos:"verb",lvl:"A1",cat:"food",note:"le goûter = snack (noun). le goût = taste"},
+{fr:"succulent(e)",en:"delicious",pos:"adj",lvl:"B1",cat:"food",note:"stronger than bon"},
+{fr:"amer / amère",en:"bitter",pos:"adj",lvl:"A2",cat:"food",note:""},
+{fr:"fade",en:"bland / flavorless",pos:"adj",lvl:"B1",cat:"food",note:"c'est fade = it's tasteless"},
+{fr:"salé(e)",en:"salty / savory",pos:"adj",lvl:"A1",cat:"food",note:"≠ sale (dirty)"},
+{fr:"sucré(e)",en:"sweet",pos:"adj",lvl:"A1",cat:"food",note:"cassonade = brown sugar"},
+{fr:"épicé(e)",en:"spicy",pos:"adj",lvl:"A2",cat:"food",note:"les épices = spices"},
+{fr:"une gaufre",en:"a waffle",pos:"noun",lvl:"A1",cat:"food",note:""},
+{fr:"tartiner",en:"to spread (butter, jam)",pos:"verb",lvl:"A2",cat:"food",note:"une tartine = bread with spread"},
+{fr:"un buffet à volonté",en:"all-you-can-eat buffet",pos:"noun",lvl:"B1",cat:"food",note:""},
+{fr:"frais / fraîche",en:"fresh",pos:"adj",lvl:"A1",cat:"food",note:"≠ fraise (strawberry)!"},
+{fr:"une collation",en:"a snack",pos:"noun",lvl:"B1",cat:"food",note:"also: un goûter"},
+{fr:"fondre",en:"to melt",pos:"verb",lvl:"A2",cat:"food",note:"la neige a fondu = the snow melted"},
+{fr:"congeler / décongeler",en:"to freeze / to defrost",pos:"verb",lvl:"A2",cat:"food",note:"surgelés = completely frozen items"},
+{fr:"se faire livrer un repas",en:"to have food delivered",pos:"exp",lvl:"B1",cat:"food",note:"livrer = to deliver"},
+{fr:"un repas équilibré",en:"a balanced meal",pos:"noun",lvl:"B1",cat:"food",note:""},
+{fr:"lutter contre le gaspillage",en:"to fight against food waste",pos:"exp",lvl:"B1",cat:"food",note:"gaspiller = to waste"},
+{fr:"accomoder les restes",en:"to use leftovers creatively",pos:"exp",lvl:"B1",cat:"food",note:""},
+{fr:"trancher",en:"to slice",pos:"verb",lvl:"B1",cat:"food",note:"tranché = sliced"},
+{fr:"haché(e)",en:"minced / ground (meat)",pos:"adj",lvl:"B1",cat:"food",note:"hacher = to chop finely"},
+{fr:"le thon",en:"tuna",pos:"noun",lvl:"A1",cat:"food",note:"thon cru = raw tuna"},
+{fr:"les huîtres",en:"oysters",pos:"noun",lvl:"A2",cat:"food",note:""},
+{fr:"les pois chiches",en:"chickpeas",pos:"noun",lvl:"A2",cat:"food",note:"les légumineuses = legumes/pulses"},
+{fr:"les fèves",en:"broad beans / fava beans",pos:"noun",lvl:"A2",cat:"food",note:""},
+{fr:"la crème sure",en:"sour cream (Quebec)",pos:"noun",lvl:"A2",cat:"food",note:"crème fraîche in France"},
+{fr:"un traiteur",en:"takeaway / caterer",pos:"noun",lvl:"A2",cat:"food",note:""},
+{fr:"le boulanger",en:"the baker",pos:"noun",lvl:"A1",cat:"food",note:"chez le boulanger = at the bakery"},
+{fr:"fait maison",en:"homemade",pos:"adj",lvl:"A1",cat:"food",note:""},
+{fr:"une boisson gazeuse",en:"a carbonated drink / soda",pos:"noun",lvl:"A1",cat:"food",note:""},
+{fr:"un accompagnement",en:"a side dish",pos:"noun",lvl:"B1",cat:"food",note:""},
+{fr:"verser",en:"to pour",pos:"verb",lvl:"A1",cat:"food",note:""},
+{fr:"saupoudrer",en:"to sprinkle",pos:"verb",lvl:"B1",cat:"food",note:""},
+{fr:"badigeonner",en:"to baste / to brush on",pos:"verb",lvl:"B1",cat:"food",note:"like brushing butter on pastry"},
+{fr:"beurrer",en:"to butter a pan",pos:"verb",lvl:"A2",cat:"food",note:"du beurre = butter"},
+{fr:"un pot de confiture",en:"a jar of jam",pos:"noun",lvl:"A1",cat:"food",note:"la confiture = jam"},
+{fr:"la carotte",en:"carrot",pos:"noun",lvl:"A1",cat:"fruits",note:""},
+{fr:"le maïs",en:"corn",pos:"noun",lvl:"A1",cat:"fruits",note:"le maïs soufflé = popcorn (Quebec)"},
+{fr:"le concombre",en:"cucumber",pos:"noun",lvl:"A1",cat:"fruits",note:""},
+{fr:"la betterave",en:"a beet",pos:"noun",lvl:"A2",cat:"fruits",note:""},
+{fr:"la laitue",en:"lettuce",pos:"noun",lvl:"A1",cat:"fruits",note:""},
+{fr:"le poireau",en:"leek",pos:"noun",lvl:"A2",cat:"fruits",note:"une botte de poireau = a bunch of leeks"},
+{fr:"le chou",en:"cabbage",pos:"noun",lvl:"A1",cat:"fruits",note:"pronounced 'shoe'"},
+{fr:"la courgette",en:"zucchini",pos:"noun",lvl:"A2",cat:"fruits",note:""},
+{fr:"l'aubergine",en:"eggplant",pos:"noun",lvl:"A2",cat:"fruits",note:""},
+{fr:"le poivron",en:"a bell pepper",pos:"noun",lvl:"A1",cat:"fruits",note:"le poivre = black pepper (different!)"},
+{fr:"le navet",en:"turnip",pos:"noun",lvl:"A2",cat:"fruits",note:""},
+{fr:"le brocoli",en:"broccoli",pos:"noun",lvl:"A1",cat:"fruits",note:""},
+{fr:"les haricots verts",en:"green beans",pos:"noun",lvl:"A1",cat:"fruits",note:""},
+{fr:"les petits pois",en:"peas",pos:"noun",lvl:"A1",cat:"fruits",note:""},
+{fr:"la framboise",en:"raspberry",pos:"noun",lvl:"A1",cat:"fruits",note:""},
+{fr:"la poire",en:"a pear",pos:"noun",lvl:"A1",cat:"fruits",note:""},
+{fr:"la fraise",en:"strawberry",pos:"noun",lvl:"A1",cat:"fruits",note:"≠ frais/fraîche (fresh)"},
+{fr:"la cerise",en:"cherry",pos:"noun",lvl:"A1",cat:"fruits",note:"pronounced 'suh reez'"},
+{fr:"la pastèque / le melon d'eau",en:"watermelon",pos:"noun",lvl:"A1",cat:"fruits",note:"pastèque in France. melon d'eau in Quebec"},
+{fr:"le raisin",en:"grape",pos:"noun",lvl:"A1",cat:"fruits",note:""},
+{fr:"le bleuet / la myrtille",en:"blueberry",pos:"noun",lvl:"A1",cat:"fruits",note:"bleuet in Quebec. myrtille in France"},
+{fr:"la pêche",en:"peach (also: fishing)",pos:"noun",lvl:"A1",cat:"fruits",note:"double meaning! la pêche = peach OR fishing"},
+{fr:"le pamplemousse",en:"grapefruit",pos:"noun",lvl:"A1",cat:"fruits",note:""},
+{fr:"la canneberge",en:"cranberry",pos:"noun",lvl:"A2",cat:"fruits",note:""},
+{fr:"le citron",en:"lemon",pos:"noun",lvl:"A1",cat:"fruits",note:"le citron vert = lime"},
+{fr:"le sel",en:"salt",pos:"noun",lvl:"A1",cat:"fruits",note:""},
+{fr:"le vinaigre",en:"vinegar",pos:"noun",lvl:"A1",cat:"fruits",note:""},
+{fr:"le poivre",en:"black pepper",pos:"noun",lvl:"A1",cat:"fruits",note:"≠ poivron (bell pepper)"},
+{fr:"les flocons d'avoine",en:"oatmeal / oat flakes",pos:"noun",lvl:"A2",cat:"fruits",note:""},
+{fr:"le yaourt",en:"yogurt",pos:"noun",lvl:"A1",cat:"fruits",note:""},
+{fr:"un bol",en:"a bowl",pos:"noun",lvl:"A1",cat:"kitchen",note:""},
+{fr:"une casserole",en:"a pot / saucepan",pos:"noun",lvl:"A1",cat:"kitchen",note:""},
+{fr:"une poêle à frire",en:"a frying pan",pos:"noun",lvl:"A1",cat:"kitchen",note:""},
+{fr:"une cuillère à soupe",en:"a soup spoon / tablespoon",pos:"noun",lvl:"A1",cat:"kitchen",note:""},
+{fr:"une cuillère à café / à thé",en:"a teaspoon",pos:"noun",lvl:"A1",cat:"kitchen",note:"cuillère à café in France. cuillère à thé in Quebec"},
+{fr:"une planche à découper",en:"a cutting board",pos:"noun",lvl:"A1",cat:"kitchen",note:""},
+{fr:"un moule",en:"a baking mold / pan",pos:"noun",lvl:"A2",cat:"kitchen",note:"une moule = mussels — careful! Gender changes meaning!"},
+{fr:"une cocotte",en:"a dutch oven",pos:"noun",lvl:"A2",cat:"kitchen",note:""},
+{fr:"une cuisinière",en:"the whole stove (oven + hob)",pos:"noun",lvl:"A2",cat:"kitchen",note:"le four = oven only"},
+{fr:"des tasses à mesurer",en:"measuring cups",pos:"noun",lvl:"A2",cat:"kitchen",note:""},
+{fr:"le plat de cuisson",en:"a cooking dish / baking dish",pos:"noun",lvl:"A2",cat:"kitchen",note:""},
+{fr:"un fouet",en:"a whisk",pos:"noun",lvl:"A2",cat:"kitchen",note:""},
+{fr:"un couvercle",en:"a lid / cover",pos:"noun",lvl:"A2",cat:"kitchen",note:""},
+{fr:"louer",en:"to rent",pos:"verb",lvl:"A2",cat:"home",note:"le loyer = the rent noun"},
+{fr:"le loyer",en:"the rent",pos:"noun",lvl:"A2",cat:"home",note:"charges comprises = utilities included"},
+{fr:"meublé(e)",en:"furnished",pos:"adj",lvl:"A2",cat:"home",note:"un meuble = a piece of furniture"},
+{fr:"le mobilier",en:"all the furniture (collective noun)",pos:"noun",lvl:"B1",cat:"home",note:"les meubles = furniture plural"},
+{fr:"un immeuble",en:"a residential building",pos:"noun",lvl:"A2",cat:"home",note:"le bâtiment = generic building"},
+{fr:"le grenier",en:"the attic",pos:"noun",lvl:"A2",cat:"home",note:"≠ la cave (cellar underground)"},
+{fr:"la cave",en:"the cellar (underground)",pos:"noun",lvl:"A2",cat:"home",note:"très sombre = very dark"},
+{fr:"le sous-sol",en:"the finished basement",pos:"noun",lvl:"A2",cat:"home",note:""},
+{fr:"le rez-de-chaussée (RDC)",en:"the ground floor",pos:"noun",lvl:"A2",cat:"home",note:"not counted as a floor in France"},
+{fr:"le premier étage",en:"1st floor above ground",pos:"noun",lvl:"A2",cat:"home",note:"= 2nd floor in North America"},
+{fr:"le salon / le séjour",en:"the living room",pos:"noun",lvl:"A1",cat:"home",note:""},
+{fr:"la salle à manger",en:"the dining room",pos:"noun",lvl:"A1",cat:"home",note:""},
+{fr:"une suite parentale",en:"a master bedroom with bathroom",pos:"noun",lvl:"B1",cat:"home",note:""},
+{fr:"une salle de jeux",en:"a playroom / game room",pos:"noun",lvl:"A2",cat:"home",note:""},
+{fr:"la salle de bain",en:"bathroom (with bathtub)",pos:"noun",lvl:"A1",cat:"home",note:"≠ salle d'eau (shower only)"},
+{fr:"la salle d'eau",en:"bathroom (shower only)",pos:"noun",lvl:"A2",cat:"home",note:""},
+{fr:"la buanderie",en:"laundry room / laundromat (Quebec)",pos:"noun",lvl:"A2",cat:"home",note:"la laverie = laundromat in France"},
+{fr:"la table basse",en:"coffee table",pos:"noun",lvl:"A2",cat:"home",note:""},
+{fr:"la table de chevet",en:"bedside table",pos:"noun",lvl:"A2",cat:"home",note:""},
+{fr:"un oreiller",en:"a sleeping pillow",pos:"noun",lvl:"A2",cat:"home",note:"≠ coussin (decorative cushion)"},
+{fr:"un coussin",en:"a decorative cushion",pos:"noun",lvl:"A2",cat:"home",note:"≠ oreiller (sleeping) / ≠ cousin (relative)!"},
+{fr:"un placard",en:"a cabinet / built-in storage",pos:"noun",lvl:"A2",cat:"home",note:""},
+{fr:"un rideau",en:"a curtain",pos:"noun",lvl:"A1",cat:"home",note:"window or shower curtain"},
+{fr:"l'évier",en:"the kitchen sink",pos:"noun",lvl:"A2",cat:"home",note:"≠ lavabo (bathroom sink)"},
+{fr:"le lavabo",en:"the bathroom sink",pos:"noun",lvl:"A2",cat:"home",note:""},
+{fr:"un four",en:"an oven",pos:"noun",lvl:"A1",cat:"home",note:""},
+{fr:"la plaque de cuisson",en:"the cooking stove / hob",pos:"noun",lvl:"A2",cat:"home",note:""},
+{fr:"le lave-linge / la laveuse",en:"washing machine",pos:"noun",lvl:"A2",cat:"home",note:"la laveuse = Quebec. la sécheuse = dryer (Quebec)"},
+{fr:"le lave-vaisselle",en:"the dishwasher",pos:"noun",lvl:"A2",cat:"home",note:""},
+{fr:"un tabouret",en:"a stool / foot stool",pos:"noun",lvl:"A2",cat:"home",note:""},
+{fr:"un cadre",en:"a picture frame",pos:"noun",lvl:"A2",cat:"home",note:"≠ monture (glasses frame)"},
+{fr:"l'étagère",en:"a shelf",pos:"noun",lvl:"A1",cat:"home",note:"les étagères = shelves"},
+{fr:"la panne",en:"breakdown / out of order",pos:"noun",lvl:"A2",cat:"home",note:"tomber en panne = to break down"},
+{fr:"une poussette",en:"a stroller",pos:"noun",lvl:"A1",cat:"home",note:""},
+{fr:"le chauffage",en:"the heater / heating",pos:"noun",lvl:"A1",cat:"home",note:""},
+{fr:"les charges",en:"utilities / fees",pos:"noun",lvl:"A2",cat:"home",note:""},
+{fr:"le/la colocataire",en:"roommate",pos:"noun",lvl:"A2",cat:"home",note:"la colocation = having roommates"},
+{fr:"le/la locataire",en:"the renter / tenant",pos:"noun",lvl:"A2",cat:"home",note:"le/la propriétaire = the owner"},
+{fr:"la superficie",en:"the area / size in m²",pos:"noun",lvl:"A2",cat:"home",note:""},
+{fr:"la couette / le duvet",en:"duvet / comforter",pos:"noun",lvl:"A1",cat:"home",note:""},
+{fr:"les draps",en:"bed sheets",pos:"noun",lvl:"A1",cat:"home",note:"la literie = bedding"},
+{fr:"un matelas",en:"a mattress",pos:"noun",lvl:"A1",cat:"home",note:""},
+{fr:"un fauteuil",en:"an armchair",pos:"noun",lvl:"A1",cat:"home",note:""},
+{fr:"la serrure",en:"the lock",pos:"noun",lvl:"A2",cat:"home",note:"un tournevis = screwdriver"},
+{fr:"une tondeuse",en:"a lawn mower",pos:"noun",lvl:"A2",cat:"home",note:""},
+{fr:"en laine / en cuir / en fer",en:"made of wool / leather / iron",pos:"exp",lvl:"A2",cat:"home",note:"always use 'en' before a material"},
+{fr:"un chandail",en:"a sweater",pos:"noun",lvl:"A1",cat:"clothes",note:"Quebec word for sweater"},
+{fr:"des manches",en:"sleeves",pos:"noun",lvl:"A1",cat:"clothes",note:"à manches longues = long-sleeved"},
+{fr:"imperméable",en:"waterproof",pos:"adj",lvl:"A2",cat:"clothes",note:"un imperméable = a raincoat"},
+{fr:"une tenue",en:"an outfit",pos:"noun",lvl:"A2",cat:"clothes",note:""},
+{fr:"un foulard",en:"a scarf (Quebec)",pos:"noun",lvl:"A1",cat:"clothes",note:"une écharpe = scarf in France"},
+{fr:"une écharpe",en:"a scarf (France)",pos:"noun",lvl:"A1",cat:"clothes",note:"un foulard = scarf in Quebec"},
+{fr:"des bottes d'hiver",en:"winter boots",pos:"noun",lvl:"A1",cat:"clothes",note:""},
+{fr:"une casquette",en:"a baseball cap",pos:"noun",lvl:"A1",cat:"clothes",note:""},
+{fr:"faire du 44",en:"to wear size 44",pos:"exp",lvl:"B1",cat:"clothes",note:"quelle taille / grandeur? = what size?"},
+{fr:"une pointure",en:"shoe size",pos:"noun",lvl:"B1",cat:"clothes",note:""},
+{fr:"des souliers / des chaussures",en:"shoes",pos:"noun",lvl:"A1",cat:"clothes",note:"souliers = Quebec. chaussures = universal"},
+{fr:"un maillot de bain",en:"a swimsuit",pos:"noun",lvl:"A1",cat:"clothes",note:""},
+{fr:"le linge",en:"laundry / clothing / linens",pos:"noun",lvl:"A2",cat:"clothes",note:"Quebec: also means 'outfit'"},
+{fr:"une friperie",en:"a thrift store",pos:"noun",lvl:"B1",cat:"clothes",note:""},
+{fr:"postuler",en:"to apply for a job",pos:"verb",lvl:"B1",cat:"work",note:""},
+{fr:"l'entretien d'embauche",en:"a job interview",pos:"noun",lvl:"B1",cat:"work",note:"in Quebec: une entrevue"},
+{fr:"la candidature",en:"the job application",pos:"noun",lvl:"B1",cat:"work",note:""},
+{fr:"une lettre de motivation",en:"a cover letter",pos:"noun",lvl:"B1",cat:"work",note:""},
+{fr:"le CV",en:"résumé / CV",pos:"noun",lvl:"B1",cat:"work",note:""},
+{fr:"le télétravail",en:"remote work",pos:"noun",lvl:"B1",cat:"work",note:"présentiel = in-person"},
+{fr:"un emploi / un travail / un métier",en:"a job",pos:"noun",lvl:"A1",cat:"work",note:"une entreprise = a company. la boîte = familiar"},
+{fr:"le siège social",en:"headquarters",pos:"noun",lvl:"B1",cat:"work",note:""},
+{fr:"le/la collègue",en:"the colleague",pos:"noun",lvl:"A2",cat:"work",note:"aussi: collaborateur/collaboratrice"},
+{fr:"la rémunération",en:"salary / pay",pos:"noun",lvl:"B1",cat:"work",note:"mon salaire = my paycheck"},
+{fr:"être fiable",en:"to be reliable",pos:"exp",lvl:"B1",cat:"work",note:""},
+{fr:"améliorer",en:"to improve",pos:"verb",lvl:"B1",cat:"work",note:"l'amélioration = improvement"},
+{fr:"rédiger",en:"to write / draft formally",pos:"verb",lvl:"B2",cat:"work",note:"for contracts, formal documents"},
+{fr:"fournir",en:"to provide / supply",pos:"verb",lvl:"B1",cat:"work",note:""},
+{fr:"le burn-out",en:"burnout",pos:"noun",lvl:"B1",cat:"work",note:""},
+{fr:"la charge de travail",en:"workload",pos:"noun",lvl:"B1",cat:"work",note:""},
+{fr:"faire preuve de",en:"to demonstrate / show",pos:"exp",lvl:"B2",cat:"work",note:"faire preuve de patience"},
+{fr:"diriger",en:"to manage / lead",pos:"verb",lvl:"B1",cat:"work",note:""},
+{fr:"s'impliquer",en:"to get involved",pos:"verb",lvl:"B1",cat:"work",note:""},
+{fr:"embaucher",en:"to hire",pos:"verb",lvl:"B1",cat:"work",note:"recruter = to recruit"},
+{fr:"livrer",en:"to deliver",pos:"verb",lvl:"B1",cat:"work",note:"la livraison = delivery"},
+{fr:"à plein temps / à temps partiel",en:"full time / part time",pos:"exp",lvl:"A2",cat:"work",note:""},
+{fr:"un boulot",en:"work / job (slang)",pos:"noun",lvl:"A2",cat:"work",note:"familiar register"},
+{fr:"le gérant / la gérante",en:"the manager",pos:"noun",lvl:"B1",cat:"work",note:""},
+{fr:"une grève",en:"a strike",pos:"noun",lvl:"B1",cat:"work",note:"faire grève = to go on strike"},
+{fr:"être au courant",en:"to be aware of / up to date",pos:"exp",lvl:"B1",cat:"work",note:""},
+{fr:"la mise à jour",en:"an update",pos:"noun",lvl:"A2",cat:"work",note:"mettre à jour = to update"},
+{fr:"gagner du temps",en:"to save time",pos:"exp",lvl:"A2",cat:"work",note:"gagner = to win OR to save"},
+{fr:"le harcèlement",en:"harassment",pos:"noun",lvl:"B2",cat:"work",note:""},
+{fr:"un stage",en:"a 3-month internship",pos:"noun",lvl:"B1",cat:"work",note:"la formation en alternance = work-study"},
+{fr:"l'hébergement",en:"lodging / accommodation",pos:"noun",lvl:"A2",cat:"travel",note:""},
+{fr:"une auberge de jeunesse",en:"a youth hostel",pos:"noun",lvl:"A2",cat:"travel",note:""},
+{fr:"décoller",en:"to take off (plane)",pos:"verb",lvl:"A2",cat:"travel",note:"≠ atterrir (to land) — CLASSIC TRAP!"},
+{fr:"atterrir",en:"to land (plane)",pos:"verb",lvl:"A2",cat:"travel",note:"≠ décoller (to take off)"},
+{fr:"la compagnie aérienne",en:"the airline",pos:"noun",lvl:"A2",cat:"travel",note:""},
+{fr:"la demi-pension",en:"half board",pos:"noun",lvl:"B1",cat:"travel",note:"la pension complète = all inclusive"},
+{fr:"à l'étranger",en:"abroad",pos:"exp",lvl:"A2",cat:"travel",note:"un étranger = a foreigner/stranger"},
+{fr:"le patrimoine",en:"heritage / patrimony",pos:"noun",lvl:"B1",cat:"travel",note:""},
+{fr:"la visite guidée",en:"a guided tour",pos:"noun",lvl:"A2",cat:"travel",note:""},
+{fr:"le séjour",en:"the stay / trip",pos:"noun",lvl:"A2",cat:"travel",note:""},
+{fr:"la marée basse / haute",en:"low / high tide",pos:"noun",lvl:"A2",cat:"travel",note:""},
+{fr:"la côte",en:"the coast",pos:"noun",lvl:"A2",cat:"travel",note:"≠ à côté de (next to)"},
+{fr:"un trajet",en:"a route / commute",pos:"noun",lvl:"A2",cat:"travel",note:""},
+{fr:"la piste cyclable",en:"bike path",pos:"noun",lvl:"A2",cat:"travel",note:"une rue piétonne = pedestrian street"},
+{fr:"un TGV",en:"high-speed train",pos:"noun",lvl:"B1",cat:"travel",note:"train à grande vitesse"},
+{fr:"sans frais",en:"free of charge",pos:"exp",lvl:"B1",cat:"travel",note:""},
+{fr:"hors des sentiers battus",en:"off the beaten track",pos:"exp",lvl:"B1",cat:"travel",note:""},
+{fr:"le dépaysement",en:"change of scenery (far from home)",pos:"noun",lvl:"B2",cat:"travel",note:"dépaysant = exotic / out of your element"},
+{fr:"la canicule",en:"heatwave",pos:"noun",lvl:"A2",cat:"nature",note:"vague de chaleur = heat wave"},
+{fr:"l'orage",en:"thunderstorm",pos:"noun",lvl:"A2",cat:"nature",note:"la tempête = a general storm"},
+{fr:"il fait frette",en:"it's very cold (Quebec)",pos:"exp",lvl:"A2",cat:"nature",note:"on gèle! = we're freezing!"},
+{fr:"la fraîcheur",en:"the cool air (not cold)",pos:"noun",lvl:"B1",cat:"nature",note:""},
+{fr:"la gadoue",en:"mud / slush / dirty snow",pos:"noun",lvl:"A2",cat:"nature",note:"Quebec term"},
+{fr:"la pluie verglaçante",en:"freezing rain",pos:"noun",lvl:"A2",cat:"nature",note:""},
+{fr:"les déchets",en:"waste / garbage",pos:"noun",lvl:"A2",cat:"nature",note:"la poubelle = trash can"},
+{fr:"le gaspillage",en:"waste (concept / food waste)",pos:"noun",lvl:"B1",cat:"nature",note:"gaspiller = to waste"},
+{fr:"le recyclage",en:"recycling",pos:"noun",lvl:"A2",cat:"nature",note:"recycler = to recycle"},
+{fr:"préserver / protéger",en:"to preserve / to protect",pos:"verb",lvl:"B1",cat:"nature",note:""},
+{fr:"sauver",en:"to save / rescue",pos:"verb",lvl:"B1",cat:"nature",note:"≠ enregistrer (to save data)"},
+{fr:"valoriser",en:"to give value to / upcycle",pos:"verb",lvl:"B1",cat:"nature",note:""},
+{fr:"le réchauffement climatique",en:"global warming",pos:"noun",lvl:"B1",cat:"nature",note:""},
+{fr:"polluant(e)",en:"polluting (adjective)",pos:"adj",lvl:"B1",cat:"nature",note:"une voiture polluante"},
+{fr:"la campagne",en:"the countryside",pos:"noun",lvl:"A1",cat:"nature",note:"à la campagne = in the countryside"},
+{fr:"un champ",en:"a field",pos:"noun",lvl:"A2",cat:"nature",note:"un champ de tournesols = sunflower field"},
+{fr:"le sentier",en:"the trail / path",pos:"noun",lvl:"B1",cat:"nature",note:""},
+{fr:"la mouette",en:"a seagull",pos:"noun",lvl:"A2",cat:"nature",note:""},
+{fr:"un phoque",en:"a seal",pos:"noun",lvl:"A2",cat:"nature",note:""},
+{fr:"bruyant(e)",en:"loud / noisy",pos:"adj",lvl:"A2",cat:"nature",note:"le bruit = noise"},
+{fr:"doux / douce",en:"mild / soft / gentle",pos:"adj",lvl:"A1",cat:"nature",note:"le temps est plus doux = milder weather"},
+{fr:"faire connaissance",en:"to get to know each other",pos:"exp",lvl:"A2",cat:"social",note:""},
+{fr:"rencontrer",en:"to meet for the first time",pos:"verb",lvl:"A1",cat:"social",note:"≠ voir (see someone you know)"},
+{fr:"se rencontrer",en:"to meet each other (first time)",pos:"verb",lvl:"A2",cat:"social",note:"nous nous sommes rencontrées"},
+{fr:"un coup de foudre",en:"love at first sight",pos:"exp",lvl:"A2",cat:"social",note:""},
+{fr:"briser la glace",en:"to break the ice",pos:"exp",lvl:"B1",cat:"social",note:""},
+{fr:"la bande de potes",en:"a group of friends",pos:"noun",lvl:"B1",cat:"social",note:"un/une pote = buddy (familiar)"},
+{fr:"se fiancer",en:"to get engaged",pos:"verb",lvl:"A2",cat:"social",note:""},
+{fr:"se marier",en:"to get married",pos:"verb",lvl:"A1",cat:"social",note:"je marie ma sœur = I'm at my sister's wedding"},
+{fr:"demander en mariage",en:"to propose",pos:"exp",lvl:"A2",cat:"social",note:""},
+{fr:"épouser",en:"to marry / to wed",pos:"verb",lvl:"B1",cat:"social",note:"mon époux = husband. mon épouse = wife"},
+{fr:"vivre en concubinage",en:"to live together unmarried",pos:"exp",lvl:"B1",cat:"social",note:""},
+{fr:"être enceinte",en:"to be pregnant",pos:"exp",lvl:"A2",cat:"social",note:"tomber enceinte = to become pregnant"},
+{fr:"avoir la garde",en:"to have custody",pos:"exp",lvl:"B1",cat:"social",note:"la garde partagée = shared custody"},
+{fr:"la rupture / la séparation",en:"a breakup",pos:"noun",lvl:"A2",cat:"social",note:"se séparer = to split. se quitter = to quit each other"},
+{fr:"dragueur / dragueuse",en:"a flirt / flirtatious person",pos:"noun",lvl:"B1",cat:"social",note:"draguer = to flirt / hit on someone"},
+{fr:"l'âme sœur",en:"soulmate",pos:"noun",lvl:"B1",cat:"social",note:""},
+{fr:"le conjoint / la conjointe",en:"romantic partner / spouse",pos:"noun",lvl:"B1",cat:"social",note:""},
+{fr:"trahir",en:"to betray",pos:"verb",lvl:"B1",cat:"social",note:"se trahir = to betray yourself"},
+{fr:"se disputer",en:"to argue with each other",pos:"verb",lvl:"A2",cat:"social",note:"une scène de ménage = a domestic argument"},
+{fr:"s'installer",en:"to settle down / move in together",pos:"verb",lvl:"A2",cat:"social",note:""},
+{fr:"la fratrie",en:"siblings (collective noun)",pos:"noun",lvl:"B1",cat:"social",note:""},
+{fr:"la belle-famille",en:"in-laws",pos:"noun",lvl:"A2",cat:"social",note:"le beau-père = father-in-law"},
+{fr:"le neveu / la nièce",en:"nephew / niece",pos:"noun",lvl:"A1",cat:"social",note:""},
+{fr:"faire du bénévolat",en:"to volunteer",pos:"exp",lvl:"B1",cat:"social",note:"un bénévole = a volunteer"},
+{fr:"s'entraider",en:"to help each other",pos:"verb",lvl:"B1",cat:"social",note:""},
+{fr:"la lune de miel",en:"honeymoon",pos:"noun",lvl:"A2",cat:"social",note:"also: le voyage de noces"},
+{fr:"être en deuil",en:"to be grieving",pos:"exp",lvl:"B1",cat:"social",note:"un veuf = widower. une veuve = widow"},
+{fr:"l'enterrement / les obsèques",en:"the funeral",pos:"noun",lvl:"B1",cat:"social",note:"enterrer = to bury. le cimetière = cemetery"},
+{fr:"la bienveillance",en:"kindness / benevolence",pos:"noun",lvl:"B1",cat:"social",note:""},
+{fr:"réussir",en:"to pass / succeed",pos:"verb",lvl:"A2",cat:"school",note:"réussir un examen = to pass a test"},
+{fr:"rater",en:"to fail / to miss",pos:"verb",lvl:"A2",cat:"school",note:"rater le bus = miss. rater examen = fail"},
+{fr:"s'inscrire",en:"to sign up / register",pos:"verb",lvl:"A2",cat:"school",note:""},
+{fr:"la rentrée",en:"back to school (season)",pos:"noun",lvl:"A2",cat:"school",note:""},
+{fr:"un(e) élève",en:"a student (school age)",pos:"noun",lvl:"A1",cat:"school",note:"un/une étudiant(e) = university student"},
+{fr:"un(e) enseignant(e)",en:"a teacher (secondary/university)",pos:"noun",lvl:"A2",cat:"school",note:"le maître / la maîtresse = for young children"},
+{fr:"la matière",en:"a school subject",pos:"noun",lvl:"A2",cat:"school",note:"≠ le matériel (equipment)"},
+{fr:"passer un examen",en:"to take an exam",pos:"exp",lvl:"A2",cat:"school",note:"passer ≠ to pass (réussir = to pass)"},
+{fr:"redoubler",en:"to repeat a school year",pos:"verb",lvl:"B1",cat:"school",note:""},
+{fr:"la filière",en:"major / field of study",pos:"noun",lvl:"B2",cat:"school",note:""},
+{fr:"le tuteur / la tutrice",en:"tutor",pos:"noun",lvl:"B1",cat:"school",note:"le tutorat = tutoring"},
+{fr:"une épreuve",en:"a test section (oral, written)",pos:"noun",lvl:"B1",cat:"school",note:"TEFAQ has multiple épreuves"},
+{fr:"mémoriser",en:"to memorize",pos:"verb",lvl:"B1",cat:"school",note:""},
+{fr:"se concentrer",en:"to focus / concentrate",pos:"verb",lvl:"B1",cat:"school",note:""},
+{fr:"se débrouiller",en:"to manage / get by",pos:"verb",lvl:"A2",cat:"school",note:"je me débrouille au quotidien en français"},
+{fr:"acquérir des compétences",en:"to acquire skills",pos:"exp",lvl:"B1",cat:"school",note:""},
+{fr:"la mairie / l'hôtel de ville",en:"city hall",pos:"noun",lvl:"A2",cat:"city",note:""},
+{fr:"le tribunal",en:"courthouse",pos:"noun",lvl:"B1",cat:"city",note:""},
+{fr:"la caserne de pompiers",en:"fire station",pos:"noun",lvl:"A2",cat:"city",note:"les pompiers = firefighters"},
+{fr:"le gratte-ciel",en:"skyscraper",pos:"noun",lvl:"A2",cat:"city",note:"gratte = scratch, ciel = sky"},
+{fr:"la banlieue",en:"suburb",pos:"noun",lvl:"A2",cat:"city",note:""},
+{fr:"la place",en:"the main square",pos:"noun",lvl:"A1",cat:"city",note:"≠ a place (un endroit/un lieu)"},
+{fr:"un endroit / un lieu",en:"a place",pos:"noun",lvl:"A1",cat:"city",note:"une place = main square (different!)"},
+{fr:"le quartier",en:"the neighborhood",pos:"noun",lvl:"A2",cat:"city",note:""},
+{fr:"le couloir",en:"corridor / hallway",pos:"noun",lvl:"A1",cat:"city",note:""},
+{fr:"traverser",en:"to cross the street",pos:"verb",lvl:"A1",cat:"city",note:""},
+{fr:"l'ascenseur",en:"the elevator",pos:"noun",lvl:"A1",cat:"city",note:"l'escalier = stairs"},
+{fr:"le marché",en:"the market (farmers market)",pos:"noun",lvl:"A1",cat:"city",note:""},
+{fr:"un carrefour",en:"an intersection",pos:"noun",lvl:"A2",cat:"city",note:""},
+{fr:"un panneau de signalisation",en:"a traffic / road sign",pos:"noun",lvl:"A2",cat:"city",note:""},
+{fr:"les piétons",en:"pedestrians",pos:"noun",lvl:"A2",cat:"city",note:"une rue piétonne = pedestrian street"},
+{fr:"l'accueil",en:"the welcome desk / reception",pos:"noun",lvl:"A2",cat:"city",note:"accueillir = to welcome"},
+{fr:"se repérer",en:"to find your way / orient yourself",pos:"verb",lvl:"A2",cat:"city",note:""},
+{fr:"le port",en:"the port / harbor",pos:"noun",lvl:"A1",cat:"city",note:""},
+{fr:"le musée",en:"the museum",pos:"noun",lvl:"A1",cat:"city",note:"visiter une exposition = to visit an exhibition"},
+{fr:"un embouteillage",en:"a traffic jam",pos:"noun",lvl:"A2",cat:"city",note:""},
+{fr:"il y a",en:"ago (specific point) / there is/are",pos:"exp",lvl:"A1",cat:"time",note:"il y a 3 ans = 3 years ago"},
+{fr:"depuis",en:"since / for (ongoing from start)",pos:"prep",lvl:"A2",cat:"time",note:""},
+{fr:"pendant",en:"during / for (period with end)",pos:"prep",lvl:"A2",cat:"time",note:""},
+{fr:"pour",en:"for (future / planned duration)",pos:"prep",lvl:"A2",cat:"time",note:"je pars pour 3 jours"},
+{fr:"en",en:"within (time needed for action)",pos:"prep",lvl:"A2",cat:"time",note:"j'ai fait ça en 10 minutes"},
+{fr:"dès que / aussitôt que",en:"as soon as",pos:"exp",lvl:"A2",cat:"time",note:""},
+{fr:"bientôt",en:"soon",pos:"adv",lvl:"A1",cat:"time",note:""},
+{fr:"tout de suite",en:"right away / immediately",pos:"adv",lvl:"A1",cat:"time",note:""},
+{fr:"auparavant",en:"previously / before (formal)",pos:"adv",lvl:"B1",cat:"time",note:""},
+{fr:"à l'époque",en:"at that time / back then",pos:"exp",lvl:"A2",cat:"time",note:""},
+{fr:"d'habitude",en:"usually",pos:"adv",lvl:"A1",cat:"time",note:"also: généralement"},
+{fr:"parfois / des fois / quelquefois",en:"sometimes",pos:"adv",lvl:"A1",cat:"time",note:""},
+{fr:"soudain / tout à coup",en:"suddenly",pos:"adv",lvl:"A2",cat:"time",note:"passé composé clue word"},
+{fr:"toujours",en:"always OR still",pos:"adv",lvl:"A1",cat:"time",note:"double meaning!"},
+{fr:"encore",en:"again / still / yet",pos:"adv",lvl:"A1",cat:"time",note:"déjà = already"},
+{fr:"désormais",en:"from now on",pos:"adv",lvl:"B2",cat:"time",note:""},
+{fr:"à peine",en:"barely / hardly",pos:"adv",lvl:"B1",cat:"time",note:""},
+{fr:"souvent",en:"often",pos:"adv",lvl:"A1",cat:"time",note:""},
+{fr:"trop",en:"too much / so (with adjective)",pos:"adv",lvl:"A1",cat:"time",note:"trop grand = too tall. si grand = so tall"},
+{fr:"manquer",en:"to miss (REVERSED in French!)",pos:"verb",lvl:"A2",cat:"verbs",note:"elle me manque = I miss her. Subject is the thing missed!"},
+{fr:"se souvenir de / se rappeler",en:"to remember",pos:"verb",lvl:"A2",cat:"verbs",note:"je me souviens / je me rappelle"},
+{fr:"oublier",en:"to forget",pos:"verb",lvl:"A1",cat:"verbs",note:"inoubliable = unforgettable"},
+{fr:"sembler / avoir l'air",en:"to seem / to look like",pos:"verb",lvl:"A2",cat:"verbs",note:"elle a l'air heureuse = she looks happy"},
+{fr:"se tromper",en:"to make a mistake",pos:"verb",lvl:"A2",cat:"verbs",note:"≠ tromper (to cheat on someone)"},
+{fr:"tromper",en:"to cheat / to deceive",pos:"verb",lvl:"A2",cat:"verbs",note:"≠ se tromper (to make a mistake)"},
+{fr:"atteindre",en:"to reach / attain",pos:"verb",lvl:"B1",cat:"verbs",note:"≠ attendre (to wait). Different pronunciation!"},
+{fr:"permettre",en:"to allow / permit",pos:"verb",lvl:"A2",cat:"verbs",note:""},
+{fr:"obtenir",en:"to obtain / get",pos:"verb",lvl:"B1",cat:"verbs",note:""},
+{fr:"craindre",en:"to fear",pos:"verb",lvl:"B1",cat:"verbs",note:""},
+{fr:"prévoir",en:"to plan / foresee",pos:"verb",lvl:"A2",cat:"verbs",note:"planifier = to plan"},
+{fr:"construire",en:"to build / construct",pos:"verb",lvl:"A2",cat:"verbs",note:""},
+{fr:"convaincre",en:"to convince",pos:"verb",lvl:"B1",cat:"verbs",note:""},
+{fr:"appartenir",en:"to belong",pos:"verb",lvl:"B1",cat:"verbs",note:"appartient à = belongs to"},
+{fr:"traduire",en:"to translate",pos:"verb",lvl:"B1",cat:"verbs",note:""},
+{fr:"sourire / rire",en:"to smile / to laugh",pos:"verb",lvl:"A1",cat:"verbs",note:"le sourire = the smile. ri = past participle of rire"},
+{fr:"mentir",en:"to lie",pos:"verb",lvl:"A2",cat:"verbs",note:""},
+{fr:"voler",en:"to fly OR to steal",pos:"verb",lvl:"A2",cat:"verbs",note:"double meaning!"},
+{fr:"lancer",en:"to throw purposefully / launch",pos:"verb",lvl:"A2",cat:"verbs",note:"≠ jeter (throw away)"},
+{fr:"jeter",en:"to throw away / toss out",pos:"verb",lvl:"A1",cat:"verbs",note:"≠ lancer (purposeful)"},
+{fr:"s'ennuyer",en:"to be bored",pos:"verb",lvl:"A2",cat:"verbs",note:"ennuyer = to annoy someone (without se)"},
+{fr:"emprunter",en:"to borrow",pos:"verb",lvl:"A2",cat:"verbs",note:"≠ prêter (to lend)"},
+{fr:"prêter",en:"to lend",pos:"verb",lvl:"A2",cat:"verbs",note:"≠ emprunter (to borrow)"},
+{fr:"raconter",en:"to tell / narrate",pos:"verb",lvl:"A2",cat:"verbs",note:""},
+{fr:"se débarrasser de",en:"to get rid of",pos:"verb",lvl:"B1",cat:"verbs",note:""},
+{fr:"oser",en:"to dare",pos:"verb",lvl:"B1",cat:"verbs",note:""},
+{fr:"plaire",en:"to please / to like",pos:"verb",lvl:"B1",cat:"verbs",note:"ça te plaît? = do you like it?"},
+{fr:"mener",en:"to lead / to drive",pos:"verb",lvl:"B1",cat:"verbs",note:""},
+{fr:"aboyer",en:"to bark (dog)",pos:"verb",lvl:"A2",cat:"verbs",note:"japper = to yip/whine (Quebec)"},
+{fr:"miauler",en:"to meow",pos:"verb",lvl:"A2",cat:"verbs",note:""},
+{fr:"pousser",en:"to push / to grow (plants/teeth)",pos:"verb",lvl:"A1",cat:"verbs",note:"les dents de Teddy poussent"},
+{fr:"glisser",en:"to slide / slip",pos:"verb",lvl:"A2",cat:"verbs",note:""},
+{fr:"secouer",en:"to shake",pos:"verb",lvl:"A2",cat:"verbs",note:""},
+{fr:"interrompre",en:"to interrupt",pos:"verb",lvl:"B1",cat:"verbs",note:""},
+{fr:"assister à",en:"to attend (class/event)",pos:"verb",lvl:"A2",cat:"verbs",note:"≠ aider (to help). FAUX AMI!"},
+{fr:"rejoindre",en:"to join / catch up with",pos:"verb",lvl:"B1",cat:"verbs",note:""},
+{fr:"s'adapter",en:"to adapt",pos:"verb",lvl:"B1",cat:"verbs",note:""},
+{fr:"se balader / se promener",en:"to go for a walk",pos:"verb",lvl:"A1",cat:"verbs",note:"une balade = a walk"},
+{fr:"allumer",en:"to turn on",pos:"verb",lvl:"A1",cat:"verbs",note:"≠ éteindre (turn off)"},
+{fr:"éteindre",en:"to turn off",pos:"verb",lvl:"A1",cat:"verbs",note:"≠ allumer (turn on)"},
+{fr:"augmenter",en:"to increase / raise",pos:"verb",lvl:"A2",cat:"verbs",note:"la hausse = the increase"},
+{fr:"diminuer / baisser",en:"to lower / decrease",pos:"verb",lvl:"A2",cat:"verbs",note:"la baisse = the decrease"},
+{fr:"surveiller",en:"to watch / supervise",pos:"verb",lvl:"A2",cat:"verbs",note:""},
+{fr:"cueillir",en:"to pick fruit/flowers",pos:"verb",lvl:"A2",cat:"verbs",note:""},
+{fr:"avancer",en:"to move forward",pos:"verb",lvl:"A1",cat:"verbs",note:"≠ reculer (to move backward)"},
+{fr:"reculer",en:"to move backward / step back",pos:"verb",lvl:"A1",cat:"verbs",note:"≠ avancer"},
+{fr:"tirer",en:"to pull / to shoot",pos:"verb",lvl:"A2",cat:"verbs",note:""},
+{fr:"peindre",en:"to paint",pos:"verb",lvl:"A2",cat:"verbs",note:""},
+{fr:"durer",en:"to last",pos:"verb",lvl:"A1",cat:"verbs",note:"ça dure combien de temps?"},
+{fr:"remercier",en:"to thank someone",pos:"verb",lvl:"A1",cat:"verbs",note:"from merci"},
+{fr:"saluer",en:"to greet someone",pos:"verb",lvl:"A1",cat:"verbs",note:""},
+{fr:"se retrouver",en:"to meet up again",pos:"verb",lvl:"A2",cat:"verbs",note:""},
+{fr:"envisager",en:"to consider / envision",pos:"verb",lvl:"B1",cat:"verbs",note:""},
+{fr:"se taire",en:"to be silent / stop talking",pos:"verb",lvl:"A2",cat:"verbs",note:""},
+{fr:"réagir",en:"to react",pos:"verb",lvl:"B1",cat:"verbs",note:""},
+{fr:"décéder",en:"to die (formal)",pos:"verb",lvl:"B1",cat:"verbs",note:"décès = death (noun). est décédée = deceased"},
+{fr:"s'effondrer",en:"to collapse",pos:"verb",lvl:"B1",cat:"verbs",note:"être abattu = to be devastated"},
+{fr:"se rendre compte de",en:"to realize",pos:"verb",lvl:"B1",cat:"verbs",note:""},
+{fr:"se blottir",en:"to snuggle / cuddle up",pos:"verb",lvl:"B1",cat:"verbs",note:""},
+{fr:"revenir / retourner / rentrer",en:"come back / go back / return home",pos:"verb",lvl:"A2",cat:"verbs",note:"revenir = toward speaker. retourner = to another place. rentrer = go home"},
+{fr:"avoir l'air + adj",en:"to look / seem + adjective",pos:"exp",lvl:"A2",cat:"idioms",note:"Rachel a l'air heureuse = Rachel looks happy"},
+{fr:"faire confiance à",en:"to trust",pos:"exp",lvl:"A2",cat:"idioms",note:"je lui fais confiance"},
+{fr:"du coup",en:"so / as a result",pos:"exp",lvl:"A2",cat:"idioms",note:"very common in spoken French"},
+{fr:"de plus en plus",en:"more and more",pos:"exp",lvl:"A2",cat:"idioms",note:"de moins en moins = less and less"},
+{fr:"péter les plombs",en:"to blow a fuse / lose it",pos:"exp",lvl:"A2",cat:"idioms",note:"les plombs = circuit breaker"},
+{fr:"par hasard",en:"by chance",pos:"exp",lvl:"A1",cat:"idioms",note:""},
+{fr:"comme d'habitude",en:"as usual",pos:"exp",lvl:"A1",cat:"idioms",note:"comme d'hab = casual shortening"},
+{fr:"avoir lieu",en:"to take place / happen",pos:"exp",lvl:"A2",cat:"idioms",note:"le cours a lieu le matin"},
+{fr:"en vouloir à quelqu'un",en:"to blame / hold a grudge",pos:"exp",lvl:"B1",cat:"idioms",note:""},
+{fr:"ça fait un bien fou",en:"it feels amazingly good",pos:"exp",lvl:"B1",cat:"idioms",note:""},
+{fr:"en parlant du loup",en:"speak of the devil",pos:"exp",lvl:"B1",cat:"idioms",note:"loup = wolf"},
+{fr:"je me suis emmêlé les pinceaux",en:"I got confused / mixed up",pos:"exp",lvl:"B1",cat:"idioms",note:"pinceaux = brushes"},
+{fr:"ça te dirait de",en:"would you like to / would you fancy",pos:"exp",lvl:"B1",cat:"idioms",note:"more polite than tu veux"},
+{fr:"garder la pêche",en:"to stay in good spirits",pos:"exp",lvl:"B1",cat:"idioms",note:"j'ai la patate! = I'm full of energy!"},
+{fr:"faire d'une pierre deux coups",en:"kill two birds with one stone",pos:"exp",lvl:"B1",cat:"idioms",note:""},
+{fr:"faire l'autruche",en:"to put your head in the sand",pos:"exp",lvl:"B1",cat:"idioms",note:"l'autruche = ostrich"},
+{fr:"à voix haute",en:"out loud / aloud",pos:"exp",lvl:"A2",cat:"idioms",note:""},
+{fr:"au moins",en:"at least",pos:"exp",lvl:"A1",cat:"idioms",note:""},
+{fr:"pas du tout",en:"not at all",pos:"exp",lvl:"A1",cat:"idioms",note:""},
+{fr:"au lieu de",en:"instead of",pos:"exp",lvl:"A2",cat:"idioms",note:"au lieu de + infinitive"},
+{fr:"mieux vaut tard que jamais",en:"better late than never",pos:"exp",lvl:"A2",cat:"idioms",note:""},
+{fr:"ça tombe mal",en:"bad timing / that's unfortunate",pos:"exp",lvl:"B1",cat:"idioms",note:""},
+{fr:"recommencer à zéro",en:"to start over",pos:"exp",lvl:"A2",cat:"idioms",note:""},
+{fr:"de la part de",en:"from someone",pos:"exp",lvl:"A2",cat:"idioms",note:"un cadeau de la part de Rachel = a gift from Rachel"},
+{fr:"avoir les larmes aux yeux",en:"to have watery eyes / be about to cry",pos:"exp",lvl:"B1",cat:"idioms",note:""},
+{fr:"en rupture de stock",en:"sold out",pos:"exp",lvl:"B1",cat:"idioms",note:"épuisé = also means sold out"},
+{fr:"faire un virement",en:"to make a bank transfer",pos:"exp",lvl:"B1",cat:"idioms",note:""},
+{fr:"à cause de / grâce à",en:"because of (negative) / thanks to (positive)",pos:"exp",lvl:"A2",cat:"idioms",note:"both followed by a noun"},
+{fr:"c'est pour ça que",en:"that's why",pos:"exp",lvl:"A2",cat:"idioms",note:"donc = so (written). alors = so (spoken)"},
+{fr:"au fait",en:"by the way",pos:"exp",lvl:"A2",cat:"idioms",note:"d'ailleurs = by the way (slightly different)"},
+{fr:"ça dépend",en:"it depends",pos:"exp",lvl:"A1",cat:"idioms",note:""},
+{fr:"avoir l'habitude de",en:"to be used to / used to do",pos:"exp",lvl:"A2",cat:"idioms",note:""},
+{fr:"le déclic",en:"the moment things click in your mind",pos:"noun",lvl:"B1",cat:"idioms",note:""},
+{fr:"afin de",en:"in order to (formal)",pos:"exp",lvl:"B1",cat:"idioms",note:"pour = less formal equivalent"},
+{fr:"puisque",en:"since / given that / because",pos:"exp",lvl:"B1",cat:"idioms",note:"more formal than parce que"},
+{fr:"télécharger",en:"to download",pos:"verb",lvl:"A2",cat:"media",note:""},
+{fr:"raccrocher",en:"to hang up the phone",pos:"verb",lvl:"A2",cat:"media",note:"décrocher = to pick up"},
+{fr:"décrocher",en:"to pick up the phone",pos:"verb",lvl:"A2",cat:"media",note:"raccrocher = to hang up"},
+{fr:"le clavardage",en:"online chat (Quebec)",pos:"noun",lvl:"B1",cat:"media",note:""},
+{fr:"l'égoportrait",en:"a selfie (Quebec)",pos:"noun",lvl:"A2",cat:"media",note:""},
+{fr:"le magasinage",en:"shopping (Quebec)",pos:"noun",lvl:"A2",cat:"media",note:"faire du magasinage"},
+{fr:"divulgâcher",en:"to spoil a movie ending (Quebec)",pos:"verb",lvl:"B1",cat:"media",note:"divulguer + gâcher"},
+{fr:"le logiciel",en:"software",pos:"noun",lvl:"B1",cat:"media",note:""},
+{fr:"en direct",en:"live (broadcast)",pos:"exp",lvl:"A2",cat:"media",note:"≠ en différé (recorded)"},
+{fr:"une publicité / une pub",en:"an advertisement",pos:"noun",lvl:"A1",cat:"media",note:""},
+{fr:"les réseaux sociaux",en:"social media",pos:"noun",lvl:"A2",cat:"media",note:""},
+{fr:"une capture d'écran",en:"a screenshot",pos:"noun",lvl:"A2",cat:"media",note:""},
+{fr:"un fichier / un dossier",en:"a file / a folder",pos:"noun",lvl:"A2",cat:"media",note:""},
+{fr:"l'informatique",en:"IT / computing",pos:"noun",lvl:"B1",cat:"media",note:""},
+{fr:"le numérique",en:"the digital world",pos:"noun",lvl:"B1",cat:"media",note:""},
+{fr:"la presse",en:"the press / newspapers / media sector",pos:"noun",lvl:"B1",cat:"media",note:"la revue = a magazine. une rubrique = a section"},
+{fr:"le JT (journal télévisé)",en:"the TV news / evening news",pos:"noun",lvl:"B1",cat:"media",note:"passe à 20 heures = broadcast at 8pm"},
+{fr:"des infox",en:"fake news",pos:"noun",lvl:"B1",cat:"media",note:"un doublage = dubbing"},
+{fr:"abonner / se désabonner",en:"to subscribe / unsubscribe",pos:"verb",lvl:"A2",cat:"media",note:"un abonnement = a subscription"},
+{fr:"barbu",en:"bearded",pos:"adj",lvl:"B1",cat:"appearance",note:"une barbe = a beard"},
+{fr:"chauve",en:"completely bald",pos:"adj",lvl:"B1",cat:"appearance",note:"dégarni = going bald"},
+{fr:"rond(e)",en:"round / a nicer way to say overweight",pos:"adj",lvl:"B1",cat:"appearance",note:""},
+{fr:"costaud(e)",en:"boxy / built body type",pos:"adj",lvl:"B1",cat:"appearance",note:""},
+{fr:"musclé(e)",en:"muscular",pos:"adj",lvl:"B1",cat:"appearance",note:""},
+{fr:"sec / sèche",en:"scrawny / skin and bones",pos:"adj",lvl:"B1",cat:"appearance",note:"also: dry"},
+{fr:"âgé(e)",en:"elderly / old (polite)",pos:"adj",lvl:"A2",cat:"appearance",note:"≠ vieux/vieille (run-down old)"},
+{fr:"la mine",en:"the face / look / complexion",pos:"noun",lvl:"B1",cat:"appearance",note:"tu as bonne mine = you look good"},
+{fr:"le sosie",en:"the lookalike",pos:"noun",lvl:"B1",cat:"appearance",note:"être le sosie de = to be the lookalike of"},
+{fr:"défiler",en:"to walk the runway",pos:"verb",lvl:"B1",cat:"appearance",note:"le mannequin = the model"},
+{fr:"ressembler à",en:"to look like / resemble",pos:"verb",lvl:"A1",cat:"appearance",note:"Maddie ressemble à Rachel"},
+{fr:"peser",en:"to weigh",pos:"verb",lvl:"A2",cat:"appearance",note:""},
+];
+
+const FAUX=[
+{word:"actuellement",fr:"currently / at the moment",ew:"actually",c:"en fait = actually",w:"Actuellement ≠ actually! It means RIGHT NOW. En fait = actually."},
+{word:"rester",fr:"to stay",ew:"to rest",c:"se reposer = to rest",w:"Rester = to STAY. 'Je reste ici' = I'm staying here. Se reposer = to REST."},
+{word:"assister à",fr:"to attend / to come to",ew:"to assist / help",c:"aider = to help",w:"Assister à = to ATTEND (a class, event). Aider = to help."},
+{word:"attendre",fr:"to wait",ew:"to attend",c:"assister à = to attend",w:"Attendre = to WAIT. To attend = assister à."},
+{word:"atteindre vs attendre",fr:"to reach vs to wait",ew:"same-sounding, opposite meanings",c:"atteindre = reach. attendre = wait",w:"SOUND-ALIKE TRAP! 'ah-TAN-druh' = reach. 'ah-TON-druh' = wait. Different pronunciation!"},
+{word:"décoller",fr:"to take off (plane)",ew:"to land",c:"atterrir = to land",w:"CLASSIC TRAP! Décoller = take off. Atterrir = land. Don't mix them up!"},
+{word:"passer un examen",fr:"to take / sit an exam",ew:"to pass an exam",c:"réussir = to pass. rater = to fail",w:"Passer = to TAKE the exam. Réussir = to PASS. Rater = to FAIL. Three different verbs!"},
+{word:"la cave",fr:"the cellar (underground)",ew:"a cave",c:"une grotte = a natural cave",w:"La cave = cellar underground. Une grotte = a natural cave."},
+{word:"sensible",fr:"sensitive (emotionally)",ew:"sensible (reasonable)",c:"raisonnable = sensible/reasonable",w:"Sensible = SENSITIVE. Raisonnable = sensible/reasonable."},
+{word:"sympathique / sympa",fr:"nice / friendly",ew:"sympathetic",c:"compatissant = sympathetic",w:"Sympathique = nice, friendly. Compatissant = sympathetic (feeling sorry for someone)."},
+{word:"un médecin / la médecine",fr:"a doctor / medicine (the field)",ew:"a medicine (drug)",c:"un médicament = a drug/medication",w:"Un médecin = DOCTOR. Un médicament = medication. La médecine = the field of medicine."},
+{word:"une librairie",fr:"a bookstore",ew:"a library",c:"une bibliothèque = a library",w:"Une librairie = BOOKSTORE (you buy). Une bibliothèque = library (you borrow)."},
+{word:"ancien / ancienne",fr:"former / old (positive connotation)",ew:"ancient",c:"antique / vieux = ancient/old",w:"Ancien = FORMER (mon ancien patron) or nicely old. Vieux = run-down old."},
+{word:"la journée",fr:"the (whole) day",ew:"journey",c:"un voyage / un trajet = a journey",w:"La journée = a DAY. Un voyage / trajet = a journey/trip."},
+{word:"éventuellement",fr:"possibly / perhaps",ew:"eventually",c:"finalement / à terme = eventually",w:"Éventuellement = POSSIBLY. Finalement / à terme = eventually (in the end)."},
+{word:"formidable",fr:"amazing / wonderful (very positive!)",ew:"formidable (scary/impressive)",c:"impressionnant = formidable",w:"Formidable in French = WONDERFUL, amazing! Very positive."},
+{word:"prétendre",fr:"to claim / to assert",ew:"to pretend",c:"faire semblant = to pretend",w:"Prétendre = to CLAIM. Faire semblant = to pretend/act."},
+{word:"le collège",fr:"middle school / junior high",ew:"college (university)",c:"l'université / la fac = college",w:"Le collège = MIDDLE SCHOOL (ages 11-14 in France). L'université = college."},
+{word:"à côté de",fr:"next to",ew:"at the coast",c:"sur la côte = at the coast",w:"À côté de = NEXT TO. Sur la côte = at the coast. One accent makes a big difference!"},
+{word:"avoir envie de",fr:"to want to / feel like",ew:"to envy",c:"envier = to envy",w:"Avoir envie de = to WANT or feel like. Envier = to envy."},
+{word:"jouir",fr:"to enjoy (formal) / to orgasm",ew:"to play",c:"jouer = to play",w:"CRITICAL TRAP from your notes with Camille! Jouir ≠ jouer. 'Nous jouions' = we played. 'Nous jouissions' = COMPLETELY DIFFERENT! Never confuse these."},
+{word:"une place",fr:"the main square / a seat",ew:"a place",c:"un endroit / un lieu = a place",w:"Une place = main square OR a seat/space. General 'place' = un endroit / un lieu."},
+{word:"devenir vs deviner",fr:"devenir = to become / deviner = to guess",ew:"look almost identical",c:"je deviens = I become. je devine = I guess",w:"Only 2 letters different! Elle est devenue (she became) vs elle a deviné (she guessed)."},
+{word:"s'ennuyer vs ennuyer",fr:"s'ennuyer = bored / ennuyer = to annoy",ew:"look identical",c:"je m'ennuie = I'm bored. ça m'ennuie = it annoys me",w:"The reflexive 'se' changes the meaning completely!"},
+{word:"une bague / des bagues",fr:"a ring (jewelry) / dental braces",ew:"a bag",c:"un sac = a bag",w:"Une bague = ring. Des bagues = DENTAL BRACES (Quebec). Un sac = a bag."},
+{word:"visiter vs rendre visite à",fr:"visiter = place / rendre visite = person",ew:"using visiter for people",c:"Je visite Paris. Je rends visite à ma mère.",w:"NEVER use visiter for people! Visiter = places ONLY. Rendre visite à = people."},
+{word:"la pêche",fr:"peach (fruit) OR fishing (sport)",ew:"peace",c:"la paix = peace",w:"La pêche has TWO meanings: the fruit (peach) and the sport (fishing). Context is key!"},
+{word:"une moule vs un moule",fr:"une moule = mussels / un moule = baking pan",ew:"same word — different gender, different meaning",c:"une moule = mussels. un moule = a cake mold",w:"GENDER CHANGES MEANING! Une moule = seafood mussels. Un moule = a baking mold. Don't confuse them in the kitchen!"},
+];
+
+const SYN=[
+{theme:"Ways to say 'to want'",main:"vouloir",words:["vouloir","avoir envie de (feel like — casual)","souhaiter (wish — formal)","désirer (desire)","tenir à (really care about)"],note:"Avoir envie de = casual feel like. Souhaiter/désirer = formal. Tenir à = to really want/care about."},
+{theme:"'To know' — savoir vs connaître",main:"savoir / connaître",words:["savoir (knowledge / how to do something)","connaître (person/place/situation)"],note:"NEVER swap! Savoir = factual knowledge or HOW to do something. Connaître = knowing a person or being familiar with something."},
+{theme:"'Good' — bon vs bien vs beau",main:"bon / bien / beau",words:["bon/bonne (taste, quality, weather)","bien (adverb — action done well)","beau/belle (visual beauty)","magnifique / superbe","succulent (food)","formidable (positive!)"],note:"Bon = taste: 'c'est bon', 'il fait bon'. Bien = adverb: 'il joue bien'. NEVER use 'bien' for food or weather. Never say 'plus bien' — use 'mieux'."},
+{theme:"'Bad' — mauvais vs mal vs pire",main:"mauvais / mal",words:["mauvais/mauvaise (taste, quality, weather)","mal (behavior, morals, adverb)","pire (worse/worst)","médiocre","affreux / horrible"],note:"Mauvais = bad taste or quality. Mal = bad behavior. Pire = worse/worst. Use mieux (not plus bien) for 'better'."},
+{theme:"Ways to say 'to meet'",main:"rencontrer",words:["rencontrer (first time ever)","voir (see someone you know)","retrouver (meet up again)","se retrouver (meet each other again)","faire connaissance (get to know)","se rencontrer (first time, both together)"],note:"Rencontrer = FIRST TIME EVER. After that, use voir. Retrouver = to see again. Faire connaissance = to get to know each other."},
+{theme:"Ways to say 'to move'",main:"bouger",words:["bouger (general movement)","déménager (move out of home)","emménager (move into home)","se déplacer (travel/commute)","s'installer (settle down)","déplacer (move an object)","reculer (step back)","avancer (step forward)"],note:"Déménager ≠ emménager! Déménager = move out. Emménager = move in. S'installer = settle/set up life."},
+{theme:"Words for 'work / job'",main:"travail",words:["un travail","un emploi","un métier (trade/calling)","un poste (specific position)","une profession","un boulot (slang)"],note:"All mean job but: métier = trade/craft/calling. Poste = specific company position. Boulot = informal slang."},
+{theme:"'Old' — vieux vs ancien vs âgé",main:"vieux / ancien",words:["vieux/vieille (run-down/negatively old)","ancien/ancienne (former or nicely old)","âgé(e) (polite for elderly)","antique (ancient/antique)"],note:"Vieux can sound negative. Ancien = FORMER (mon ancien patron) or nicely old. Âgé = polite for elderly."},
+{theme:"Ways to say 'to clean'",main:"nettoyer",words:["nettoyer (to clean)","ranger (to tidy/put away)","laver (to wash)","passer l'aspirateur (vacuum)","faire le ménage (housework)","passer la serpillière (mop)","balayer (sweep)"],note:"Ranger ≠ nettoyer! Ranger = putting things back. Nettoyer = making something clean."},
+{theme:"'Only' in French",main:"seulement / ne…que",words:["seulement (affirmative)","juste (casual)","uniquement (formal)","ne…que (restriction structure)","ne…pas que (NOT ONLY)"],note:"Ne…que: ne before verb, que before the limited thing. NOT ONLY = ne…pas que. NOT ANYMORE = ne…plus (different!)."},
+{theme:"Lend vs. Borrow",main:"prêter / emprunter",words:["prêter (to lend — YOU give)","emprunter (to borrow — YOU take)"],note:"Prêter = lender's action. Emprunter = borrower's action. 'Je prête mon vélo à Marie' = I lend my bike. 'Marie emprunte mon vélo' = Marie borrows."},
+{theme:"'To throw' — jeter vs lancer",main:"jeter / lancer",words:["jeter (throw away / toss out)","lancer (throw purposefully / launch)"],note:"Jeter = throw away (aux poubelles). Lancer = throw with intent (lancer une balle, lancer une startup)."},
+{theme:"Ways to look like / seem",main:"ressembler / avoir l'air",words:["ressembler à (physical resemblance)","avoir l'air + adj (to seem/look)","paraître (to appear/seem — formal)","sembler (to seem)","être le sosie de (lookalike)"],note:"Ressembler à = physical. Avoir l'air = how someone seems. Paraître/sembler = more formal."},
+{theme:"'To feel' — se sentir vs sentir vs ressentir",main:"se sentir / ressentir",words:["se sentir (how you feel — je me sens bien)","sentir (to smell — ça sent bon)","ressentir (to feel deeply / empathize)","éprouver (to experience — formal)"],note:"Se sentir = how you feel. Sentir = to smell. Ressentir = to deeply feel. Éprouver = formal."},
+{theme:"Words for 'to save'",main:"sauver / enregistrer",words:["sauver (to save a person/the planet)","enregistrer (to save data/files)","économiser (to save money)","garder (to keep/save for later)"],note:"Sauver ≠ enregistrer. 'Sauve le fichier' = WRONG — use 'enregistre le fichier'. Sauver = rescue."},
+{theme:"Visiter vs rendre visite à",main:"visiter / rendre visite",words:["visiter (a place — museum, city, country)","rendre visite à (a person)","se rendre à (go to a place — formal)"],note:"CRITICAL: NEVER use visiter for people! Visiter = places ONLY. Rendre visite à = people."},
+{theme:"Manquer — the REVERSED 'to miss'",main:"manquer",words:["il me manque (I miss him)","elle me manque (I miss her)","tu me manques (I miss you)","ça me manque (I miss it)"],note:"REVERSED LOGIC! 'Il me manque' literally = 'he is missing to me'. The subject IS the thing missed, me/te/lui is the person doing the missing."},
+{theme:"Entendre vs écouter vs s'entendre",main:"entendre / écouter",words:["entendre (to hear — passive)","écouter (to listen — active choice)","s'entendre avec (to get along with)"],note:"Entendre = to hear (happens automatically). Écouter = active listening. S'entendre = to get along: 'on s'entend bien'."},
+{theme:"Revenir / retourner / rentrer",main:"revenir",words:["revenir (come back — toward speaker)","retourner (go back — to another place)","rentrer (return home)"],note:"Revenir = toward where you currently are. Retourner = going back somewhere else. Rentrer = specifically going home."},
+{theme:"Décéder / mourir — ways to say 'to die'",main:"mourir",words:["mourir (to die — general)","décéder (to die — formal/official)","perdre quelqu'un (to lose someone)","s'éteindre (to go out — poetic)"],note:"Décéder is formal/administrative. Mourir is general. S'éteindre = to go out like a flame (poetic)."},
+];
+
+function showTab(n){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['vocab','cards','faux','syn'][i]===n));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+n).classList.add('active');
+}
+
+function rv(){
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  const cat=document.getElementById('fc').value;
+  const pos=document.getElementById('fp').value;
+  const lvl=document.getElementById('fl').value;
+  const f=V.filter(v=>{
+    if(cat&&v.cat!==cat)return false;
+    if(pos&&v.pos!==pos)return false;
+    if(lvl&&v.lvl!==lvl)return false;
+    if(q&&!v.fr.toLowerCase().includes(q)&&!v.en.toLowerCase().includes(q)&&!(v.note||'').toLowerCase().includes(q))return false;
+    return true;
+  });
+  document.getElementById('cnt').textContent=f.length+' words';
+  document.getElementById('tbody').innerHTML=f.map(v=>`<tr>
+    <td class="fw">${v.fr}</td>
+    <td class="ew">${v.en}</td>
+    <td><span class="pb ${PC[v.pos]}">${PL[v.pos]}</span></td>
+    <td><span class="lb ${v.lvl}">${v.lvl}</span></td>
+    <td class="nw">${v.note||''}</td>
+  </tr>`).join('');
+}
+
+function loadCards(){
+  const cat=document.getElementById('xcat').value;
+  const lvl=document.getElementById('xlvl').value;
+  cards=V.filter(v=>(!cat||v.cat===cat)&&(!lvl||v.lvl===lvl));
+  ci=0;flipped=false;
+  document.getElementById('ci').classList.remove('flipped');
+  sc();
+}
+
+function sc(){
+  if(!cards.length)return;
+  const c=cards[ci];
+  document.getElementById('cfr').textContent=c.fr;
+  document.getElementById('cen').textContent=c.en;
+  document.getElementById('cnote').textContent=c.note||'';
+  document.getElementById('cm1').textContent=PL[c.pos]+' · '+c.lvl+' · '+c.cat;
+  document.getElementById('cm2').textContent=PL[c.pos]+' · '+c.lvl;
+  document.getElementById('prog').textContent=`Card ${ci+1} of ${cards.length}`;
+  flipped=false;document.getElementById('ci').classList.remove('flipped');
+}
+
+function flip(){flipped=!flipped;document.getElementById('ci').classList.toggle('flipped',flipped);}
+function next(){ci=(ci+1)%cards.length;sc();}
+function prev(){ci=(ci-1+cards.length)%cards.length;sc();}
+function shuf(){for(let i=cards.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cards[i],cards[j]]=[cards[j],cards[i]];}ci=0;sc();}
+
+function buildFaux(){
+  document.getElementById('faux-grid').innerHTML=FAUX.map(f=>`<div class="fc">
+    <div class="fh"><span class="fword">${f.word}</span><span class="ftag">Faux ami</span></div>
+    <div class="fb">
+      <div class="fr"><span class="fl">Means:</span><span class="fv" style="font-weight:600">${f.fr}</span></div>
+      <div class="fr"><span class="fl">NOT:</span><span class="fv" style="color:#A32D2D">${f.ew}</span></div>
+      <div class="fr"><span class="fl">Instead:</span><span class="fv">${f.c}</span></div>
+      ${f.w?`<div class="fw3">${f.w}</div>`:''}
+    </div>
+  </div>`).join('');
+}
+
+function buildSyn(){
+  document.getElementById('syn-content').innerHTML=`<p class="sl">Synonyms & confusable groups</p>
+  <div class="sg">${SYN.map(s=>`<div class="sc">
+    <h4>${s.theme}</h4>
+    <div class="chips">${s.words.map((w,i)=>`<span class="chip${i===0?' m':''}">${w}</span>`).join('')}</div>
+    ${s.note?`<div class="sn">${s.note}</div>`:''}
+  </div>`).join('')}</div>`;
+}
+
+rv();buildFaux();buildSyn();loadCards();
+</script>
+</body>
+</html>
