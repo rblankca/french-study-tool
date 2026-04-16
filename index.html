@@ -64,6 +64,12 @@ h1 span{font-size:13px;font-weight:400;color:#888;margin-left:8px}
 .prog{font-size:12px;color:#888}
 .cc{display:flex;gap:8px;align-items:center;margin-bottom:1rem;flex-wrap:wrap}
 .cc select{font-size:13px;padding:7px 11px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#111}
+.gm-level{margin-bottom:2rem}
+.gm-label{font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
+.gm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.gm-card{background:#fff;border:1px solid #eee;border-radius:12px;padding:.9rem 1rem;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.gm-card h4{font-size:14px;font-weight:600;margin:.45rem 0 .3rem;color:#111}
+.gm-card p{font-size:12px;color:#888;line-height:1.5;margin:0}
 </style>
 </head>
 <body>
@@ -74,6 +80,7 @@ h1 span{font-size:13px;font-weight:400;color:#888;margin-left:8px}
   <button class="tab" onclick="showTab('cards')">🃏 Flashcards</button>
   <button class="tab" onclick="showTab('faux')">⚠️ Faux Amis</button>
   <button class="tab" onclick="showTab('syn')">🔄 Synonyms & Confusables</button>
+  <button class="tab" onclick="showTab('grammar')">📖 Grammar Topics</button>
 </div>
 
 <!-- ALL VOCABULARY -->
@@ -188,6 +195,11 @@ h1 span{font-size:13px;font-weight:400;color:#888;margin-left:8px}
 <!-- SYNONYMS -->
 <div class="section" id="sec-syn">
   <div id="syn-content"></div>
+</div>
+
+<!-- GRAMMAR TOPICS -->
+<div class="section" id="sec-grammar">
+  <div id="grammar-content"></div>
 </div>
 
 <script>
@@ -804,11 +816,6 @@ const SYN=[
 {theme:"Décéder / mourir — ways to say 'to die'",main:"mourir",words:["mourir (to die — general)","décéder (to die — formal/official)","perdre quelqu'un (to lose someone)","s'éteindre (to go out — poetic)"],note:"Décéder is formal/administrative. Mourir is general. S'éteindre = to go out like a flame (poetic)."},
 ];
 
-function showTab(n){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['vocab','cards','faux','syn'][i]===n));
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.getElementById('sec-'+n).classList.add('active');
-}
 
 function rv(){
   const q=document.getElementById('search').value.toLowerCase().trim();
@@ -879,7 +886,55 @@ function buildSyn(){
   </div>`).join('')}</div>`;
 }
 
-rv();buildFaux();buildSyn();loadCards();
+const GRAMMAR=[
+{level:"A1",name:"Foundations",topics:[
+  {title:"Présent de l'indicatif",desc:"Regular & irregular conjugations"},
+  {title:"La négation",desc:"Ne...pas and negative structures"},
+  {title:"Articles & gender",desc:"Le, la, un, une, du, de la…"},
+  {title:"Adjectifs possessifs",desc:"Mon, ma, mes — my, your, his/her…"},
+  {title:"Adjectifs démonstratifs",desc:"Ce, cet, cette, ces — this/these"},
+]},
+{level:"A2",name:"Intermediate",topics:[
+  {title:"Passé composé",desc:"Completed past — j'ai mangé, je suis allé(e)"},
+  {title:"L'imparfait",desc:"Habits, descriptions & background past"},
+  {title:"Futur proche & futur simple",desc:"Going to vs will"},
+  {title:"Conditionnel présent",desc:"Would — polite requests, wishes, advice"},
+  {title:"COD & COI pronouns",desc:"Direct & indirect object pronouns"},
+  {title:"Pronoms relatifs",desc:"Qui, que, où, dont"},
+  {title:"L'impératif",desc:"Commands and instructions"},
+]},
+{level:"B1",name:"Upper Intermediate",topics:[
+  {title:"Le subjonctif présent",desc:"Wishes, necessity, doubt, emotion + QUE"},
+  {title:"Le plus-que-parfait",desc:"Had done — action before another past"},
+  {title:"Discours indirect",desc:"Reported speech — she said that…"},
+  {title:"Le gérondif",desc:"En + verb-ant — while doing / by doing"},
+]},
+{level:"B2",name:"Advanced",topics:[
+  {title:"La condition avec si",desc:"If…then — three levels of probability"},
+  {title:"Concession & restriction",desc:"Although, despite, only — contrast & limits"},
+]},
+];
+
+function buildGrammar(){
+  document.getElementById('grammar-content').innerHTML=GRAMMAR.map(g=>`
+  <div class="gm-level">
+    <div class="gm-label">${g.level} — ${g.name.toUpperCase()}</div>
+    <div class="gm-grid">${g.topics.map(t=>`<div class="gm-card">
+      <span class="lb ${g.level}">${g.level}</span>
+      <h4>${t.title}</h4>
+      <p>${t.desc}</p>
+    </div>`).join('')}</div>
+  </div>`).join('');
+}
+
+function showTab(n){
+  const keys=['vocab','cards','faux','syn','grammar'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',keys[i]===n));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+n).classList.add('active');
+}
+
+rv();buildFaux();buildSyn();loadCards();buildGrammar();
 </script>
 </body>
 </html>
