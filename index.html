@@ -1,212 +1,41 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>French Vocabulary Tool — Rachel</title>
+<title>French Study Tool — Rachel</title>
+<link href="https://cdn.jsdelivr.net/npm/daisyui@4/dist/full.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
-body{background:#fafafa;color:#111;padding:1rem}
-h1{font-size:20px;font-weight:600;margin-bottom:1rem;color:#111}
-h1 span{font-size:13px;font-weight:400;color:#888;margin-left:8px}
-.tabs{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
-.tab{padding:7px 16px;border-radius:20px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:13px;color:#555;transition:all .15s}
-.tab.active{background:#111;color:#fff;border-color:#111;font-weight:500}
-.section{display:none}.section.active{display:block}
-.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
-.controls select,.controls input{font-size:13px;padding:7px 11px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#111}
-.controls input{flex:1;min-width:150px}
-.badge{font-size:12px;color:#888;white-space:nowrap}
-.tbl-wrap{overflow-x:auto;max-height:60vh;overflow-y:auto;border:1px solid #eee;border-radius:10px}
-.tbl{width:100%;border-collapse:collapse;font-size:13px}
-.tbl th{text-align:left;font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.07em;padding:8px 10px;border-bottom:1px solid #eee;background:#f9f9f9;position:sticky;top:0;z-index:1}
-.tbl td{padding:8px 10px;border-bottom:1px solid #f0f0f0;vertical-align:top}
-.tbl tr:last-child td{border-bottom:none}
-.tbl tr:hover td{background:#f9f9f9}
-.fw{font-weight:500;min-width:140px}
-.ew{color:#444;min-width:160px}
-.nw{color:#888;font-size:12px;font-style:italic}
-.pb{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;white-space:nowrap;display:inline-block}
-.noun{background:#E6F1FB;color:#185FA5}.verb{background:#EEEDFE;color:#534AB7}.adj{background:#EAF3DE;color:#3B6D11}.adv{background:#FAECE7;color:#993C1D}.exp{background:#FAEEDA;color:#854F0B}.prep{background:#FCEBEB;color:#A32D2D}
-.lb{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;white-space:nowrap;display:inline-block}
-.A1{background:#EAF3DE;color:#3B6D11}.A2{background:#E6F1FB;color:#185FA5}.B1{background:#EEEDFE;color:#534AB7}.B2{background:#FAECE7;color:#993C1D}
-.fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
-.fc{background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.fh{background:#FCEBEB;padding:.65rem 1rem;display:flex;align-items:center;gap:8px}
-.fword{font-weight:600;font-size:14px;color:#A32D2D}
-.ftag{font-size:10px;background:#F7C1C1;color:#A32D2D;padding:2px 7px;border-radius:10px;font-weight:600}
-.fb{padding:.8rem 1rem}
-.fr{display:flex;gap:8px;margin-bottom:5px;font-size:13px;align-items:flex-start}
-.fl{font-size:10px;font-weight:700;text-transform:uppercase;color:#888;min-width:52px;padding-top:2px;flex-shrink:0}
-.fv{color:#111;line-height:1.5}
-.fw3{background:#FCEBEB;border-left:3px solid #E24B4A;padding:.5rem .75rem;font-size:12px;color:#A32D2D;margin-top:8px;border-radius:0 8px 8px 0;line-height:1.5}
-.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
-.sc{background:#fff;border:1px solid #eee;border-radius:12px;padding:.9rem 1rem;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.sc h4{font-size:13px;font-weight:600;margin-bottom:.5rem}
-.chips{display:flex;flex-wrap:wrap;gap:5px}
-.chip{font-size:12px;padding:3px 10px;border-radius:20px;border:1px solid #ddd;color:#555;background:#fff}
-.chip.m{background:#f0f0f0;font-weight:600;color:#111}
-.sn{font-size:12px;color:#888;margin-top:7px;line-height:1.5}
-.sl{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.07em;margin:1.25rem 0 .6rem}
-.cw{perspective:1000px;height:185px;cursor:pointer;margin-bottom:1rem}
-.ci{position:relative;width:100%;height:100%;transition:transform .4s;transform-style:preserve-3d}
-.ci.flipped{transform:rotateY(180deg)}
-.cf{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;border:1px solid #eee;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.cf.front{background:#fff}
-.cf.back{background:#f5f5f5;transform:rotateY(180deg)}
-.cf .big{font-size:20px;font-weight:600;margin-bottom:6px}
-.cf .sm{font-size:13px;color:#555}
-.cf .hint{font-size:11px;color:#aaa;margin-top:8px}
-.cf .meta{font-size:11px;color:#aaa;margin-bottom:7px}
-.nav{display:flex;gap:8px;align-items:center;justify-content:center}
-.nav button{padding:8px 20px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:13px;color:#111;font-weight:500}
-.nav button:hover{background:#f0f0f0}
-.prog{font-size:12px;color:#888}
-.cc{display:flex;gap:8px;align-items:center;margin-bottom:1rem;flex-wrap:wrap}
-.cc select{font-size:13px;padding:7px 11px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#111}
-.gm-level{margin-bottom:2rem}
-.gm-label{font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
-.gm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
-.gm-card{background:#fff;border:1px solid #eee;border-radius:12px;padding:.9rem 1rem;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.gm-card h4{font-size:14px;font-weight:600;margin:.45rem 0 .3rem;color:#111}
-.gm-card p{font-size:12px;color:#888;line-height:1.5;margin:0}
+  /* Text minimum 16px */
+  .text-xs { font-size: 1rem !important; line-height: 1.5rem !important; }
+  .text-sm { font-size: 1rem !important; line-height: 1.5rem !important; }
+  /* WCAG AA: replace opacity-based grays that fail contrast */
+  .text-base-content\/30,.text-base-content\/40 { color: #6B7280 !important; } /* gray-500, 5.7:1 on white */
+  .text-base-content\/50,.text-base-content\/55 { color: #4B5563 !important; } /* gray-600, 7.2:1 on white */
+  .text-base-content\/60,.text-base-content\/70 { color: #374151 !important; } /* gray-700, 9.5:1 on white */
 </style>
 </head>
-<body>
-<h1>French Vocabulary Tool <span>Rachel's Notes — A1 to B2</span></h1>
+<body class="min-h-screen" style="font-size:18px; background-color:#f0f2f5;">
+<french-app></french-app>
+<script type="importmap">{"imports":{"lit":"https://esm.sh/lit@3"}}</script>
+<script type="module">
+import {LitElement, html, nothing} from 'lit';
 
-<div class="tabs">
-  <button class="tab active" onclick="showTab('vocab')">📚 All Vocabulary</button>
-  <button class="tab" onclick="showTab('cards')">🃏 Flashcards</button>
-  <button class="tab" onclick="showTab('faux')">⚠️ Faux Amis</button>
-  <button class="tab" onclick="showTab('syn')">🔄 Synonyms & Confusables</button>
-  <button class="tab" onclick="showTab('grammar')">📖 Grammar Topics</button>
-</div>
+const POS_LABELS = {noun:'Noun',verb:'Verb',adj:'Adj',adv:'Adv',exp:'Expr',prep:'Prep'};
+const POS_BADGE  = {noun:'bg-blue-100 text-blue-700 border-transparent',verb:'bg-violet-100 text-violet-700 border-transparent',adj:'bg-emerald-100 text-emerald-700 border-transparent',adv:'bg-amber-100 text-amber-700 border-transparent',exp:'bg-rose-100 text-rose-700 border-transparent',prep:'bg-gray-100 text-gray-700 border-transparent'};
+const LVL_BADGE  = {A1:'bg-emerald-100 text-emerald-700 border-transparent',A2:'bg-sky-100 text-sky-700 border-transparent',B1:'bg-violet-100 text-violet-700 border-transparent',B2:'bg-rose-100 text-rose-700 border-transparent'};
+const CATS = [
+  ['daily','Daily life'],['body','Body & health'],['emotions','Emotions & character'],
+  ['food','Food & cooking'],['fruits','Fruits & vegetables'],['kitchen','Kitchen & tools'],
+  ['home','Home & housing'],['clothes','Clothes & fashion'],['work','Work & career'],
+  ['travel','Travel'],['nature','Nature & environment'],['social','Social & relationships'],
+  ['school','School & learning'],['city','City & places'],['time','Time expressions'],
+  ['verbs','Key verbs'],['idioms','Expressions & idioms'],['media','Media & technology'],
+  ['appearance','Appearance'],
+];
 
-<!-- ALL VOCABULARY -->
-<div class="section active" id="sec-vocab">
-  <div class="controls">
-    <input type="text" id="search" placeholder="Search French or English…" oninput="rv()">
-    <select id="fc" onchange="rv()">
-      <option value="">All categories</option>
-      <option value="daily">Daily life</option>
-      <option value="body">Body & health</option>
-      <option value="emotions">Emotions & character</option>
-      <option value="food">Food & cooking</option>
-      <option value="fruits">Fruits & vegetables</option>
-      <option value="kitchen">Kitchen & tools</option>
-      <option value="home">Home & housing</option>
-      <option value="clothes">Clothes & fashion</option>
-      <option value="work">Work & career</option>
-      <option value="travel">Travel</option>
-      <option value="nature">Nature & environment</option>
-      <option value="social">Social & relationships</option>
-      <option value="school">School & learning</option>
-      <option value="city">City & places</option>
-      <option value="time">Time expressions</option>
-      <option value="verbs">Key verbs</option>
-      <option value="idioms">Expressions & idioms</option>
-      <option value="media">Media & technology</option>
-      <option value="appearance">Appearance</option>
-    </select>
-    <select id="fp" onchange="rv()">
-      <option value="">All types</option>
-      <option value="noun">Noun</option>
-      <option value="verb">Verb</option>
-      <option value="adj">Adj</option>
-      <option value="adv">Adv</option>
-      <option value="exp">Expression</option>
-    </select>
-    <select id="fl" onchange="rv()">
-      <option value="">All levels</option>
-      <option value="A1">A1</option>
-      <option value="A2">A2</option>
-      <option value="B1">B1</option>
-      <option value="B2">B2</option>
-    </select>
-    <span class="badge" id="cnt">loading…</span>
-  </div>
-  <div class="tbl-wrap">
-    <table class="tbl">
-      <thead><tr><th>French</th><th>English</th><th>Type</th><th>Level</th><th>Note</th></tr></thead>
-      <tbody id="tbody"></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- FLASHCARDS -->
-<div class="section" id="sec-cards">
-  <div class="cc">
-    <select id="xcat" onchange="loadCards()">
-      <option value="">All vocabulary</option>
-      <option value="daily">Daily life</option>
-      <option value="body">Body & health</option>
-      <option value="emotions">Emotions & character</option>
-      <option value="food">Food & cooking</option>
-      <option value="fruits">Fruits & vegetables</option>
-      <option value="kitchen">Kitchen & tools</option>
-      <option value="home">Home & housing</option>
-      <option value="clothes">Clothes & fashion</option>
-      <option value="work">Work & career</option>
-      <option value="travel">Travel</option>
-      <option value="nature">Nature & environment</option>
-      <option value="social">Social & relationships</option>
-      <option value="school">School & learning</option>
-      <option value="verbs">Key verbs</option>
-      <option value="idioms">Expressions & idioms</option>
-      <option value="media">Media & tech</option>
-      <option value="appearance">Appearance</option>
-    </select>
-    <select id="xlvl" onchange="loadCards()">
-      <option value="">All levels</option>
-      <option value="A1">A1</option>
-      <option value="A2">A2</option>
-      <option value="B1">B1</option>
-      <option value="B2">B2</option>
-    </select>
-    <span class="prog" id="prog">—</span>
-  </div>
-  <div class="cw" onclick="flip()">
-    <div class="ci" id="ci">
-      <div class="cf front">
-        <div class="meta" id="cm1"></div>
-        <div class="big" id="cfr">—</div>
-        <div class="hint">click to reveal</div>
-      </div>
-      <div class="cf back">
-        <div class="meta" id="cm2"></div>
-        <div class="big" id="cen">—</div>
-        <div class="sm" id="cnote"></div>
-      </div>
-    </div>
-  </div>
-  <div class="nav">
-    <button onclick="prev()">← Prev</button>
-    <button onclick="shuf()">Shuffle</button>
-    <button onclick="next()">Next →</button>
-  </div>
-</div>
-
-<!-- FAUX AMIS -->
-<div class="section" id="sec-faux">
-  <div class="fg" id="faux-grid"></div>
-</div>
-
-<!-- SYNONYMS -->
-<div class="section" id="sec-syn">
-  <div id="syn-content"></div>
-</div>
-
-<!-- GRAMMAR TOPICS -->
-<div class="section" id="sec-grammar">
-  <div id="grammar-content"></div>
-</div>
-
-<script>
-const PL={noun:"Noun",verb:"Verb",adj:"Adj",adv:"Adv",exp:"Expr",prep:"Prep"};
-const PC={noun:"noun",verb:"verb",adj:"adj",adv:"adv",exp:"exp",prep:"prep"};
-let cards=[],ci=0,flipped=false;
-
+// V_ARRAY_START
 const V=[
 {fr:"se réveiller",en:"to wake up",pos:"verb",lvl:"A1",cat:"daily",note:"reflexive. ≠ se lever (getting out of bed)"},
 {fr:"se lever",en:"to get out of bed / stand up",pos:"verb",lvl:"A1",cat:"daily",note:""},
@@ -760,14 +589,101 @@ const V=[
 {fr:"défiler",en:"to walk the runway",pos:"verb",lvl:"B1",cat:"appearance",note:"le mannequin = the model"},
 {fr:"ressembler à",en:"to look like / resemble",pos:"verb",lvl:"A1",cat:"appearance",note:"Maddie ressemble à Rachel"},
 {fr:"peser",en:"to weigh",pos:"verb",lvl:"A2",cat:"appearance",note:""},
+// --- Classroom objects (Par Ici 1-2) ---
+{fr:"le tableau / le tableau blanc",en:"blackboard / whiteboard",pos:"noun",lvl:"A1",cat:"school",note:"effacer le tableau = to erase. la craie = chalk"},
+{fr:"la craie",en:"chalk",pos:"noun",lvl:"A1",cat:"school",note:"for the tableau. l'efface = eraser (Quebec)"},
+{fr:"l'efface (f.) / la gomme",en:"eraser",pos:"noun",lvl:"A1",cat:"school",note:"efface = Quebec. gomme = France"},
+{fr:"le crayon",en:"pencil",pos:"noun",lvl:"A1",cat:"school",note:"crayon de couleur = coloured pencil"},
+{fr:"le stylo",en:"pen",pos:"noun",lvl:"A1",cat:"school",note:"stylo à bille = ballpoint. stylo-plume = fountain pen"},
+{fr:"le cahier",en:"exercise book / notebook",pos:"noun",lvl:"A1",cat:"school",note:"≠ un carnet (small notepad)"},
+{fr:"le pupitre",en:"student desk",pos:"noun",lvl:"A1",cat:"school",note:"≠ le bureau (teacher's desk or office)"},
+{fr:"la règle",en:"ruler",pos:"noun",lvl:"A1",cat:"school",note:"les règles = the rules (different meaning!)"},
+{fr:"les ciseaux (m.pl.)",en:"scissors",pos:"noun",lvl:"A1",cat:"school",note:"always plural in French"},
+{fr:"le calendrier",en:"calendar",pos:"noun",lvl:"A1",cat:"school",note:"≠ l'agenda (planner)"},
+{fr:"l'agenda (m.)",en:"planner / day-planner",pos:"noun",lvl:"A1",cat:"school",note:"≠ agenda in English (= un ordre du jour). ≠ calendrier (wall calendar)"},
+// --- Classroom expressions (Par Ici 1-2) ---
+{fr:"Pouvez-vous répéter?",en:"Can you repeat that?",pos:"exp",lvl:"A1",cat:"school",note:"formal (vous). Tu peux répéter? = informal"},
+{fr:"Parlez plus lentement, s'il vous plaît.",en:"Please speak more slowly.",pos:"exp",lvl:"A1",cat:"school",note:"key survival phrase for beginners in class"},
+{fr:"Comment dit-on… en français?",en:"How do you say… in French?",pos:"exp",lvl:"A1",cat:"school",note:"essential classroom phrase"},
+{fr:"Qu'est-ce que ça veut dire?",en:"What does that mean?",pos:"exp",lvl:"A1",cat:"school",note:"ça veut dire = it means"},
+{fr:"Je ne comprends pas.",en:"I don't understand.",pos:"exp",lvl:"A1",cat:"school",note:"Je n'ai pas compris = I didn't understand (past)"},
+// --- Direction expressions (Par Ici 2, 19) ---
+{fr:"Tournez à gauche / à droite.",en:"Turn left / turn right.",pos:"exp",lvl:"A1",cat:"city",note:"imperative form. ≠ à gauche/à droite alone (location only)"},
+{fr:"Allez / Continuez tout droit.",en:"Go / keep going straight ahead.",pos:"exp",lvl:"A1",cat:"city",note:"tout droit = straight ahead (not 'just right'!)"},
+{fr:"Prenez la première / deuxième rue à droite.",en:"Take the first / second street on the right.",pos:"exp",lvl:"A1",cat:"city",note:"troisième = third. au carrefour = at the intersection"},
+{fr:"au bout de la rue",en:"at the end of the street",pos:"exp",lvl:"A1",cat:"city",note:"au bout de = at the end of (distance)"},
+{fr:"au coin de la rue",en:"at the corner of the street",pos:"exp",lvl:"A1",cat:"city",note:"le coin = corner"},
+{fr:"Montez / Descendez.",en:"Go up / go down (stairs, escalator).",pos:"exp",lvl:"A1",cat:"city",note:"also: board / exit public transit"},
+{fr:"C'est en face de l'ascenseur.",en:"It's across from the elevator.",pos:"exp",lvl:"A1",cat:"city",note:"en face de = across from / opposite"},
+// --- Greetings & social (Par Ici 1-2) ---
+{fr:"Enchanté(e).",en:"Pleased to meet you.",pos:"exp",lvl:"A1",cat:"social",note:"formal. Ravi(e) de vous rencontrer = more elaborate form"},
+{fr:"Bonne journée!",en:"Have a good day!",pos:"exp",lvl:"A1",cat:"social",note:"said when parting during the day. ≠ Bonne soirée"},
+{fr:"Bonne soirée!",en:"Have a good evening!",pos:"exp",lvl:"A1",cat:"social",note:"said when leaving in the evening"},
+{fr:"À tout à l'heure.",en:"See you in a bit. (same day)",pos:"exp",lvl:"A1",cat:"social",note:"implies you'll see them again later today"},
+{fr:"À tout de suite.",en:"See you in a moment.",pos:"exp",lvl:"A1",cat:"social",note:"even sooner than à tout à l'heure — back in a second"},
+{fr:"Bienvenue!",en:"Welcome!",pos:"exp",lvl:"A1",cat:"social",note:"Quebec: also = you're welcome (= de rien in France)"},
+// --- Phone expressions (Par Ici 5-6) ---
+{fr:"Allô?",en:"Hello? (answering the phone)",pos:"exp",lvl:"A1",cat:"social",note:"ONLY for the phone — not a general greeting"},
+{fr:"Ne quittez pas.",en:"Please hold. / Don't hang up.",pos:"exp",lvl:"B1",cat:"social",note:"formal phone expression — common in customer service"},
+{fr:"C'est de la part de qui?",en:"Who's calling? / Who shall I say is calling?",pos:"exp",lvl:"B1",cat:"social",note:"phone — used by a receptionist or secretary"},
+{fr:"Je vous le / la passe.",en:"I'll put you through.",pos:"exp",lvl:"B1",cat:"social",note:"phone: transferring the call to the right person"},
+{fr:"laisser un message",en:"to leave a message",pos:"exp",lvl:"A2",cat:"social",note:"un répondeur = voicemail / answering machine"},
+{fr:"rappeler",en:"to call back",pos:"verb",lvl:"A2",cat:"social",note:"Rappelez-moi = call me back. Je vous rappelle = I'll call you back"},
+// --- Weather expressions (Par Ici 3-4, Ép. 13) ---
+{fr:"Il fait chaud / froid.",en:"It's hot / cold.",pos:"exp",lvl:"A1",cat:"nature",note:"il fait + weather adj. ≠ c'est chaud (for food/objects)"},
+{fr:"Il fait beau / mauvais.",en:"The weather is nice / bad.",pos:"exp",lvl:"A1",cat:"nature",note:"il fait beau = lovely weather. il fait mauvais = nasty weather"},
+{fr:"Il pleut. / Il va pleuvoir.",en:"It's raining. / It's going to rain.",pos:"exp",lvl:"A1",cat:"nature",note:"pleuvoir = to rain. la pluie = rain. une averse = a shower"},
+{fr:"Il neige. / Il va neiger.",en:"It's snowing. / It will snow.",pos:"exp",lvl:"A1",cat:"nature",note:"neiger = to snow. la neige = snow. un flocon = snowflake"},
+{fr:"Il y a du vent. / Il vente.",en:"It's windy.",pos:"exp",lvl:"A1",cat:"nature",note:"il vente = Quebec usage. le vent = wind"},
+{fr:"Il y a du brouillard.",en:"It's foggy.",pos:"exp",lvl:"A2",cat:"nature",note:"le brouillard = fog. brumeux = foggy (adj)"},
+{fr:"Il y a des nuages. / C'est nuageux.",en:"It's cloudy.",pos:"exp",lvl:"A1",cat:"nature",note:"un nuage = cloud. nuageux/nuageuse = cloudy"},
+{fr:"une averse",en:"a rain shower",pos:"noun",lvl:"A2",cat:"nature",note:"une averse soudaine = a sudden shower"},
+{fr:"la météo / les prévisions météo",en:"the weather / weather forecast",pos:"noun",lvl:"A1",cat:"nature",note:"regarder la météo = check the weather"},
+// --- Housing / rental vocab (Par Ici 3-4, Ép. 9 & 21) ---
+{fr:"le loyer",en:"rent (monthly payment)",pos:"noun",lvl:"A2",cat:"home",note:"payer le loyer = to pay rent"},
+{fr:"les charges (f.pl.)",en:"utilities / building fees",pos:"noun",lvl:"A2",cat:"home",note:"charges comprises = utilities included in the rent"},
+{fr:"un bail",en:"a lease",pos:"noun",lvl:"A2",cat:"home",note:"signer un bail = to sign a lease"},
+{fr:"une caution / un dépôt",en:"a security deposit",pos:"noun",lvl:"A2",cat:"home",note:"verser une caution = to pay a deposit"},
+{fr:"un immeuble",en:"an apartment building",pos:"noun",lvl:"A2",cat:"home",note:"≠ un bâtiment (general building). un immeuble locatif = rental building"},
+{fr:"un locataire",en:"a tenant",pos:"noun",lvl:"A2",cat:"home",note:"≠ un propriétaire (owner/landlord)"},
+{fr:"un propriétaire / un proprio",en:"a landlord / owner",pos:"noun",lvl:"A2",cat:"home",note:"proprio = casual Quebec. ≠ un locataire (tenant)"},
+{fr:"les voisins (m.pl.)",en:"the neighbours",pos:"noun",lvl:"A1",cat:"home",note:"le voisinage = neighbourhood / neighbours collectively"},
+// --- Banking vocab (Par Ici 5-6) ---
+{fr:"un compte bancaire",en:"a bank account",pos:"noun",lvl:"A2",cat:"work",note:"ouvrir un compte = to open an account"},
+{fr:"retirer de l'argent",en:"to withdraw money",pos:"exp",lvl:"A2",cat:"work",note:"≠ déposer (to deposit)"},
+{fr:"déposer de l'argent",en:"to deposit money",pos:"exp",lvl:"A2",cat:"work",note:"≠ retirer (to withdraw)"},
+{fr:"un guichet automatique / un GAB",en:"an ATM",pos:"noun",lvl:"A2",cat:"work",note:"GAB = guichet automatique bancaire (Quebec term)"},
+{fr:"un chèque",en:"a cheque / check",pos:"noun",lvl:"A2",cat:"work",note:"émettre un chèque = to write a cheque"},
+{fr:"le solde",en:"account balance",pos:"noun",lvl:"A2",cat:"work",note:"le solde du compte. ≠ les soldes (sales / clearance)"},
+{fr:"une facture",en:"a bill / invoice",pos:"noun",lvl:"A2",cat:"work",note:"≠ un reçu (receipt). payer une facture = to pay a bill"},
+// --- Health & pharmacy (Par Ici 3-4, Ép. 12 & 24) ---
+{fr:"une ordonnance",en:"a prescription",pos:"noun",lvl:"A2",cat:"body",note:"avoir une ordonnance = to have a prescription"},
+{fr:"la posologie",en:"dosage / directions for use",pos:"noun",lvl:"B1",cat:"body",note:"Par Ici Ép. 12 — reading the medicine label"},
+{fr:"un comprimé",en:"a tablet / pill",pos:"noun",lvl:"A2",cat:"body",note:"prendre un comprimé = take a tablet. ≠ une capsule"},
+{fr:"la douleur / avoir mal à",en:"pain / to have pain in",pos:"noun",lvl:"A2",cat:"body",note:"j'ai mal au dos = my back hurts. avoir de la douleur = to be in pain"},
+{fr:"se blesser",en:"to hurt oneself / get injured",pos:"verb",lvl:"A2",cat:"body",note:"une blessure = an injury"},
+{fr:"être enrhumé(e)",en:"to have a cold",pos:"exp",lvl:"A2",cat:"body",note:"un rhume = a cold. ≠ la grippe (the flu)"},
+{fr:"une allergie / être allergique à",en:"an allergy / to be allergic to",pos:"noun",lvl:"A2",cat:"body",note:"je suis allergique aux arachides = I'm allergic to peanuts"},
+{fr:"justifier une absence",en:"to justify / excuse an absence",pos:"exp",lvl:"B1",cat:"work",note:"Par Ici Ép. 12. un billet médical = a doctor's note"},
+// --- Clothing expressions (Par Ici 3-4, Ép. 8 & 17) ---
+{fr:"ça vous / te va bien",en:"it suits you / it looks good on you",pos:"exp",lvl:"A2",cat:"clothes",note:"aller bien à quelqu'un = to suit someone"},
+{fr:"essayer",en:"to try on (clothing)",pos:"verb",lvl:"A2",cat:"clothes",note:"la cabine d'essayage = fitting room"},
+{fr:"la cabine d'essayage",en:"the fitting room",pos:"noun",lvl:"A2",cat:"clothes",note:"essayer un vêtement = to try on a garment"},
+{fr:"la taille",en:"clothing size / waist",pos:"noun",lvl:"A2",cat:"clothes",note:"quelle est votre taille? = what size are you? ≠ la pointure (shoe size)"},
+{fr:"la pointure",en:"shoe size",pos:"noun",lvl:"A2",cat:"clothes",note:"quelle est votre pointure? = what's your shoe size?"},
+{fr:"C'est trop grand / petit / serré.",en:"It's too big / small / tight.",pos:"exp",lvl:"A2",cat:"clothes",note:"serré = tight/fitted. ample = loose/baggy"},
+{fr:"une tenue",en:"an outfit",pos:"noun",lvl:"A2",cat:"clothes",note:"une tenue décontractée = casual outfit. tenue de soirée = evening wear"},
+{fr:"à rayures / à carreaux / uni(e)",en:"striped / checkered / solid (plain colour)",pos:"exp",lvl:"A2",cat:"clothes",note:"Par Ici Ép. 8: fabric pattern vocabulary"},
 ];
+// V_ARRAY_END
 
+// FAUX_ARRAY_START
 const FAUX=[
 {word:"actuellement",fr:"currently / at the moment",ew:"actually",c:"en fait = actually",w:"Actuellement ≠ actually! It means RIGHT NOW. En fait = actually."},
 {word:"rester",fr:"to stay",ew:"to rest",c:"se reposer = to rest",w:"Rester = to STAY. 'Je reste ici' = I'm staying here. Se reposer = to REST."},
 {word:"assister à",fr:"to attend / to come to",ew:"to assist / help",c:"aider = to help",w:"Assister à = to ATTEND (a class, event). Aider = to help."},
 {word:"attendre",fr:"to wait",ew:"to attend",c:"assister à = to attend",w:"Attendre = to WAIT. To attend = assister à."},
-{word:"atteindre vs attendre",fr:"to reach vs to wait",ew:"same-sounding, opposite meanings",c:"atteindre = reach. attendre = wait",w:"SOUND-ALIKE TRAP! 'ah-TAN-druh' = reach. 'ah-TON-druh' = wait. Different pronunciation!"},
+{word:"atteindre vs attendre",fr:"to reach vs to wait",ew:"same-sounding, opposite meanings",c:"atteindre = reach. attendre = wait",w:"SOUND-ALIKE TRAP! Different pronunciation — 'ah-TAN-druh' = reach. 'ah-TON-druh' = wait."},
 {word:"décoller",fr:"to take off (plane)",ew:"to land",c:"atterrir = to land",w:"CLASSIC TRAP! Décoller = take off. Atterrir = land. Don't mix them up!"},
 {word:"passer un examen",fr:"to take / sit an exam",ew:"to pass an exam",c:"réussir = to pass. rater = to fail",w:"Passer = to TAKE the exam. Réussir = to PASS. Rater = to FAIL. Three different verbs!"},
 {word:"la cave",fr:"the cellar (underground)",ew:"a cave",c:"une grotte = a natural cave",w:"La cave = cellar underground. Une grotte = a natural cave."},
@@ -790,9 +706,11 @@ const FAUX=[
 {word:"une bague / des bagues",fr:"a ring (jewelry) / dental braces",ew:"a bag",c:"un sac = a bag",w:"Une bague = ring. Des bagues = DENTAL BRACES (Quebec). Un sac = a bag."},
 {word:"visiter vs rendre visite à",fr:"visiter = place / rendre visite = person",ew:"using visiter for people",c:"Je visite Paris. Je rends visite à ma mère.",w:"NEVER use visiter for people! Visiter = places ONLY. Rendre visite à = people."},
 {word:"la pêche",fr:"peach (fruit) OR fishing (sport)",ew:"peace",c:"la paix = peace",w:"La pêche has TWO meanings: the fruit (peach) and the sport (fishing). Context is key!"},
-{word:"une moule vs un moule",fr:"une moule = mussels / un moule = baking pan",ew:"same word — different gender, different meaning",c:"une moule = mussels. un moule = a cake mold",w:"GENDER CHANGES MEANING! Une moule = seafood mussels. Un moule = a baking mold. Don't confuse them in the kitchen!"},
+{word:"une moule vs un moule",fr:"une moule = mussels / un moule = baking pan",ew:"same word — different gender, different meaning",c:"une moule = mussels. un moule = a cake mold",w:"GENDER CHANGES MEANING! Une moule = seafood mussels. Un moule = a baking mold."},
 ];
+// FAUX_ARRAY_END
 
+// SYN_ARRAY_START
 const SYN=[
 {theme:"Ways to say 'to want'",main:"vouloir",words:["vouloir","avoir envie de (feel like — casual)","souhaiter (wish — formal)","désirer (desire)","tenir à (really care about)"],note:"Avoir envie de = casual feel like. Souhaiter/désirer = formal. Tenir à = to really want/care about."},
 {theme:"'To know' — savoir vs connaître",main:"savoir / connaître",words:["savoir (knowledge / how to do something)","connaître (person/place/situation)"],note:"NEVER swap! Savoir = factual knowledge or HOW to do something. Connaître = knowing a person or being familiar with something."},
@@ -815,126 +733,1005 @@ const SYN=[
 {theme:"Revenir / retourner / rentrer",main:"revenir",words:["revenir (come back — toward speaker)","retourner (go back — to another place)","rentrer (return home)"],note:"Revenir = toward where you currently are. Retourner = going back somewhere else. Rentrer = specifically going home."},
 {theme:"Décéder / mourir — ways to say 'to die'",main:"mourir",words:["mourir (to die — general)","décéder (to die — formal/official)","perdre quelqu'un (to lose someone)","s'éteindre (to go out — poetic)"],note:"Décéder is formal/administrative. Mourir is general. S'éteindre = to go out like a flame (poetic)."},
 ];
+// SYN_ARRAY_END
 
-
-function rv(){
-  const q=document.getElementById('search').value.toLowerCase().trim();
-  const cat=document.getElementById('fc').value;
-  const pos=document.getElementById('fp').value;
-  const lvl=document.getElementById('fl').value;
-  const f=V.filter(v=>{
-    if(cat&&v.cat!==cat)return false;
-    if(pos&&v.pos!==pos)return false;
-    if(lvl&&v.lvl!==lvl)return false;
-    if(q&&!v.fr.toLowerCase().includes(q)&&!v.en.toLowerCase().includes(q)&&!(v.note||'').toLowerCase().includes(q))return false;
-    return true;
-  });
-  document.getElementById('cnt').textContent=f.length+' words';
-  document.getElementById('tbody').innerHTML=f.map(v=>`<tr>
-    <td class="fw">${v.fr}</td>
-    <td class="ew">${v.en}</td>
-    <td><span class="pb ${PC[v.pos]}">${PL[v.pos]}</span></td>
-    <td><span class="lb ${v.lvl}">${v.lvl}</span></td>
-    <td class="nw">${v.note||''}</td>
-  </tr>`).join('');
-}
-
-function loadCards(){
-  const cat=document.getElementById('xcat').value;
-  const lvl=document.getElementById('xlvl').value;
-  cards=V.filter(v=>(!cat||v.cat===cat)&&(!lvl||v.lvl===lvl));
-  ci=0;flipped=false;
-  document.getElementById('ci').classList.remove('flipped');
-  sc();
-}
-
-function sc(){
-  if(!cards.length)return;
-  const c=cards[ci];
-  document.getElementById('cfr').textContent=c.fr;
-  document.getElementById('cen').textContent=c.en;
-  document.getElementById('cnote').textContent=c.note||'';
-  document.getElementById('cm1').textContent=PL[c.pos]+' · '+c.lvl+' · '+c.cat;
-  document.getElementById('cm2').textContent=PL[c.pos]+' · '+c.lvl;
-  document.getElementById('prog').textContent=`Card ${ci+1} of ${cards.length}`;
-  flipped=false;document.getElementById('ci').classList.remove('flipped');
-}
-
-function flip(){flipped=!flipped;document.getElementById('ci').classList.toggle('flipped',flipped);}
-function next(){ci=(ci+1)%cards.length;sc();}
-function prev(){ci=(ci-1+cards.length)%cards.length;sc();}
-function shuf(){for(let i=cards.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cards[i],cards[j]]=[cards[j],cards[i]];}ci=0;sc();}
-
-function buildFaux(){
-  document.getElementById('faux-grid').innerHTML=FAUX.map(f=>`<div class="fc">
-    <div class="fh"><span class="fword">${f.word}</span><span class="ftag">Faux ami</span></div>
-    <div class="fb">
-      <div class="fr"><span class="fl">Means:</span><span class="fv" style="font-weight:600">${f.fr}</span></div>
-      <div class="fr"><span class="fl">NOT:</span><span class="fv" style="color:#A32D2D">${f.ew}</span></div>
-      <div class="fr"><span class="fl">Instead:</span><span class="fv">${f.c}</span></div>
-      ${f.w?`<div class="fw3">${f.w}</div>`:''}
-    </div>
-  </div>`).join('');
-}
-
-function buildSyn(){
-  document.getElementById('syn-content').innerHTML=`<p class="sl">Synonyms & confusable groups</p>
-  <div class="sg">${SYN.map(s=>`<div class="sc">
-    <h4>${s.theme}</h4>
-    <div class="chips">${s.words.map((w,i)=>`<span class="chip${i===0?' m':''}">${w}</span>`).join('')}</div>
-    ${s.note?`<div class="sn">${s.note}</div>`:''}
-  </div>`).join('')}</div>`;
-}
-
-const GRAMMAR=[
-{level:"A1",name:"Foundations",topics:[
-  {title:"Présent de l'indicatif",desc:"Regular & irregular conjugations"},
-  {title:"La négation",desc:"Ne...pas and negative structures"},
-  {title:"Articles & gender",desc:"Le, la, un, une, du, de la…"},
-  {title:"Adjectifs possessifs",desc:"Mon, ma, mes — my, your, his/her…"},
-  {title:"Adjectifs démonstratifs",desc:"Ce, cet, cette, ces — this/these"},
-]},
-{level:"A2",name:"Intermediate",topics:[
-  {title:"Passé composé",desc:"Completed past — j'ai mangé, je suis allé(e)"},
-  {title:"L'imparfait",desc:"Habits, descriptions & background past"},
-  {title:"Futur proche & futur simple",desc:"Going to vs will"},
-  {title:"Conditionnel présent",desc:"Would — polite requests, wishes, advice"},
-  {title:"COD & COI pronouns",desc:"Direct & indirect object pronouns"},
-  {title:"Pronoms relatifs",desc:"Qui, que, où, dont"},
-  {title:"L'impératif",desc:"Commands and instructions"},
-]},
-{level:"B1",name:"Upper Intermediate",topics:[
-  {title:"Le subjonctif présent",desc:"Wishes, necessity, doubt, emotion + QUE"},
-  {title:"Le plus-que-parfait",desc:"Had done — action before another past"},
-  {title:"Discours indirect",desc:"Reported speech — she said that…"},
-  {title:"Le gérondif",desc:"En + verb-ant — while doing / by doing"},
-]},
-{level:"B2",name:"Advanced",topics:[
-  {title:"La condition avec si",desc:"If…then — three levels of probability"},
-  {title:"Concession & restriction",desc:"Although, despite, only — contrast & limits"},
-]},
+// GRAMMAR_TOPICS_START
+const GRAMMAR_TOPICS=[
+{
+  level:'A1',id:'verbs-present',title:"Présent de l'indicatif",desc:'Regular & irregular conjugations',
+  formula:'Infinitive → remove ending → add personal endings',
+  overview:'Three verb groups: -ER (largest), -IR, and -RE/irregular. The four essential irregulars (être, avoir, aller, faire) must be memorized — they appear in almost every sentence.',
+  uses:['Current actions','General truths','Habitual actions'],
+  examples:[
+    {fr:"Je me lève à 7h45.",en:"I get up at 7:45.",note:"reflexive verb in présent"},
+    {fr:"Nous mangeons ensemble ce soir.",en:"We eat together tonight.",note:"-ger verb: add e before -ons (mangeons ✓ not mangons)"},
+    {fr:"J'envoie un message.",en:"I send a message.",note:"-oyer verb: y→i before silent endings (je, tu, il, ils)"},
+    {fr:"Elle finit son travail à 18h.",en:"She finishes her work at 6pm.",note:"-ir verb: finissons, finissez, finissent for nous/vous/ils"},
+    {fr:"Je vais au travail en voiture.",en:"I drive to work.",note:"aller — completely irregular: vais/vas/va/allons/allez/vont"},
+    {fr:"On fait la lessive aujourd'hui.",en:"We're doing laundry today.",note:"faire — completely irregular: fais/fais/fait/faisons/faites/font"},
+  ],
+  rules:[
+    {label:'Group 1 — -ER verbs (largest group)',body:'Remove -ER, add endings:',conjugation:[['je','parle'],['tu','parles'],['il/elle','parle'],['nous','parlons'],['vous','parlez'],['ils/elles','parlent']],example:'Je mange une pomme. Elle habite à Montréal. Nous parlons français.'},
+    {label:'Group 2 — -IR verbs',body:'Remove -IR, add endings with -iss- for nous/vous/ils:',conjugation:[['je','finis'],['tu','finis'],['il/elle','finit'],['nous','finissons'],['vous','finissez'],['ils/elles','finissent']],example:'Elle finit son travail. Nous réussissons. Vous choisissez.'},
+    {label:'4 key irregular verbs — must memorize',body:'être, avoir, aller, faire:',conjugation:[['être →','suis/es/est/sommes/êtes/sont'],['avoir →','ai/as/a/avons/avez/ont'],['aller →','vais/vas/va/allons/allez/vont'],['faire →','fais/fais/fait/faisons/faites/font']],example:"Je suis fatiguée. J'ai faim. Je vais à l'école. On fait du sport."},
+    {label:'-GER verbs: add E before -ONS',body:'Keeps the soft G sound.',example:'Nous mangeons ✓ (not mangons). Nous nageons, nous partageons, nous voyageons.'},
+    {label:'-OYer / -AYer verbs: Y → I before silent endings',body:'Silent endings = je, tu, il, ils.',example:"Envoyer → j'envoie, tu envoies, il envoie. Nettoyer → je nettoie la maison."},
+  ],
+  tips:["À + le = AU. À + les = AUX (always!)",'Learn the article WITH the noun: "la maison", not just "maison" — gender must be memorized.'],
+},
+{
+  level:'A1',id:'negation',title:'La négation',desc:'Ne…pas and negative structures',
+  formula:'Subject + NE + conjugated verb + PAS (or jamais/plus/que/rien)',
+  overview:'Negation always wraps around the conjugated verb. In spoken French, "ne" is often dropped. Key rule: the article changes from du/de la/des to just DE after negation.',
+  uses:['Deny a fact','Express "never" (jamais)','Express "not anymore" (plus)','Express "only" (que)'],
+  examples:[
+    {fr:"Je ne mange pas de viande.",en:"I don't eat meat.",note:"article du/de la/des → DE after negation"},
+    {fr:"Je n'habite plus à Orlando.",en:"I don't live in Orlando anymore.",note:"ne…plus = not anymore (something stopped)"},
+    {fr:"Elle n'est jamais en retard.",en:"She is never late.",note:"ne…jamais = never"},
+    {fr:"Je ne mange que des légumes.",en:"I only eat vegetables.",note:"ne…que = restriction/only (ne before verb, que before the limited thing)"},
+    {fr:"Je n'ai pas mangé ce matin.",en:"I didn't eat this morning.",note:"passé composé: ne…pas wraps the AUXILIARY only"},
+    {fr:"Il ne fume plus.",en:"He doesn't smoke anymore.",note:"ne…plus: something that was happening has now stopped"},
+  ],
+  rules:[
+    {label:'Basic: ne…pas',body:'Subject + NE + verb + PAS',example:'Je ne mange pas. Mia ne parle pas français. Elle ne vient pas.'},
+    {label:'Ne…plus = not anymore',body:'Replaces pas when something has stopped.',example:"Il ne fume plus. Je n'habite plus à Orlando. Elle ne travaille plus là."},
+    {label:'Ne…jamais = never',body:'Replaces pas for something that never happens.',example:"Elle n'est jamais en retard. Je ne mens jamais. On ne sait jamais!"},
+    {label:'Ne…que = only (restriction)',body:'NE before verb, QUE after verb + noun. Different from ne…pas!',example:'Je ne mange que des légumes. (I only eat vegetables.) Il ne boit que de l\'eau.'},
+    {label:'After negation — articles change to DE',body:'du/de la/des → DE (or D\' before vowel)',example:"Je veux du café → Je ne veux pas de café. J'ai des amis → Je n'ai pas d'amis."},
+  ],
+  tips:["Ne…que ≠ ne…pas. 'Que' creates restriction (only), 'pas' creates negation (not).",'Camille: NOT ONLY = pas seulement. NOT ANYMORE = ne…plus. Two very different structures!'],
+  warnings:["Never split ne…pas around the participe passé in passé composé! Je n'ai pas mangé ✓ NOT je n'ai mangé pas ✗"],
+},
+{
+  level:'A1',id:'articles',title:'Articles & gender',desc:'Le, la, un, une, du, de la…',
+  formula:'Definite: le/la/l\'/les | Indefinite: un/une/des | Partitive: du/de la/de l\'/des',
+  overview:'Every French noun is masculine or feminine — no exceptions. Articles must always agree. The partitive article (du, de la) is used for uncountable things. After negation, all become DE.',
+  uses:['Identify specific nouns (definite)','Introduce non-specific nouns (indefinite)','Talk about uncountable quantities (partitive)'],
+  examples:[
+    {fr:"J'aime le chocolat.",en:"I love chocolate.",note:"definite: general liking → le/la/les (not du/de la)"},
+    {fr:"Je bois de l'eau.",en:"I drink water.",note:"partitive: de l' before vowel (eau is feminine)"},
+    {fr:"Il n'y a pas de lait.",en:"There's no milk.",note:"after negation: du → DE"},
+    {fr:"C'est mon école.",en:"It's my school.",note:"école is fem but starts with vowel → use MON not MA"},
+    {fr:"Je veux du café.",en:"I want some coffee.",note:"partitive: du = de + le (masculine uncountable)"},
+    {fr:"J'ai une sœur et un frère.",en:"I have a sister and a brother.",note:"indefinite: un (masc) / une (fem)"},
+  ],
+  rules:[
+    {label:'Definite articles — specific or general',body:'le (masc) / la (fem) / l\' (vowel) / les (plural)',example:"J'aime le chocolat. La maison est belle. L'école est proche. Les enfants jouent."},
+    {label:'Indefinite articles — non-specific',body:'un (masc) / une (fem) / des (plural)',example:"J'ai un chien. C'est une belle journée. Nous avons des enfants."},
+    {label:'Partitive articles — uncountable things',body:"du (masc) / de la (fem) / de l' (vowel) / des (plural)",example:"Je veux du café. J'ai de la chance. Elle boit de l'eau. Il mange des épinards."},
+    {label:'After negation — always DE',body:"After ne…pas, du/de la/des → DE (or D' before vowel)",example:"Il n'y a pas de lait. Je n'ai pas d'argent. Pas de problème!"},
+    {label:'Vowel exception: ma/ta/sa → mon/ton/son',body:'Before fem nouns starting with a vowel or silent h, use the MASCULINE possessive.',example:"C'est mon école. (école is feminine but use mon!) Mon amie. Ton histoire."},
+  ],
+  tips:["À + le = AU. À + les = AUX. De + le = DU. De + les = DES — these contractions are mandatory, you cannot skip them."],
+},
+{
+  level:'A1',id:'possessives',title:'Adjectifs possessifs',desc:'Mon, ma, mes — my, your, his/her…',
+  formula:'Agrees with the THING owned (not the owner) in gender and number',
+  overview:'Possessive adjectives agree with the OBJECT owned, not the person owning it. This confuses English speakers. "Her brother" = SON frère (not sa) because frère is masculine.',
+  examples:[
+    {fr:"Son frère habite à Montréal.",en:"Her/his brother lives in Montreal.",note:"son = masc because 'frère' is masculine — not because of who owns him"},
+    {fr:"Mon amie est très sympa.",en:"My (female) friend is really nice.",note:"mon + vowel, even though amie is feminine"},
+    {fr:"Leur chien s'appelle Rex.",en:"Their dog is called Rex.",note:"leur = ONE thing shared by multiple people"},
+    {fr:"Leurs chats sont mignons.",en:"Their cats are cute.",note:"leurs = multiple things (add S)"},
+    {fr:"Sa voiture est rouge.",en:"His/her car is red.",note:"sa because voiture is feminine — owner's gender doesn't matter"},
+  ],
+  rules:[
+    {label:'Full possessive table',body:'',conjugation:[['My:','mon (masc/vowel) / ma (fem) / mes (pl)'],['Your (tu):','ton / ta / tes'],['His/Her:','son / sa / ses'],['Our:','notre / notre / nos'],['Your (vous):','votre / votre / vos'],['Their:','leur / leur / leurs']],example:'Mon frère, ma sœur, mes parents. Son livre, sa voiture, ses affaires.'},
+    {label:'Leur (one thing) vs leurs (multiple things)',body:'Same pronunciation — different spelling.',example:'Leur stylo (one pen). Leurs stylos (multiple pens). Leur maison, leurs enfants.'},
+  ],
+  tips:["The gender of the THING owned determines the article — not the owner. 'Her brother' = SON frère (not sa, because frère is masculine)."],
+},
+{
+  level:'A1',id:'demonstratives',title:'Adjectifs démonstratifs',desc:'Ce, cet, cette, ces — this/these/that/those',
+  formula:'ce (masc+cons) | cet (masc+vowel) | cette (fem) | ces (plural)',
+  overview:'"This", "that", "these", "those" all use the same forms in French. Add -ci (near) or -là (far) after the noun to distinguish this vs that.',
+  examples:[
+    {fr:"Cet homme est mon professeur.",en:"This man is my teacher.",note:"cet before vowel (homme starts with h)"},
+    {fr:"Cette école est formidable.",en:"This school is amazing.",note:"cette for all feminine nouns"},
+    {fr:"Ces enfants sont adorables.",en:"These children are adorable.",note:"ces for ALL plurals (masc and fem)"},
+    {fr:"Ce livre-ci est meilleur que ce livre-là.",en:"This book (near) is better than that book (far).",note:"-ci = near, -là = far — used to contrast two things"},
+    {fr:"Cet hôtel est très cher.",en:"This hotel is very expensive.",note:"cet before silent h + vowel sound"},
+  ],
+  rules:[
+    {label:'Four forms of "this/these"',body:'',conjugation:[['Masc + consonant:','CE — ce livre, ce garçon'],['Masc + vowel/h:','CET — cet homme, cet hôtel, cet ami'],['Feminine:','CETTE — cette femme, cette école'],['Plural (all):','CES — ces enfants, ces livres']],example:'Cet homme et cette femme sont mes amis. Ces livres sont intéressants.'},
+    {label:'Adding -ci / -là for contrast',body:'Add -ci (this/near) or -là (that/far) after the noun.',example:'Ce livre-ci est meilleur que ce livre-là. (This book is better than that one.)'},
+  ],
+  tips:['CET and CETTE are pronounced the same — the difference is only in spelling.','Ce/cet/cette can mean "this" OR "that" — French does not distinguish unless you add -ci/-là.'],
+},
+{
+  level:'A1',id:'questions',title:'Former des questions',desc:'3 methods: intonation, est-ce que, inversion',
+  formula:'Intonation: phrase↑? | Est-ce que + phrase? | Inversion: verbe-sujet?',
+  overview:'French has three ways to form questions, from casual to very formal. In everyday spoken French, intonation (rising pitch) is most natural. Est-ce que is neutral and works everywhere. Inversion (flipping verb and subject) is formal and appears more in writing. All three are grammatically correct.',
+  uses:['Ask yes/no questions (3 methods)','Ask open questions with qui, quand, où, comment, pourquoi, combien, quel/quelle'],
+  examples:[
+    {fr:"Tu parles français?↑",en:"Do you speak French?",note:"intonation — rising pitch ↑ at end. Very casual, everyday"},
+    {fr:"**Est-ce que** tu parles français?",en:"Do you speak French?",note:"**est-ce que** — neutral, works in all situations. Most common in writing"},
+    {fr:"**Parles-tu** français?",en:"Do you speak French?",note:"inversion — formal/written. Hyphen between verb and subject pronoun"},
+    {fr:"Où **est-ce que** tu habites?",en:"Where do you live?",context:"Trying to learn more about someone",note:"open question with **est-ce que** — most common in speech"},
+    {fr:"Où **habitez-vous**?",en:"Where do you live? (formal)",note:"open question with inversion — note the hyphen"},
+    {fr:"Il travaille **où**?",en:"Where does he work?",note:"open question with intonation — question word at end, very casual"},
+    {fr:"**Est-ce qu'**il y a un café près d'ici?",en:"Is there a café near here?",note:"est-ce que → **est-ce qu'** before a vowel"},
+    {fr:"Comment **vous appelez-vous**?",en:"What's your name? (formal)",note:"inversion. Casual: Tu t'appelles comment?"},
+    {fr:"**A-t-il** des enfants?",en:"Does he have children?",note:"euphonic **-t-** added when verb ends in vowel before il/elle"},
+  ],
+  rules:[
+    {label:'Method 1 — Intonation (informal)',body:'Keep the affirmative sentence, raise your voice at the end.',example:"Tu habites à Montréal? ↑\nElle est professeure? ↑\nIl fait beau? ↑"},
+    {label:'Method 2 — Est-ce que (neutral)',body:"Add 'est-ce que' before the subject. Elides to 'est-ce qu'' before a vowel.",example:"**Est-ce que** tu parles anglais?\n**Est-ce qu'**il fait beau?\n**Est-ce qu'**elles viennent demain?"},
+    {label:'Method 3 — Inversion (formal)',body:'Flip the subject pronoun and verb, join with a hyphen.',example:"**Parlez-vous** français?\n**Habitez-vous** ici?\n**Vient-elle** ce soir?\n**A-t-il** faim?"},
+    {label:'Open question words',body:'Qui (who), Quand (when), Où (where), Comment (how), Pourquoi (why), Combien (how much/many), Quel/Quelle (which)',example:"**Où** est-ce que tu vas?\n**Comment** tu t'appelles?\n**Pourquoi** est-ce qu'il est parti?\n**Quand** partez-vous?"},
+    {label:'Euphonic -t- in inversion',body:"When inversion would put two vowels together (e.g. parle-il), insert -t- between them.",example:"Il mange → **Mange-t-il**?\nElle habite → **Habite-t-elle**?\nIl a → **A-t-il**?\nElle va → **Va-t-elle**?"},
+  ],
+  tips:["Par Ici: all 3 methods are correct — choose by register. Casual → intonation. Writing or formal speech → inversion.",'Qu\'est-ce que → CE QUE in reported speech. Qu\'est-ce qui → CE QUI. Est-ce que → SI. (See: Discours indirect)'],
+},
+{
+  level:'A1',id:'pronominaux',title:'Verbes pronominaux',desc:'Reflexive verbs — se lever, se laver, se souvenir…',
+  formula:'Subject + reflexive pronoun (me/te/se/nous/vous/se) + verb',
+  overview:'Reflexive verbs are conjugated with a reflexive pronoun that matches the subject. In their infinitive they appear as se + verb (se lever, se coucher). In passé composé, they ALWAYS use être as the auxiliary. Three types exist: truly reflexive (action done to oneself), reciprocal (done to each other), and idiomatic (meaning shifts with se).',
+  uses:["Daily routine: se lever, se laver, s'habiller, se coucher",'Reciprocal actions: nous nous parlons, ils se regardent','Idiomatic meanings: se sentir bien, se souvenir de'],
+  examples:[
+    {fr:"Je **me** lève à 7h.",en:"I get up at 7.",context:"Tu fais quoi le matin?",note:"**se** lever → je **me** lève (stem change: è before silent ending)"},
+    {fr:"Tu **te** brosses **les** dents.",en:"You brush your teeth.",context:"Qu'est-ce que tu fais dans la salle de bain?",note:"body parts → use **les** (not 'tes dents')"},
+    {fr:"Il **se** rase chaque matin.",en:"He shaves every morning.",context:"Marc a une barbe?",note:"truly reflexive — action done to himself"},
+    {fr:"Nous **nous** téléphonons souvent.",en:"We call each other often.",context:"Vous êtes proches?",note:"reciprocal — **nous nous** + verb"},
+    {fr:"Elle **se** souvient de toi.",en:"She remembers you.",context:"Anne-Marie me connaît encore?",note:"idiomatic — **se** souvenir de (no literal self-action)"},
+    {fr:"Je **me** suis levée à 7h45.",en:"I got up at 7:45.",note:"passé composé: ALWAYS **être**. +e because speaker is feminine"},
+    {fr:"Ils **se** sont vus hier.",en:"They saw each other yesterday.",note:"reciprocal in PC — **vus** agrees (masc plural)"},
+    {fr:"Comment tu **t'**appelles?",en:"What's your name?",note:"**s'**appeler = to be named. je **m'**appelle Rachel"},
+  ],
+  rules:[
+    {label:'Reflexive pronouns',body:'Change to match the subject:',conjugation:[['je','me (m\')'],['tu','te (t\')'],['il/elle/on','se (s\')'],['nous','nous'],['vous','vous'],['ils/elles','se (s\')']],example:"Je **me** lève. Tu **te** laves. Il **se** rase.\nNous **nous** couchons. Vous **vous** réveillez. Ils **se** parlent."},
+    {label:'Body parts — use LES not the possessive',body:'With body-part actions, use the definite article.',example:"Je **me** lave **les** mains. ✓ (NOT: je me lave **mes** mains ✗)\nElle **se** brosse **les** cheveux."},
+    {label:'Passé composé — always être',body:'All reflexive verbs use être. Participe passé agrees with subject.',example:"Je **me** suis levé(e). Elle **s'**est habillée.\nIls **se** sont levés. Nous **nous** sommes rencontrés."},
+    {label:'Reciprocal — action done to each other',body:'Nous nous / vous vous / ils se — mutual action.',example:"Nous **nous** aimons. (We love each other.)\nIls **se** regardent. (They look at each other.)\nVous **vous** connaissez? (Do you know each other?)"},
+    {label:'Négation — ne wraps the reflexive pronoun and auxiliary',body:'',example:"Je **ne** **me** suis **pas** levée tôt. ✓\n(NOT: je ne suis pas me levée ✗)\nIl **ne** **se** rappelle **plus**."},
+  ],
+  tips:["Infinitive form: always se + verb (se lever, se coucher, se souvenir). The 'se' changes to match the subject when conjugated.",'PC agreement: agrees with subject UNLESS there\'s a following COD. (Je me suis lavé les mains — les mains is COD → no extra agreement on lavé)'],
+},
+{
+  level:'A1',id:'prepositions-lieu',title:'Prépositions de lieu',desc:'Location prepositions — à côté de, sur, sous, devant…',
+  formula:'Most take DE → contracts: du/de la/de l\'/des | Simple preps: sur, sous, dans, entre, devant, derrière',
+  overview:'Prepositions of location tell you where something is. Most multi-word prepositions (à côté de, en face de, près de, loin de, au bout de) end in DE — which contracts with articles just like regular DE. Simple prepositions (sur, sous, dans, entre, devant, derrière) stand alone.',
+  uses:['Describe where something is','Give directions in a building or city','Locate objects, people, or places'],
+  examples:[
+    {fr:"La bibliothèque est **en face de** la mairie.",en:"The library is across from city hall.",context:"Où est la bibliothèque?",note:"**en face de** + noun"},
+    {fr:"Le café est **à côté de** la pharmacie.",en:"The café is next to the pharmacy.",context:"Où est le café?",note:"**à côté de** + noun"},
+    {fr:"La poste est **au bout de** la rue.",en:"The post office is at the end of the street.",context:"Où est la poste?",note:"**au bout de** → au (de + le contracted)"},
+    {fr:"Le parc est **près d'**ici.",en:"The park is near here.",context:"Le parc est loin?",note:"**près de** → près d' before vowel"},
+    {fr:"L'école est **loin du** centre-ville.",en:"The school is far from downtown.",context:"L'école est proche?",note:"**loin de** + le → loin du"},
+    {fr:"Le chat est **sous** la table.",en:"The cat is under the table.",context:"Où est le chat?",note:"**sous** = under (standalone, no DE needed)"},
+    {fr:"Les clés sont **sur** le bureau.",en:"The keys are on the desk.",context:"Où sont les clés?",note:"**sur** = on (standalone)"},
+    {fr:"Je suis **entre** le métro et le parc.",en:"I'm between the metro and the park.",context:"Tu es où exactement?",note:"**entre** + two nouns"},
+    {fr:"C'est **au coin de** la rue.",en:"It's at the corner of the street.",context:"C'est où, exactement?",note:"**au coin de** → au (de + le)"},
+  ],
+  rules:[
+    {label:'Compound prepositions WITH de',body:'Contract: de + le = DU, de + les = DES',conjugation:[['à côté de','next to'],['en face de','across from / opposite'],['près de','near'],['loin de','far from'],['au bout de','at the end of'],['au coin de','at the corner of'],['à gauche de','to the left of'],['à droite de','to the right of'],['autour de','around'],['en dehors de','outside of']],example:"à côté DU parc (de + le = du). près DES magasins. en face DE la maison. loin D'ici."},
+    {label:'Simple standalone prepositions',body:'No article needed after them.',conjugation:[['sur','on / on top of'],['sous','under'],['dans','in / inside'],['entre','between'],['devant','in front of'],['derrière','behind'],['contre','against / up against']],example:"Le livre est sur la table. Le chat est sous le lit. La clé est dans le tiroir. Il est devant la porte."},
+    {label:'Contraction reminder: de + le/les',body:"de + le → DU. de + les → DES. de + la and de + l' stay as is.",example:"à côté DU parc ✓. loin DES magasins ✓. en face DE la gare ✓. près DE l'école ✓."},
+  ],
+  tips:["Most compound location prepositions END IN DE — that DE contracts with articles: du, de la, de l', des.",'Direction imperatives: Tournez à gauche. Allez tout droit. Prenez la première rue à droite. C\'est au bout du couloir.'],
+},
+{
+  level:'A1',id:'pays-prepositions',title:'Pays et prépositions',desc:'En, au, aux, à — in/to countries and cities',
+  formula:'Cities: à | Feminine countries: en | Masculine countries: au | Plural countries: aux | Masc + vowel: en',
+  overview:"The preposition used with countries depends on the gender and number of the country. Feminine countries (most ending in -e) use EN. Masculine countries use AU. Plural countries use AUX. Cities always use À. Exception: masculine countries starting with a vowel also use EN.",
+  uses:['Say where you are or where you live','Say where you are going','Say where you are coming from (different prepositions: du/de/des)'],
+  examples:[
+    {fr:"J'habite au Canada.",en:"I live in Canada.",note:"Canada is masculine → AU"},
+    {fr:"Elle est en France.",en:"She is in France.",note:"France is feminine → EN"},
+    {fr:"Nous allons aux États-Unis.",en:"We are going to the United States.",note:"États-Unis is plural → AUX"},
+    {fr:"Il travaille à Paris.",en:"He works in Paris.",note:"city → always À"},
+    {fr:"Je viens du Maroc.",en:"I come from Morocco.",note:"coming FROM masculine country: du (de + le)"},
+    {fr:"Elle revient de France.",en:"She's coming back from France.",note:"coming FROM feminine country: just DE"},
+    {fr:"Je suis en Espagne.",en:"I'm in Spain.",note:"Espagne is feminine → EN"},
+    {fr:"Il habite au Québec.",en:"He lives in Quebec.",note:"Québec is masculine province → AU"},
+  ],
+  rules:[
+    {label:'Going TO / Living IN countries',body:'',conjugation:[['Cities','à — à Paris, à Montréal, à Tokyo, à Rome'],['Feminine countries (end in -e)','en — en France, en Italie, en Chine, en Espagne'],['Masculine countries','au — au Canada, au Japon, au Maroc, au Portugal'],['Plural countries','aux — aux États-Unis, aux Pays-Bas, aux Philippines'],['Masculine starting with vowel','en — en Iran, en Irak, en Ouganda']],example:"Je vais en France. Tu habites au Japon. Elle part aux États-Unis. On va à Rome."},
+    {label:'Coming FROM countries',body:'',conjugation:[['Cities','de / d\' — de Paris, d\'Athènes, de Montréal'],['Feminine countries','de / d\' — de France, d\'Italie, d\'Espagne'],['Masculine countries','du — du Canada, du Japon, du Maroc'],['Plural countries','des — des États-Unis, des Pays-Bas']],example:"Je viens du Canada. Elle revient de France. Il arrive des États-Unis. Je suis de Paris."},
+    {label:'Common country genders',body:'Feminine (→ en): France, Italie, Espagne, Allemagne, Chine, Russie, Belgique, Suisse, Turquie, Corée, Grèce. Masculine (→ au): Canada, Japon, Mexique, Maroc, Portugal, Brésil, Pérou.',example:'En Allemagne. En Suisse. Au Brésil. Au Mexique. Aux Pays-Bas.'},
+  ],
+  tips:["Most countries ending in -E are feminine → EN. Exceptions (still masculine): le Mexique, le Cambodge, le Mozambique.",'Province tip: au Québec, au Manitoba, au Nouveau-Brunswick. En Ontario, en Colombie-Britannique, en Alberta.'],
+},
+{
+  level:'A2',id:'passe-compose',title:'Passé composé',desc:"Completed past actions — j'ai mangé, je suis allé(e)",
+  hard:true,
+  formula:'Subject + AVOIR or ÊTRE (present) + participe passé',
+  overview:'The most common past tense. Used for completed actions with a clear end. Two-word structure: always need an auxiliary. With ÊTRE, the participe passé must agree with the subject. With AVOIR, it agrees only if a COD comes before the verb.',
+  uses:['Completed action with clear end','Sequence of past events','Actions with specific time markers (hier, l\'année dernière…)'],
+  examples:[
+    {fr:"J'ai fait des cauchemars cette nuit.",en:"I had nightmares last night.",note:"avoir + faire → fait (irregular participe passé)"},
+    {fr:"Je suis allée à la plage.",en:"I went to the beach.",note:"aller uses ÊTRE; +e because the speaker is feminine"},
+    {fr:"Je me suis levée à 7h45.",en:"I got up at 7:45.",note:"reflexive verbs ALWAYS use être; +e for feminine speaker"},
+    {fr:"La visite, on l'a faite en bus.",en:"We did the visit by bus.",note:"COD before verb → faite agrees with 'la visite' (feminine)"},
+    {fr:"Je n'ai pas mangé ce matin.",en:"I didn't eat this morning.",note:"ne…pas wraps the AUXILIARY only — never the participe"},
+    {fr:"Elle s'est endormie pendant le film.",en:"She fell asleep during the movie.",note:"reflexive + être + feminine agreement"},
+    {fr:"Il est né en 1990.",en:"He was born in 1990.",note:"naître uses être — DR MRS VANDERTRAMP"},
+    {fr:"Nous avons vu un film formidable.",en:"We saw an amazing film.",note:"voir → vu (irregular)"},
+    {fr:"Elle a pris un café.",en:"She had a coffee.",note:"prendre → pris (irregular)"},
+    {fr:"Je suis tombée dans l'escalier.",en:"I fell in the staircase.",note:"tomber uses être — agreement with subject"},
+  ],
+  rules:[
+    {label:'Formation with AVOIR (most verbs)',body:'Subject + avoir + participe passé. No agreement with subject.',conjugation:[['ER verbs:','mangé (remove -er, add é)'],['IR verbs:','fini (remove -ir)'],['RE verbs:','vendu (remove -re, add u)']],example:"J'ai mangé. Tu as fini. Elle a vendu sa voiture."},
+    {label:'Irregular participes passés — must memorize',body:'',conjugation:[['avoir →','eu'],['être →','été'],['faire →','fait'],['prendre →','pris'],['venir →','venu'],['voir →','vu'],['savoir →','su'],['mettre →','mis'],['écrire →','écrit'],['pouvoir →','pu'],['vouloir →','voulu'],['boire →','bu']],example:"J'ai fait les courses. Nous avons vu un film. Il a pris un café. Elle a écrit un email."},
+    {label:'Formation with ÊTRE',body:'DR MRS VANDERTRAMP verbs, birth/death, and ALL reflexive verbs. Participe passé agrees with subject.',example:"Je suis allée à la plage. (woman: +e) Nous sommes partis. Elle s'est levée. Ils sont montés."},
+    {label:'DR MRS VANDERTRAMP — être verbs',body:'Devenir, Revenir, Monter, Rester, Sortir, Venir, Aller, Naître, Descendre, Entrer, Rentrer, Tomber, Retourner, Arriver, Mourir, Partir.',example:'Il est né en 1990. Elle est morte. Ils sont montés. On est sortis.'},
+    {label:'Accord du COD — AVOIR agreement exception',body:'If the COD comes BEFORE the verb (as a pronoun or in a relative clause), the participe passé agrees with it.',example:'La visite, on l\'a faite en bus. (faite: feminine agrees with "la visite") Les fleurs qu\'il a achetées. (achetées: feminine plural)'},
+  ],
+  tips:['Hamza: "Specific time marker? → passé composé. Habit or no clear end? → imparfait."','Camille: "With avoir, participe passé does NOT change… UNLESS COD comes BEFORE the verb." (accord du COD)'],
+  warnings:['With être, the participe passé must agree: +e for feminine, +s for plural, +es for feminine plural.','NEVER put ne…pas around the participe passé: Je n\'ai pas mangé ✓ NOT je n\'ai mangé pas ✗'],
+},
+{
+  level:'A2',id:'imparfait',title:"L'imparfait",desc:'Habits, descriptions & background past',
+  hard:true,
+  formula:'NOUS present → remove -ONS → add: -ais/-ais/-ait/-ions/-iez/-aient',
+  overview:'No clear start or end. The "background" tense — what was happening, what things were like, what used to happen. Être is the ONLY irregular verb. If something interrupts an ongoing action, the ongoing action is imparfait and the interruption is passé composé.',
+  uses:['Habits & repeated past actions','Descriptions (setting the scene)','Emotions & states in the past','Two simultaneous actions','Background action interrupted by new event'],
+  examples:[
+    {fr:"Quand j'étais enfant, j'habitais en Floride.",en:"When I was a child, I lived in Florida.",note:"être → étais (only irregular); habitual description → imparfait"},
+    {fr:"Elle lisait pendant que je cuisinais.",en:"She was reading while I was cooking.",note:"two simultaneous actions → BOTH imparfait"},
+    {fr:"Je dormais quand le téléphone a sonné.",en:"I was sleeping when the phone rang.",note:"background (imp) interrupted by new event (passé composé)"},
+    {fr:"D'habitude, je me levais à 7h.",en:"Usually, I would get up at 7.",note:"d'habitude = imparfait clue word (repeated habit)"},
+    {fr:"Il faisait beau et nous étions heureux.",en:"The weather was nice and we were happy.",note:"description / scene-setting → imparfait"},
+    {fr:"Avant, elle fumait. Maintenant, elle ne fume plus.",en:"Before, she used to smoke. Now, she doesn't anymore.",note:"avant = past habit → imparfait"},
+    {fr:"J'avais toujours faim après l'école.",en:"I was always hungry after school.",note:"toujours = recurring state → imparfait"},
+  ],
+  rules:[
+    {label:'Formation — all verbs (except être)',body:'Take the NOUS form in present → remove -ONS → add endings:',conjugation:[['je','-ais'],['tu','-ais'],['il/elle/on','-ait'],['nous','-ions'],['vous','-iez'],['ils/elles','-aient']],example:'Parler: nous parlons → je parlais, tu parlais, il parlait, nous parlions, vous parliez, ils parlaient.'},
+    {label:'ÊTRE — the only irregular verb in imparfait',body:'Uses the stem ÉT-:',conjugation:[["j'",'étais'],['tu','étais'],['il/elle','était'],['nous','étions'],['vous','étiez'],['ils/elles','étaient']],example:"Quand j'étais enfant, j'habitais en Floride. Il était fatigué."},
+    {label:'Two simultaneous actions',body:'Neither interrupts the other → BOTH use imparfait.',example:'Elle lisait pendant que je cuisinais. Il regardait la télé pendant que je dormais.'},
+    {label:'Interrupted action',body:'Background ongoing action → imparfait. The interruption → passé composé.',example:'Je dormais (imp.) quand le téléphone a sonné (PC). Elle marchait quand elle est tombée.'},
+  ],
+  clueWords:["toujours","souvent","d'habitude","en général","chaque jour","tous les jours","tous les dimanches","quand j'étais enfant","avant","autrefois","à l'époque"],
+  tips:['Hamza: "Descriptions and emotions → imparfait. Specific time → passé composé."',"Camille warning: imparfait endings look like conditionnel — don't confuse them! Conditionnel uses the INFINITIVE as stem. Imparfait uses the NOUS-PRESENT stem."],
+},
+{
+  level:'A2',id:'futur',title:'Futur proche & futur simple',desc:'Going to (proche) vs will (simple)',
+  formula:'Proche: aller (présent) + infinitif | Simple: infinitif + -ai/-as/-a/-ons/-ez/-ont',
+  overview:'Two future tenses. Futur proche = imminent or certain future. Futur simple = planned, predicted, or more distant future. CRITICAL: after QUAND in a future context, French uses futur simple (unlike English which uses present).',
+  uses:['Near/certain future (proche)','Planned or predicted future (simple)','After QUAND in future contexts (always futur simple!)'],
+  examples:[
+    {fr:"Je vais manger ce soir.",en:"I'm going to eat tonight.",note:"futur proche: certain/near event"},
+    {fr:"Je vais me lever tôt demain.",en:"I'm going to get up early tomorrow.",note:"reflexive: je vais ME lever ✓ (NOT: je me vais lever ✗)"},
+    {fr:"Quand je serai en vacances, je me reposerai.",en:"When I'm on vacation, I will rest.",note:"QUAND + futur simple (NOT present, unlike English!)"},
+    {fr:"Il pleuvra demain.",en:"It will rain tomorrow.",note:"futur simple for prediction"},
+    {fr:"Nous irons en France l'été prochain.",en:"We will go to France next summer.",note:"aller → ir- (irregular stem)"},
+  ],
+  rules:[
+    {label:'Futur proche — aller + infinitif',body:'Conjugate ALLER in present + infinitive.',conjugation:[['je vais','+ infinitif'],['tu vas','+ infinitif'],['il/elle va','+ infinitif'],['nous allons','+ infinitif'],['vous allez','+ infinitif'],['ils/elles vont','+ infinitif']],example:'Je vais manger. Nous allons partir demain. Il va pleuvoir.'},
+    {label:'Futur simple — endings',body:'Attach to the infinitive (drop final -E for -RE verbs):',conjugation:[['je','-ai'],['tu','-as'],['il/elle','-a'],['nous','-ons'],['vous','-ez'],['ils/elles','-ont']],example:'Je mangerai. Tu finiras. Nous partirons. Elle vendra.'},
+    {label:'Irregular futur simple stems',body:'Same stems as conditionnel:',conjugation:[['être →','ser-'],['avoir →','aur-'],['aller →','ir-'],['faire →','fer-'],['venir →','viendr-'],['pouvoir →','pourr-'],['vouloir →','voudr-'],['savoir →','saur-']],example:'Je serai là. Il aura faim. Nous irons. Elle fera ça. Ça pourra attendre.'},
+    {label:'QUAND + futur simple (important rule!)',body:'After QUAND in a future context, use futur simple — unlike English.',example:'Quand je serai en vacances, je me reposerai. (NOT: quand je suis en vacances…)'},
+  ],
+  tips:["For reflexive verbs in futur proche: Je vais me lever ✓ NOT Je me vais lever ✗ — the reflexive pronoun stays before the infinitive."],
+},
+{
+  level:'A2',id:'conditionnel',title:'Conditionnel présent',desc:'Would — polite requests, wishes, advice',
+  formula:'Futur simple stem + imparfait endings (-ais/-ais/-ait/-ions/-iez/-aient)',
+  overview:'Used for polite requests, wishes, hypotheticals, and advice. Same stem as the futur simple, but with imparfait endings. KEY DISTINCTION: futur simple = will definitely happen. Conditionnel = wish/hypothetical/polite.',
+  uses:['Polite requests (je voudrais…)','Wishes & dreams','Advice (tu devrais…)','Suggestions (on pourrait…)','Hypotheticals (si + imparfait → conditionnel)'],
+  examples:[
+    {fr:"Je voudrais un café, s'il vous plaît.",en:"I would like a coffee, please.",note:"vouloir → voudr- + ais = voudrais (most polite way to order/ask)"},
+    {fr:"Tu devrais dormir plus.",en:"You should sleep more.",note:"devoir → devr- + ais = devrais (giving advice)"},
+    {fr:"On pourrait aller au cinéma ce soir.",en:"We could go to the movies tonight.",note:"pouvoir → pourr- + ait = pourrait (suggestion)"},
+    {fr:"Si j'avais de l'argent, j'achèterais une maison.",en:"If I had money, I would buy a house.",note:"hypothetical: si + imparfait → conditionnel présent"},
+    {fr:"Il faudrait changer ça.",en:"We should change that.",note:"falloir → faudr- + ait = il faudrait (general 'one should')"},
+    {fr:"Je serais tellement heureuse.",en:"I would be so happy.",note:"être → ser- (irregular stem, same as futur)"},
+  ],
+  rules:[
+    {label:'Formation',body:'Futur simple stem + imparfait endings:',conjugation:[['je','-ais'],['tu','-ais'],['il/elle/on','-ait'],['nous','-ions'],['vous','-iez'],['ils/elles','-aient']],example:'Je voudrais un café. (I would like a coffee — very polite!)'},
+    {label:'Irregular stems (same as futur simple)',body:'',conjugation:[['être →','ser-'],['avoir →','aur-'],['aller →','ir-'],['faire →','fer-'],['pouvoir →','pourr-'],['vouloir →','voudr-'],['devoir →','devr-']],example:'Je serais heureux. Il pourrait venir. Nous ferions ça.'},
+    {label:'Voudrais — polite requests',body:'Most polite way to make a request (instead of je veux).',example:'Je voudrais réserver une table. Je voudrais deux croissants, s\'il vous plaît.'},
+    {label:'Devrais / devrait — advice',body:'Giving advice or recommendations.',example:'Tu devrais dormir plus. Il devrait faire du sport. Vous devriez partir maintenant.'},
+    {label:'Pourrait / on pourrait — suggestions',body:'Making soft suggestions.',example:'On pourrait aller au cinéma. Tu pourrais lui parler directement.'},
+  ],
+  tips:["KEY: 'Nous irons' (futur: we WILL go — certain) vs 'nous irions' (conditionnel: we WOULD go — hypothetical). Same stem, different endings."],
+},
+{
+  level:'A2',id:'pronouns',title:'COD & COI pronouns',desc:'Direct & indirect object pronouns',
+  hard:true,
+  formula:'Order: me/te/nous/vous → le/la/les → lui/leur → y → en',
+  overview:'COD = direct object (answers qui? quoi?). COI = indirect object (answers à qui?). Pronouns go BEFORE the conjugated verb. The biggest traps: LUI means both "to him" AND "to her" (COI), while LE/LA distinguish him/her (COD). And in passé composé, if COD comes before the verb, the participe passé must agree.',
+  uses:['Replace nouns to avoid repetition','Must appear BEFORE the conjugated verb (except in affirmative imperative)'],
+  examples:[
+    {fr:"Je **la** vois tous les jours.",en:"I see her every day.",context:"Tu vois Marie souvent?",note:"COD: **la** = her (direct — answers qui?)"},
+    {fr:"Je **lui** parle.",en:"I speak to him/her.",context:"Tu parles à Marc?",note:"COI: **lui** = to him / to her (answers à qui?)"},
+    {fr:"Je **le** **lui** donne.",en:"I give it to him.",context:"Tu donnes le livre à Marc?",note:"two pronouns: **le** (COD) before **lui** (COI) — order matters!"},
+    {fr:"J'**y** vais.",en:"I go there.",context:"Tu vas au marché?",note:"**Y** replaces à + place or thing"},
+    {fr:"J'**en** veux deux.",en:"I want two of them.",context:"Tu veux des croissants?",note:"**EN** replaces de + noun, or a quantity"},
+    {fr:"La visite, on **l'**a **faite** en bus.",en:"We did the visit by bus.",note:"COD before verb in PC → **faite** agrees with 'la visite' (feminine)"},
+    {fr:"Il **me** **le** donne.",en:"He gives it to me.",note:"**me** comes before **le** (me/te/nous/vous always come first)"},
+    {fr:"Elle **te** **les** envoie.",en:"She sends them to you.",note:"**te** before **les** in pronoun order"},
+  ],
+  rules:[
+    {label:'COD — direct object pronouns',body:'Answers: qui? or quoi?',conjugation:[["me / m'",'me'],["te / t'",'you'],["le / la / l'",'him / her / it'],['nous','us'],['vous','you (pl/formal)'],['les','them']],example:'Je **la** vois. (I see her.)\nIl **nous** appelle. (He calls us.)\nTu **les** aimes. (You like them.)\nJe **le** mange. (I eat it.)'},
+    {label:'COI — indirect object pronouns',body:'Answers: à qui? (replaces à + person)',conjugation:[["me / m'",'to me'],["te / t'",'to you'],['lui','to him / to her'],['nous','to us'],['vous','to you'],['leur','to them']],example:'Je **lui** parle. (I speak to him/her.)\nIl **leur** donne un cadeau. (He gives them a gift.)\nElle **me** téléphone. (She calls me.)\nJe **vous** écris. (I write to you.)'},
+    {label:'Pronoun ORDER when using two',body:'me/te/nous/vous → le/la/les → lui/leur → y → en',example:'Je **le** **lui** donne. (I give it to him.)\nIl **me** **le** donne. (He gives it to me.)\nElle **te** **les** envoie. (She sends them to you.)\nIl **y** **en** a deux. (There are two of them there.)'},
+    {label:'Pronom Y — replaces à + place or thing',body:'Not used for people.',example:"J'**y** vais. (I go there.)\nTu **y** penses? (Are you thinking about it?)\nOn **y** va! (Let's go!)"},
+    {label:'Pronom EN — replaces de + noun or quantity',body:'',example:"J'**en** veux deux. (I want two of them.)\nElle **en** parle souvent. (She talks about it often.)\nTu **en** veux? (Do you want some?)"},
+    {label:'Accord du COD in passé composé',body:'If COD comes BEFORE the verb, participe passé agrees with it.',example:'La visite, on l\'a faite en bus. (faite: agrees with "la visite", fem.) Les fleurs qu\'il a achetées.'},
+  ],
+  tips:["Camille: 'Pronom tonique (moi, toi, lui, elle…) is used WITHOUT a verb — for emphasis or after prepositions. Don't confuse with COI.'",'Hamza: "When in doubt about order — me/te/nous/vous always come first."'],
+  warnings:['COI uses LUI for BOTH "to him" AND "to her". COD uses LE (him) or LA (her). Never mix them!','In affirmative imperative, pronoun goes AFTER the verb: Mange-le! Donne-le-lui! In negative: Ne le mange pas!'],
+},
+{
+  level:'A2',id:'pronoms-relatifs',title:'Pronoms relatifs',desc:'Qui, que, où, dont — connecting clauses',
+  hard:true,
+  formula:'QUI (subject) | QUE/QU\' (direct object) | OÙ (place or time) | DONT (de + noun)',
+  overview:'Relative pronouns connect two sentences by referring back to a noun (the antecedent). The key is figuring out the role the pronoun plays in its clause — is it the subject, the object, a place/time reference, or does it come after DE?',
+  uses:['Connect two sentences into one','Avoid repeating a noun','Add information about a noun'],
+  examples:[
+    {fr:"La femme qui parle est mon professeure.",en:"The woman who is speaking is my teacher.",note:"QUI = subject (she is speaking — she is the subject of 'parle')"},
+    {fr:"Le livre que je lis est intéressant.",en:"The book that I'm reading is interesting.",note:"QUE = COD (I read the book — it's the direct object of 'lis')"},
+    {fr:"La ville où j'habite est Montréal.",en:"The city where I live is Montreal.",note:"OÙ = place reference"},
+    {fr:"Le livre dont j'ai besoin est épuisé.",en:"The book I need is out of stock.",note:"DONT because avoir besoin DE quelque chose → DE triggers DONT"},
+    {fr:"C'est la personne dont je suis fière.",en:"She's the person I'm proud of.",note:"être fier DE → DONT"},
+    {fr:"Le jour où je suis arrivée…",en:"The day when I arrived…",note:"OÙ = time reference (not just place!)"},
+  ],
+  rules:[
+    {label:'QUI — subject of the relative clause',body:'Who / that. The relative pronoun IS the subject.',example:'La femme QUI parle est professeure. L\'homme QUI habite là est sympa.'},
+    {label:'QUE / QU\' — direct object',body:'Whom / that / which. The pronoun is the COD.',example:"Le livre QUE je lis est intéressant. C'est l'amie QUE j'ai rencontrée à Paris."},
+    {label:'OÙ — place or time',body:'Where (place) or when (time).',example:'La ville OÙ j\'habite est Montréal. Le jour OÙ je suis arrivée, il faisait beau.'},
+    {label:'DONT — replaces de + noun',body:'Used with verbs/adjectives that take DE.',example:'Le livre DONT j\'ai besoin. La femme DONT je suis fière. L\'histoire DONT elle parle.'},
+  ],
+  tips:["Quick test: Who/that as subject? → QUI. Who/that as object? → QUE. Place/time? → OÙ. Contains 'de'? → DONT."],
+  warnings:["QUI never elides — always QUI, never QU' (that's only QUE before a vowel). QUI = no elision. QUE → QU' = yes elision."],
+},
+{
+  level:'A2',id:'imperatif',title:"L'impératif",desc:'Commands and instructions',
+  formula:'TU form / NOUS form / VOUS form — no subject pronoun!',
+  overview:'Only 3 forms exist: TU, NOUS, VOUS. The subject pronoun is dropped. Key trap: ER verbs DROP the S in the TU form (Parle! not Parles!). Pronouns go AFTER the verb in affirmative commands (with a hyphen), but BEFORE in negative commands.',
+  uses:['Give a command','Give instructions / a recipe','Give advice','Make a request (polite with -ez)'],
+  examples:[
+    {fr:"Parle plus lentement!",en:"Speak more slowly!",note:"-ER verb TU form: drop the S! (tu parles → Parle)"},
+    {fr:"Mange tes légumes!",en:"Eat your vegetables!",note:"another -ER verb: tu manges → Mange (no S)"},
+    {fr:"Soyez patients!",en:"Be patient! (to multiple people)",note:"être → soyez (irregular imperative)"},
+    {fr:"Mange-le!",en:"Eat it!",note:"affirmative command: pronoun goes AFTER with hyphen"},
+    {fr:"Ne le mange pas!",en:"Don't eat it!",note:"negative command: pronoun stays BEFORE the verb"},
+    {fr:"Vas-y!",en:"Go ahead! / Go there!",note:"va keeps its S before Y: Vas-y! (but: Va au magasin — no S)"},
+    {fr:"Aie confiance!",en:"Have confidence!",note:"avoir → aie (irregular imperative)"},
+  ],
+  rules:[
+    {label:'ER verbs — TU form drops the S',body:'Take the tu present form → remove final S.',example:'Tu parles → Parle! Tu manges → Mange! Tu écoutes → Écoute!'},
+    {label:'NOUS & VOUS forms — same as present tense',body:'',example:'Parlons! (let\'s speak) Parlez! (speak!) Venez! Finissons! Attendez!'},
+    {label:'Irregular imperatives',body:'',conjugation:[['être:','sois / soyons / soyez'],['avoir:','aie / ayons / ayez'],['aller:','va / allons / allez'],['savoir:','sache / sachons / sachez']],example:'Sois sage! Aie confiance! Va-y! Soyez patients!'},
+    {label:'Affirmative + pronoun → after verb with hyphen',body:'Me/te become moi/toi.',example:'Mange-le! Parle-moi! Donne-les-lui! Vas-y!'},
+    {label:'Negative + pronoun → before verb',body:'Normal position.',example:'Ne le mange pas! Ne me parle pas! Ne vous inquiétez pas!'},
+  ],
+  tips:["The S-drop ONLY applies to ER verbs in TU form! IR and other verbs keep the S: Finis! Vends! Réponds!",'VA keeps its S before Y: Vas-y! (but: Va au magasin! — no Y, no S)'],
+},
+{
+  level:'A2',id:'comparaisons',title:'Les comparaisons',desc:'Plus…que, moins…que, aussi…que',
+  formula:'plus/moins/aussi + adj/adv + que | plus de/moins de/autant de + noun + que',
+  overview:'French comparatives follow consistent patterns. The main traps: BON (good) and BIEN (well) have irregular comparatives — meilleur and mieux respectively. When comparing quantities (nouns), use plus DE, moins DE, autant DE — not plus que directly. Superlatives use DE (not dans) for "in".',
+  uses:['Compare two people or things (adjectives)','Compare how actions are done (adverbs)','Compare quantities (nouns: plus de, moins de, autant de)','Express the best/worst (superlatives)'],
+  examples:[
+    {fr:"Montréal est **plus** grande **que** Québec.",en:"Montreal is bigger than Quebec.",context:"Quelle ville est plus grande?",note:"**plus** + adj + **que** — adj agrees with subject (grande = feminine)"},
+    {fr:"Ce film est **moins** intéressant **que** le livre.",en:"This film is less interesting than the book.",context:"Tu as aimé le film?",note:"**moins** + adj + **que**"},
+    {fr:"Elle parle **aussi** bien **que** toi.",en:"She speaks as well as you.",context:"Elle parle bien le français?",note:"**aussi** + adverb + **que** — bien is an adverb here, no agreement"},
+    {fr:"Il mange **plus** vite **que** moi.",en:"He eats faster than me.",context:"Qui mange le plus vite?",note:"**plus** + adverb + **que** — adverbs never change form"},
+    {fr:"J'ai **plus de** travail **que** toi.",en:"I have more work than you.",context:"Tu es occupée?",note:"comparing NOUNS → **plus de** + noun + **que**"},
+    {fr:"Elle a **autant de** patience **que** sa mère.",en:"She has as much patience as her mother.",note:"**autant de** + noun + **que** (not 'aussi de')"},
+    {fr:"C'est **le meilleur** restaurant de la ville.",en:"It's the best restaurant in the city.",note:"superlative of bon → **le meilleur**. 'in' = de (not dans)"},
+    {fr:"C'est **mieux** que je ne pensais.",en:"It's better than I thought.",note:"**mieux** = better (comparative of bien, the adverb)"},
+    {fr:"C'est **le pire** film que j'aie vu.",en:"It's the worst film I've seen.",note:"**pire** = worse/worst (comparative/superlative of mauvais)"},
+  ],
+  rules:[
+    {label:'Comparing adjectives: plus / moins / aussi + adj + que',body:'Adjective always agrees with the noun it describes.',example:"Il est **plus** grand **que** moi.\nElle est **moins** fatiguée **qu'**hier.\nTu es **aussi** sympa **qu'**elle."},
+    {label:'Comparing adverbs: plus / moins / aussi + adv + que',body:'Adverbs do not change form (no gender/number agreement).',example:'Elle parle **plus** lentement **que** lui.\nIl mange **aussi** vite **que** toi.\nElle conduit **moins** bien **que** moi.'},
+    {label:'Comparing nouns (quantities): plus de / moins de / autant de + noun + que',body:'Use DE before the noun — not QUE directly.',example:"J'ai **plus de** travail **que** toi.\nElle a **moins d'**argent **que** lui.\nOn a **autant de** temps **qu'**eux."},
+    {label:'Irregular comparatives — BON and BIEN',body:'',conjugation:[['bon (adj) →','meilleur(e) — better | le/la meilleur(e) — best'],['bien (adv) →','mieux — better | le mieux — best'],['mauvais (adj) →','pire — worse | le pire — worst']],example:"Ce restaurant est meilleur que l'autre. Elle va mieux aujourd'hui. C'est le pire film!"},
+    {label:'Superlatives: le / la / les plus + adj + de',body:"Use 'de' (not 'dans') after superlatives for 'in'.",example:"C'est le plus beau parc de la ville. (NOT: dans la ville) Elle est la meilleure de sa classe."},
+  ],
+  warnings:["NEVER say 'plus bien' — it doesn't exist! Use MIEUX (adverb: better done) and MEILLEUR (adjective: better quality).",'Comparing nouns: plus DE before the noun. Je mange plus que toi. vs. Je mange plus DE légumes que toi (noun → DE).'],
+  tips:["Camille: 'Bon/mauvais → meilleur/pire (adj, agrees with noun). Bien/mal → mieux/pire (adverb, no agreement). Don't mix them!'"],
+},
+{
+  level:'B1',id:'subjonctif',title:'Le subjonctif présent',desc:'Wishes, necessity, doubt, emotion + QUE',
+  hard:true,
+  formula:'ils/elles present → remove -ENT → add: -e/-es/-e/-ions/-iez/-ent (+ QUE before it)',
+  overview:'A mood (not a tense) triggered by specific expressions. Usually requires TWO DIFFERENT subjects connected by QUE. If the subject is the same in both clauses, use infinitive instead. Irregulars (être, avoir, aller, faire, pouvoir, vouloir) must be memorized separately.',
+  uses:['Wishes & desires (je veux que…)','Necessity (il faut que…)','Emotion (je suis content(e) que…)','Doubt (je doute que…)','Purpose (pour que…)','Concession (bien que…)'],
+  examples:[
+    {fr:"Il faut que tu sois là à 18h.",en:"You need to be there at 6pm.",note:"il faut que → subjonctif; être → sois (irregular)"},
+    {fr:"Je veux qu'elle vienne.",en:"I want her to come.",note:"vouloir que + different subject → subjonctif"},
+    {fr:"C'est dommage qu'il soit malade.",en:"It's a shame he's sick.",note:"c'est dommage que → subjonctif"},
+    {fr:"Bien qu'elle soit fatiguée, elle travaille.",en:"Although she is tired, she works.",note:"bien que → ALWAYS subjonctif"},
+    {fr:"Il faut que je fasse mes devoirs.",en:"I need to do my homework.",note:"faire → fasse (irregular subjonctif)"},
+    {fr:"Je suis contente que tu sois là.",en:"I'm happy you're here.",note:"être content(e) que → subjonctif"},
+    {fr:"Pour que tu comprennes, je vais expliquer.",en:"So that you understand, I'll explain.",note:"pour que → subjonctif (purpose)"},
+    {fr:"J'ai peur qu'il ne vienne pas.",en:"I'm afraid he won't come.",note:"avoir peur que → subjonctif"},
+  ],
+  rules:[
+    {label:'Formation — regular verbs',body:'ils/elles present → remove -ENT → add endings. Nous/vous use the nous-present stem.',conjugation:[['que je','-e'],['que tu','-es'],["qu'il/elle",'-e'],['que nous','-ions'],['que vous','-iez'],["qu'ils/elles",'-ent']],example:'Parler: ils parlent → que je parle, que tu parles, que nous parlions, que vous parliez.'},
+    {label:'Irregular subjonctifs — must memorize',body:'',conjugation:[['être:','que je sois / nous soyons / vous soyez'],['avoir:','que j\'aie / nous ayons / vous ayez'],['aller:','que j\'aille / nous allions'],['faire:','que je fasse / nous fassions'],['pouvoir:','que je puisse / nous puissions'],['vouloir:','que je veuille / nous voulions'],['savoir:','que je sache / nous sachions']],example:'Il faut que tu sois là. Je veux qu\'elle aille. Que je fasse quoi? Que tu puisses venir!'},
+    {label:'NOT subjonctif — certainty and hope',body:'Penser que, croire que, espérer que → indicatif (certainty or expectation).',example:'Je pense qu\'elle est là. (indicatif) Je suis certaine qu\'elle viendra. (indicatif) On espère qu\'il vient.'},
+  ],
+  subjonctifTriggers:['vouloir que','falloir que','douter que','craindre que','avoir peur que','être content(e) que','être triste que','il est important que','il est nécessaire que','il est dommage que','pour que','afin que','à moins que','bien que','pourvu que','avant que'],
+  tips:['Camille: "Je veux qu\'elle → subjonctif. Je suis certaine qu\'elle → NOT subjonctif." Wish/doubt vs certainty.','On espère que = NOT subjonctif! Even though "hope" feels like a wish, it uses indicatif.'],
+  warnings:['Subjonctif ONLY when TWO DIFFERENT subjects! If same subject → use infinitive. "Je veux partir" ✓ NOT "je veux que je parte" ✗'],
+},
+{
+  level:'B1',id:'plus-que-parfait',title:'Le plus-que-parfait',desc:'Had done — the past before the past',
+  formula:'AVOIR or ÊTRE (imparfait) + participe passé',
+  overview:'The "past of the past." Used when you need to describe an action that happened BEFORE another past action. Same être/avoir rules as passé composé. Same agreement rules.',
+  uses:['Action completed BEFORE another past action','Often paired with quand, lorsque, après que, déjà'],
+  examples:[
+    {fr:"Elle était déjà partie quand je suis arrivé.",en:"She had already left when I arrived.",note:"PQP (elle est partie) happened FIRST; then PC (je suis arrivé)"},
+    {fr:"J'avais mangé avant qu'il arrive.",en:"I had eaten before he arrived.",note:"PQP = completed before another past event"},
+    {fr:"Il avait déjà fini quand je suis entré.",en:"He had already finished when I came in.",note:"déjà often signals PQP"},
+    {fr:"Ils s'étaient levés de bonne heure.",en:"They had gotten up early.",note:"reflexive: être + agreement (levés = masc plural)"},
+  ],
+  rules:[
+    {label:'Formation',body:'IMPARFAIT of avoir or être + participe passé',conjugation:[["j'avais / j'étais",'+ participe passé'],['tu avais / tu étais','+ participe passé'],['il/elle avait / était','+ participe passé'],['nous avions / étions','+ participe passé'],['vous aviez / étiez','+ participe passé'],['ils/elles avaient / étaient','+ participe passé']],example:"J'avais mangé. Elle était partie. Ils s'étaient levés."},
+    {label:'Same être vs avoir rules as passé composé',body:'Same agreement rules too.',example:'Elle était déjà arrivée quand je suis entré. Il avait fini avant elle.'},
+  ],
+  tips:["Timeline: Plus-que-parfait → Passé composé → Present. 'Quand je suis arrivé, il avait déjà fini.' (He finished first, then I arrived.)"],
+},
+{
+  level:'B1',id:'discours-indirect',title:'Discours indirect',desc:'Reported speech — she said that…',
+  hard:true,
+  formula:'Statements: dire que + verb | Yes/No Q: demander SI | Open Q: CE QUE / CE QUI',
+  overview:'Relaying what someone said without quoting them directly. Three key transformations: (1) statements use "dire que", (2) yes/no questions use "si", (3) open questions use "ce que" or "ce qui". When the main verb is in the past, tenses shift.',
+  uses:['Report what someone said','Report a yes/no question (→ SI)','Report an open question (→ CE QUE / CE QUI)'],
+  examples:[
+    {fr:"Elle dit qu'elle est fatiguée.",en:"She says she is tired.",note:"'Je suis fatiguée' → statement: dire que + clause"},
+    {fr:"Il demande si tu viens.",en:"He asks if you're coming.",note:"'Est-ce que tu viens?' → yes/no question → SI"},
+    {fr:"Elle demande ce que je veux.",en:"She asks what I want.",note:"'Qu'est-ce que tu veux?' → ce que (COD in clause)"},
+    {fr:"Il demande ce qui se passe.",en:"He asks what's happening.",note:"'Qu'est-ce qui se passe?' → ce qui (subject in clause)"},
+    {fr:"Elle a dit qu'elle était fatiguée.",en:"She said she was tired.",note:"past main verb → tense shift: présent → imparfait"},
+    {fr:"Il a dit qu'il viendrait.",en:"He said he would come.",note:"past main verb → tense shift: futur → conditionnel"},
+  ],
+  rules:[
+    {label:'Statements → dire que / affirmer que',body:'',example:'"Je suis fatiguée." → Elle dit qu\'elle est fatiguée. "J\'habite à Montréal." → Il dit qu\'il habite à Montréal.'},
+    {label:'Yes/No questions → SI',body:'Est-ce que → SI. Inversion → SI.',example:'"Est-ce que tu viens?" → Il demande SI tu viens. "Viens-tu?" → Elle demande SI tu viens.'},
+    {label:'Open questions → CE QUE / CE QUI',body:'Qu\'est-ce que → CE QUE. Qu\'est-ce qui → CE QUI. Other words (où, quand, comment, pourquoi, qui) stay the same.',example:'"Qu\'est-ce que tu veux?" → CE QUE je veux. "Qu\'est-ce qui se passe?" → CE QUI se passe.'},
+    {label:'Tense shifts (when main verb is past)',body:'Présent → imparfait. Passé composé → plus-que-parfait. Futur → conditionnel.',example:'"Je suis fatigué." → Il a dit qu\'il ÉTAIT fatigué. "Je viendrai." → Elle a dit qu\'elle VIENDRAIT.'},
+  ],
+  tips:["Camille key rule: est-ce que → SI. Qu'est-ce que → CE QUE. Qu'est-ce qui → CE QUI. These 3 transformations are the most tested."],
+},
+{
+  level:'B1',id:'gerondif',title:'Le gérondif',desc:'En + verb-ant — while doing / by doing',
+  formula:'EN + [nous-présent] - ONS + ANT',
+  overview:'The gérondif expresses two actions by the same subject: either happening simultaneously (while) or one being the means for the other (by). Both actions must have the SAME subject. Different from "en train de" (which = currently doing something right now).',
+  uses:['Two simultaneous actions with same subject (while)','How an action is done (by doing)'],
+  examples:[
+    {fr:"Il chante en cuisinant.",en:"He sings while cooking.",note:"simultaneous actions, same subject (he)"},
+    {fr:"Tu réussiras en travaillant dur.",en:"You'll succeed by working hard.",note:"manner: how something is achieved → gérondif"},
+    {fr:"J'ai appris le français en écoutant la radio.",en:"I learned French by listening to the radio.",note:"by doing → gérondif"},
+    {fr:"Elle est tombée en courant.",en:"She fell while running.",note:"how the falling happened → gérondif"},
+    {fr:"En étant patient, tu progresseras.",en:"By being patient, you will progress.",note:"être → étant (irregular gérondif)"},
+  ],
+  rules:[
+    {label:'Formation',body:'Nous present → remove -ONS → add -ANT → put EN before:',example:'Parler: nous parlons → parlant → EN PARLANT. Manger → en mangeant. Finir → en finissant.'},
+    {label:'3 irregular gérondifs',body:'',conjugation:[['être →','en étant'],['avoir →','en ayant'],['savoir →','en sachant']],example:'En étant patient, tu réussiras. En ayant du courage, on avance.'},
+    {label:'Simultaneity (while)',body:'',example:'Il chante EN CUISINANT. Elle lisait EN MANGEANT.'},
+    {label:'Manner (by)',body:'',example:'Tu réussiras EN TRAVAILLANT dur. J\'ai appris EN PRATIQUANT.'},
+  ],
+  tips:["DO NOT confuse with 'en train de'! 'Je suis en train de manger' = I am currently eating (at this very moment). Gérondif = while/by doing, not a current action description."],
+  warnings:["en - train - de are THREE SEPARATE WORDS. NEVER write 'entrain de' — it does not exist!"],
+},
+{
+  level:'B1',id:'pronoms-possessifs',title:'Pronoms possessifs',desc:'Le mien, le tien, le sien… — mine, yours, his/hers',
+  formula:'Definite article (le/la/les) + possessive stem — agrees with the THING owned, not the owner',
+  overview:"Possessive pronouns replace a noun + possessive adjective ('mon livre' → 'le mien'). They agree in gender and number with the THING owned — NOT the owner. Used to avoid repetition or compare possessions. KEY trap: 'his car' and 'her car' are BOTH 'la sienne' because voiture is feminine.",
+  uses:['Replace a noun + possessive adjective to avoid repetition','Compare possessions between people','Emphasize ownership (more emphatic than possessive adjective)'],
+  examples:[
+    {fr:"Ma voiture est rouge. La tienne est bleue.",en:"My car is red. Yours is blue.",note:"la tienne = yours (feminine — because voiture is feminine)"},
+    {fr:"J'ai oublié mon parapluie. Tu peux me prêter le tien?",en:"I forgot my umbrella. Can you lend me yours?",note:"le tien = yours (masculine — because parapluie is masculine)"},
+    {fr:"Nos résultats sont bons, mais les leurs sont meilleurs.",en:"Our results are good but theirs are better.",note:"les leurs = theirs (plural — because résultats is plural)"},
+    {fr:"C'est le mien.",en:"It's mine.",note:"le mien — masculine singular (the object is masculine)"},
+    {fr:"Ce sont les siennes.",en:"Those are hers / his.",note:"les siennes — feminine plural (objects are feminine plural)"},
+    {fr:"Son manteau et le nôtre sont mouillés.",en:"His coat and ours are wet.",note:"le nôtre — masc sing (manteau is masculine). Note the circumflex!"},
+  ],
+  rules:[
+    {label:'Full pronoms possessifs table',body:'Definite article + possessive stem. Agrees with the THING owned.',conjugation:[['mine:','le mien / la mienne / les miens / les miennes'],['yours (tu):','le tien / la tienne / les tiens / les tiennes'],['his / hers / its:','le sien / la sienne / les siens / les siennes'],['ours:','le nôtre / la nôtre / les nôtres'],['yours (vous):','le vôtre / la vôtre / les vôtres'],['theirs:','le leur / la leur / les leurs']],example:"Mon chat et le tien. Ma voiture et la tienne. Mes livres et les siens. Notre maison et la vôtre."},
+    {label:'Usage — replacing noun + possessive adjective',body:'',example:'"Où est ton parapluie?" "J\'ai le mien." (replaces mon parapluie) "C\'est ta place?" "Oui, c\'est la mienne."'},
+    {label:'After être — more emphatic than adjective',body:'',example:'"Ce livre est à toi?" "Oui, c\'est le mien." (emphatic) vs. "c\'est mon livre" (neutral)'},
+    {label:'Contraction with à and de',body:'The article contracts normally.',example:"J'ai besoin du tien. (de + le tien) Elle pense aux nôtres. (à + les nôtres) Je parle du leur."},
+  ],
+  warnings:['Notre/votre (possessive ADJECTIVES) have NO circumflex. Le nôtre/le vôtre (possessive PRONOUNS) DO have circumflex. Easy to confuse in writing!'],
+  tips:["KEY: Gender agrees with the THING owned — not the owner. 'His car' and 'her car' are BOTH 'la sienne' (voiture is feminine regardless of the owner)."],
+},
+{
+  level:'B2',id:'condition',title:'La condition avec si',desc:'If…then — three levels of probability',
+  formula:'Real: si+présent → futur | Hypothetical: si+imparfait → conditionnel | Impossible: si+PQP → conditionnel passé',
+  overview:'Three types of conditional sentences. The choice depends on how possible or real the situation is. The golden rule: NEVER put the conditionnel in the SI clause.',
+  rules:[
+    {label:'Real / likely — Si + présent → futur (or présent)',body:'Something that can really happen.',example:'Si je travaille, je réussirai. (If I work, I will succeed.) Si tu viens, c\'est bien.'},
+    {label:'Hypothetical / unlikely — Si + imparfait → conditionnel présent',body:'An imagined situation unlikely or contrary to present reality.',example:'Si j\'avais de l\'argent, j\'achèterais une maison. Si j\'étais toi, je partirais.'},
+    {label:'Impossible — Si + plus-que-parfait → conditionnel passé',body:'Something that didn\'t happen in the past.',example:'Si j\'avais étudié, j\'aurais réussi. Si elle était venue, on aurait célébré.'},
+  ],
+  examples:[
+    {fr:"Si je travaille, je réussirai.",en:"If I work, I will succeed.",note:"real/possible: si + présent → futur simple"},
+    {fr:"Si j'avais de l'argent, j'achèterais une maison.",en:"If I had money, I would buy a house.",note:"hypothetical: si + imparfait → conditionnel présent"},
+    {fr:"Si j'avais étudié, j'aurais réussi.",en:"If I had studied, I would have passed.",note:"impossible (past): si + PQP → conditionnel passé"},
+    {fr:"Si tu viens, c'est bien.",en:"If you come, great.",note:"real, simple: présent + présent"},
+  ],
+  warnings:['NEVER use conditionnel in the SI clause! Si + conditionnel is ALWAYS wrong. The conditionnel goes in the RESULT clause only.'],
+},
+{
+  level:'B2',id:'concession',title:'Concession & restriction',desc:'Although, despite, however — contrast & limits',
+  formula:'Bien que + SUBJONCTIF | Même si + INDICATIF | ne…que / ni…ni',
+  overview:'Ways to express nuance, opposition, and limits. The most tested distinction: BIEN QUE (although) takes subjonctif, MÊME SI (even if) takes indicatif.',
+  uses:['Express contrast (although, even if)','Express opposition (however, whereas)','Express restriction (only, neither…nor)'],
+  examples:[
+    {fr:"Bien qu'il soit fatigué, il travaille.",en:"Although he's tired, he works.",note:"bien que ALWAYS takes subjonctif — no exceptions"},
+    {fr:"Même si je suis fatiguée, je travaillerai.",en:"Even if I'm tired, I will work.",note:"même si takes INDICATIF — NOT subjonctif"},
+    {fr:"Il est riche, pourtant il est malheureux.",en:"He's rich, yet he's unhappy.",note:"pourtant = however (opposition between two facts)"},
+    {fr:"Je ne mange que des légumes.",en:"I only eat vegetables.",note:"ne…que = restriction: ne before verb, que before limited thing"},
+    {fr:"Je n'aime ni le café ni le thé.",en:"I like neither coffee nor tea.",note:"ni…ni = neither…nor"},
+  ],
+  rules:[
+    {label:'Bien que + SUBJONCTIF',body:'"Although" — requires subjonctif.',example:'Bien qu\'il soit fatigué, il travaille. Bien que ce soit difficile, je vais essayer.'},
+    {label:'Même si + INDICATIF',body:'"Even if" — requires indicatif.',example:'Même si je suis fatiguée, je travaillerai. Même s\'il pleut, on sort.'},
+    {label:'Opposition connectors',body:'Pourtant, cependant, néanmoins = however. Alors que, tandis que = whereas.',example:'Il est riche, pourtant il est malheureux. C\'est cher, cependant c\'est bon.'},
+    {label:'Restriction: NE…QUE = only',body:'NE before verb, QUE after verb (before the restricted noun).',example:'Je ne mange que des légumes. Je n\'ai que 10 euros.'},
+    {label:'NI…NI = neither…nor',body:'Both parts are negative. Ne still needed before verb.',example:'Je n\'aime ni le café ni le thé. Elle ne veut ni partir ni rester.'},
+  ],
+  tips:['Camille: BIEN QUE needs subjonctif. MÊME SI needs indicatif. This distinction is frequently tested.'],
+},
 ];
+// GRAMMAR_TOPICS_END
 
-function buildGrammar(){
-  document.getElementById('grammar-content').innerHTML=GRAMMAR.map(g=>`
-  <div class="gm-level">
-    <div class="gm-label">${g.level} — ${g.name.toUpperCase()}</div>
-    <div class="gm-grid">${g.topics.map(t=>`<div class="gm-card">
-      <span class="lb ${g.level}">${g.level}</span>
-      <h4>${t.title}</h4>
-      <p>${t.desc}</p>
-    </div>`).join('')}</div>
-  </div>`).join('');
+class FrenchApp extends LitElement {
+  static properties = {
+    tab:{state:true}, grammarId:{state:true}, vocabTab:{state:true},
+    vocabSearch:{state:true}, vocabCat:{state:true}, vocabPos:{state:true}, vocabLvl:{state:true},
+    cardIdx:{state:true}, cardFlipped:{state:true}, flashCat:{state:true}, flashLvl:{state:true},
+    flashMode:{state:true}, cardDeck:{state:true},
+    exCard:{state:true}, exChoices:{state:true}, exAnswered:{state:true},
+    exScore:{state:true}, exTotal:{state:true}, exCat:{state:true},
+  };
+  createRenderRoot(){return this;}
+  constructor(){
+    super();
+    this.tab='vocab'; this.grammarId=null; this.vocabTab='words';
+    this.vocabSearch=''; this.vocabCat=''; this.vocabPos=''; this.vocabLvl='';
+    this.cardIdx=0; this.cardFlipped=false; this.flashCat=''; this.flashLvl=''; this.flashMode='vocab';
+    this.cardDeck=[...V];
+    this.exCard=null; this.exChoices=[]; this.exAnswered=null;
+    this.exScore=0; this.exTotal=0; this.exCat='';
+  }
+  get filteredVocab(){
+    const q=this.vocabSearch.toLowerCase().trim();
+    return V.filter(v=>{
+      if(this.vocabCat&&v.cat!==this.vocabCat)return false;
+      if(this.vocabPos&&v.pos!==this.vocabPos)return false;
+      if(this.vocabLvl&&v.lvl!==this.vocabLvl)return false;
+      if(q&&!v.fr.toLowerCase().includes(q)&&!v.en.toLowerCase().includes(q)&&!(v.note||'').toLowerCase().includes(q))return false;
+      return true;
+    });
+  }
+  get _grammarExDeck(){
+    const cards=[];
+    GRAMMAR_TOPICS.forEach(t=>{
+      (t.examples||[]).forEach(ex=>{
+        cards.push({type:'grammar',topic:t.title,level:t.level,fr:ex.fr,en:ex.en,note:ex.note||''});
+      });
+    });
+    return cards;
+  }
+  _markup(text){
+    if(!text)return nothing;
+    const parts=text.split(/\*\*(.*?)\*\*/g);
+    if(parts.length===1)return text;
+    return parts.map((p,i)=>i%2===1
+      ?html`<strong class="font-semibold underline decoration-primary/60 underline-offset-2">${p}</strong>`
+      :p
+    );
+  }
+  _speak(text){
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='fr-FR'; u.rate=0.85;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  }
+  _rebuildDeck(){
+    let base=[];
+    if(this.flashMode==='vocab'||this.flashMode==='mix'){
+      base=V.filter(v=>(!this.flashCat||v.cat===this.flashCat)&&(!this.flashLvl||v.lvl===this.flashLvl));
+    }
+    if(this.flashMode==='grammar'||this.flashMode==='mix'){
+      base=[...base,...this._grammarExDeck];
+    }
+    this.cardDeck=base; this.cardIdx=0; this.cardFlipped=false;
+  }
+  _setFlashFilters(cat,lvl){
+    this.flashCat=cat; this.flashLvl=lvl;
+    this._rebuildDeck();
+  }
+  _shuffleDeck(){
+    const d=[...this.cardDeck];
+    for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]];}
+    this.cardDeck=d; this.cardIdx=0; this.cardFlipped=false;
+  }
+  _newExercise(){
+    const pool=V.filter(v=>!this.exCat||v.cat===this.exCat);
+    if(pool.length<4)return;
+    const correct=pool[Math.floor(Math.random()*pool.length)];
+    const wrongs=pool.filter(v=>v!==correct).sort(()=>Math.random()-0.5).slice(0,3);
+    this.exCard=correct; this.exChoices=[...wrongs,correct].sort(()=>Math.random()-0.5); this.exAnswered=null;
+  }
+  _answerEx(choice){
+    if(this.exAnswered!==null)return;
+    this.exAnswered=choice; this.exTotal++;
+    if(choice.fr===this.exCard.fr)this.exScore++;
+  }
+  render(){
+    const NAV=[['vocab','📚','Vocabulary'],['grammar','📖','Grammar'],['cards','🃏','Flashcards'],['exercises','✏️','Exercises']];
+    return html`
+      <nav class="bg-white border-b border-gray-200 sticky top-0 z-20 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 flex items-stretch justify-between h-16">
+          <div class="flex items-center">
+            <span class="font-bold text-xl text-gray-900">French Study Tool</span>
+          </div>
+          <div class="flex">
+            ${NAV.map(([t,icon,label])=>html`
+              <button class="flex items-center gap-2 px-5 h-full border-b-2 transition-all font-medium
+                ${this.tab===t
+                  ?'border-primary text-primary font-semibold'
+                  :'border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300'}"
+                @click=${()=>this.tab=t}>
+                <span class="text-base leading-none">${icon}</span>
+                <span>${label}</span>
+              </button>
+            `)}
+          </div>
+        </div>
+      </nav>
+      <div class="max-w-7xl mx-auto p-6 pb-16">
+        ${this.tab==='vocab'?this._vocab():this.tab==='grammar'?this._grammar():this.tab==='cards'?this._cards():this._exercises()}
+      </div>
+    `;
+  }
+  _vocab(){
+    const SUB=[['words','All Words'],['faux','⚠️ Faux Amis'],['syn','🔄 Synonyms']];
+    return html`
+      <div class="flex gap-1 mb-6 border-b border-base-300">
+        ${SUB.map(([s,label])=>html`
+          <button class="px-4 py-2 font-medium transition-colors border-b-2 -mb-px
+            ${this.vocabTab===s?'border-primary text-primary':'border-transparent text-gray-500 hover:text-gray-800'}"
+            @click=${()=>this.vocabTab=s}>
+            ${label}
+          </button>
+        `)}
+      </div>
+      ${this.vocabTab==='words'?this._vocabWords():this.vocabTab==='faux'?this._faux():this._syn()}
+    `;
+  }
+  _vocabWords(){
+    const vocab=this.filteredVocab;
+    return html`
+      <div class="flex flex-wrap gap-2 mb-4">
+        <input class="input input-bordered flex-1 min-w-48" placeholder="Search French or English…"
+          .value=${this.vocabSearch} @input=${e=>this.vocabSearch=e.target.value}>
+        <select class="select select-bordered" @change=${e=>this.vocabCat=e.target.value}>
+          <option value="">All categories</option>
+          ${CATS.map(([v,l])=>html`<option value="${v}" ?selected=${this.vocabCat===v}>${l}</option>`)}
+        </select>
+        <select class="select select-bordered" @change=${e=>this.vocabPos=e.target.value}>
+          <option value="">All types</option>
+          ${Object.entries(POS_LABELS).map(([v,l])=>html`<option value="${v}" ?selected=${this.vocabPos===v}>${l}</option>`)}
+        </select>
+        <select class="select select-bordered" @change=${e=>this.vocabLvl=e.target.value}>
+          <option value="">All levels</option>
+          ${['A1','A2','B1','B2'].map(l=>html`<option value="${l}" ?selected=${this.vocabLvl===l}>${l}</option>`)}
+        </select>
+        <span class="text-base text-base-content/50 self-center">${vocab.length} words</span>
+      </div>
+      <div class="overflow-x-auto rounded-lg border border-base-300 max-h-[70vh] overflow-y-auto">
+        <table class="table table-zebra">
+          <thead class="sticky top-0 bg-base-200">
+            <tr><th>French</th><th>English</th><th>Type</th><th>Level</th><th>Note</th></tr>
+          </thead>
+          <tbody>
+            ${vocab.map(v=>html`<tr>
+              <td class="font-medium">${v.fr}</td>
+              <td>${v.en}</td>
+              <td><span class="badge badge-sm ${POS_BADGE[v.pos]}">${POS_LABELS[v.pos]}</span></td>
+              <td><span class="badge badge-sm ${LVL_BADGE[v.lvl]}">${v.lvl}</span></td>
+              <td class="text-sm text-base-content/50 italic">${v.note||''}</td>
+            </tr>`)}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+  _cards(){
+    const deck=this.cardDeck;
+    if(!deck.length)return html`<div class="alert">No cards match filters.</div>`;
+    const card=deck[Math.min(this.cardIdx,deck.length-1)];
+    const lvl=card.level||card.lvl;
+    const catLabel=CATS.find(([v])=>v===card.cat)?.[1]||card.cat||'';
+    return html`
+      <div class="flex flex-wrap gap-3 mb-6 items-center">
+        <div class="flex rounded-xl border border-base-300 overflow-hidden text-sm font-medium">
+          ${[['vocab','📚 Vocab'],['grammar','📖 Grammar'],['mix','🔀 Mix']].map(([m,label])=>html`
+            <button class="px-5 py-2 transition-colors ${this.flashMode===m?'bg-primary text-primary-content':'bg-base-100 hover:bg-base-200'}"
+              @click=${()=>{this.flashMode=m;this._rebuildDeck();}}>
+              ${label}
+            </button>
+          `)}
+        </div>
+        ${this.flashMode!=='grammar'?html`
+          <select class="select select-bordered select-sm" @change=${e=>this._setFlashFilters(e.target.value,this.flashLvl)}>
+            <option value="">All categories</option>
+            ${CATS.map(([v,l])=>html`<option value="${v}" ?selected=${this.flashCat===v}>${l}</option>`)}
+          </select>
+          <select class="select select-bordered select-sm" @change=${e=>this._setFlashFilters(this.flashCat,e.target.value)}>
+            <option value="">All levels</option>
+            ${['A1','A2','B1','B2'].map(l=>html`<option value="${l}" ?selected=${this.flashLvl===l}>${l}</option>`)}
+          </select>
+        `:nothing}
+        <span class="text-sm text-base-content/50 ml-auto">Card ${this.cardIdx+1} of ${deck.length}</span>
+      </div>
+      <div class="card bg-base-100 border border-base-300 min-h-80 cursor-pointer hover:shadow-lg transition-all mb-6"
+        @click=${()=>this.cardFlipped=!this.cardFlipped}>
+        ${!this.cardFlipped?html`
+          <div class="card-body items-center justify-center text-center gap-6 py-12">
+            <div class="flex gap-2 justify-center flex-wrap">
+              ${lvl?html`<span class="badge ${LVL_BADGE[lvl]}">${lvl}</span>`:nothing}
+              ${catLabel?html`<span class="badge bg-gray-100 text-gray-700 border-transparent">${catLabel}</span>`:nothing}
+              ${card.type==='grammar'?html`<span class="badge bg-violet-100 text-violet-700 border-transparent">${card.topic}</span>`:nothing}
+              ${card.pos?html`<span class="badge ${POS_BADGE[card.pos]}">${POS_LABELS[card.pos]}</span>`:nothing}
+            </div>
+            <div class="text-5xl font-semibold leading-snug max-w-2xl">${card.fr}</div>
+            <button class="btn btn-ghost btn-sm gap-2 text-base-content/50 hover:text-base-content"
+              @click=${e=>{e.stopPropagation();this._speak(card.fr);}}>
+              🔊 Pronounce
+            </button>
+            <div class="text-sm text-base-content/30">tap card to reveal</div>
+          </div>
+        `:html`
+          <div class="card-body items-center justify-center text-center gap-5 bg-base-200 rounded-2xl py-12">
+            <div class="flex gap-2 justify-center flex-wrap">
+              ${lvl?html`<span class="badge ${LVL_BADGE[lvl]}">${lvl}</span>`:nothing}
+              ${card.pos?html`<span class="badge ${POS_BADGE[card.pos]}">${POS_LABELS[card.pos]}</span>`:nothing}
+            </div>
+            <div class="text-4xl font-semibold">${card.en}</div>
+            ${card.note?html`<div class="text-base text-base-content/55 italic max-w-lg leading-relaxed">${card.note}</div>`:nothing}
+          </div>
+        `}
+      </div>
+      <div class="flex gap-3 justify-center">
+        <button class="btn btn-outline btn-sm" @click=${()=>{this.cardIdx=(this.cardIdx-1+deck.length)%deck.length;this.cardFlipped=false;}}>← Prev</button>
+        <button class="btn btn-outline btn-sm" @click=${()=>this._shuffleDeck()}>Shuffle</button>
+        <button class="btn btn-outline btn-sm" @click=${()=>{this.cardIdx=(this.cardIdx+1)%deck.length;this.cardFlipped=false;}}>Next →</button>
+      </div>
+    `;
+  }
+  _grammar(){
+    if(this.grammarId){
+      const t=GRAMMAR_TOPICS.find(t=>t.id===this.grammarId);
+      return t?this._grammarDetail(t):html`<p>Topic not found.</p>`;
+    }
+    const lvlLabel={A1:'A1 — Foundations',A2:'A2 — Intermediate',B1:'B1 — Upper Intermediate',B2:'B2 — Advanced'};
+    return html`
+      ${['A1','A2','B1','B2'].map(lvl=>html`
+        <div class="mb-6">
+          <div class="text-xs font-bold uppercase tracking-widest text-base-content/40 mb-3">${lvlLabel[lvl]}</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            ${GRAMMAR_TOPICS.filter(t=>t.level===lvl).map(t=>html`
+              <div class="card card-bordered bg-base-100 cursor-pointer hover:shadow-md transition-all hover:border-base-content/20"
+                @click=${()=>this.grammarId=t.id}>
+                <div class="card-body p-4">
+                  <div class="flex items-start gap-2">
+                    <div class="flex-1 min-w-0">
+                      ${t.hard?html`<div class="badge bg-amber-100 text-amber-700 border-transparent badge-sm mb-2">⚠ Tricky</div>`:nothing}
+                      <h3 class="font-semibold text-base leading-snug">${t.title}</h3>
+                      <p class="text-sm text-base-content/50 mt-1">${t.desc}</p>
+                    </div>
+                    <span class="badge badge-sm ${LVL_BADGE[t.level]} shrink-0">${t.level}</span>
+                  </div>
+                </div>
+              </div>
+            `)}
+          </div>
+        </div>
+      `)}
+    `;
+  }
+  _grammarDetail(t){
+    const sec=(label)=>html`<div class="text-xs font-bold uppercase tracking-wider text-base-content/40 mb-2">${label}</div>`;
+    return html`
+      <button class="btn btn-ghost btn-sm -ml-2 mb-4" @click=${()=>this.grammarId=null}>← All topics</button>
+      <div class="flex flex-wrap items-center gap-2 mb-2">
+        <h2 class="text-3xl font-bold">${t.title}</h2>
+        <span class="badge ${LVL_BADGE[t.level]}">${t.level}</span>
+        ${t.hard?html`<span class="badge bg-amber-100 text-amber-700 border-transparent">⚠ Tricky — reviewed often in your notes</span>`:nothing}
+      </div>
+      <p class="text-base text-base-content/60 leading-relaxed mb-5">${t.overview}</p>
+
+      ${t.formula?html`
+        <div class="bg-base-200 border border-base-300 rounded-xl p-3 mb-5">
+          ${sec('Formula')}
+          <code class="text-sm font-mono">${t.formula}</code>
+        </div>
+      `:nothing}
+
+      ${t.uses?.length?html`
+        <div class="mb-5">${sec('When to use')}
+          <div class="flex flex-wrap gap-1.5">${t.uses.map(u=>html`<span class="badge bg-gray-100 text-gray-600 border-transparent">${u}</span>`)}</div>
+        </div>
+      `:nothing}
+
+      ${t.rules?.length?html`
+        <div class="mb-5">${sec('Rules')}
+          ${t.rules.map(r=>html`
+            <div class="card card-bordered bg-base-100 mb-2">
+              <div class="card-body p-4">
+                <div class="font-semibold text-sm mb-1">${r.label}</div>
+                ${r.body?html`<p class="text-sm text-base-content/60 mb-2">${this._markup(r.body)}</p>`:nothing}
+                ${r.conjugation?.length?html`
+                  <table class="table table-xs border border-base-300 rounded-lg mb-2 w-auto">
+                    <tbody>${r.conjugation.map(([p,f])=>html`<tr>
+                      <td class="text-xs text-base-content/40 font-mono">${p}</td>
+                      <td class="font-medium">${this._markup(f)}</td>
+                    </tr>`)}</tbody>
+                  </table>
+                `:nothing}
+                ${r.example?html`<div class="bg-base-200 rounded-lg px-3 py-2 text-sm text-base-content/70 space-y-1.5">${r.example.split('\n').map(line=>html`<div class="italic">${this._markup(line)}</div>`)}</div>`:nothing}
+              </div>
+            </div>
+          `)}
+        </div>
+      `:nothing}
+
+      ${t.examples?.length?html`
+        <div class="mb-5">${sec('Examples from your notes')}
+          <div class="space-y-2">
+            ${t.examples.map(ex=>html`
+              <div class="bg-base-100 border border-base-300 rounded-xl p-3">
+                ${ex.context?html`<div class="text-xs font-medium text-primary/70 mb-2 flex items-start gap-1.5"><span class="shrink-0 mt-0.5">💬</span><span>${ex.context}</span></div>`:nothing}
+                <div class="font-medium text-sm">${this._markup(ex.fr)}</div>
+                <div class="text-sm text-base-content/55 mt-0.5">${this._markup(ex.en)}</div>
+                ${ex.note?html`<div class="text-xs text-base-content/40 mt-1 italic">${this._markup(ex.note)}</div>`:nothing}
+              </div>
+            `)}
+          </div>
+        </div>
+      `:nothing}
+
+      ${t.clueWords?.length?html`
+        <div class="mb-5">${sec('Clue words')}
+          <div class="flex flex-wrap gap-2">${t.clueWords.map(w=>html`<span class="badge bg-sky-100 text-sky-700 border-transparent">${w}</span>`)}</div>
+        </div>
+      `:nothing}
+
+      ${t.subjonctifTriggers?.length?html`
+        <div class="mb-5">${sec('Subjonctif triggers')}
+          <div class="flex flex-wrap gap-2">${t.subjonctifTriggers.map(w=>html`<span class="badge bg-violet-100 text-violet-700 border-transparent">${w}</span>`)}</div>
+        </div>
+      `:nothing}
+
+      ${t.warnings?.length?html`
+        <div class="mb-5 space-y-2">
+          ${t.warnings.map(w=>html`
+            <div class="alert alert-error text-sm"><span>⚠️ ${w}</span></div>
+          `)}
+        </div>
+      `:nothing}
+
+      ${t.tips?.length?html`
+        <div class="mb-5 space-y-2">
+          ${t.tips.map(tip=>html`
+            <div class="border-l-4 border-success bg-base-100 rounded-r-xl p-3 text-sm text-base-content/70 leading-relaxed">${tip}</div>
+          `)}
+        </div>
+      `:nothing}
+
+      <button class="btn btn-ghost btn-sm mt-2" @click=${()=>this.grammarId=null}>← Back to all topics</button>
+    `;
+  }
+  _exercises(){
+    return html`
+      <div class="flex flex-wrap gap-3 mb-6 items-center">
+        <select class="select select-bordered" @change=${e=>{this.exCat=e.target.value;this.exCard=null;this.exScore=0;this.exTotal=0;}}>
+          <option value="">All vocabulary</option>
+          ${CATS.map(([v,l])=>html`<option value="${v}" ?selected=${this.exCat===v}>${l}</option>`)}
+        </select>
+        ${this.exTotal>0?html`
+          <div class="flex items-center gap-3 ml-auto">
+            <span class="text-base font-medium">${this.exScore} / ${this.exTotal} correct</span>
+            <div class="w-36 h-2.5 bg-base-300 rounded-full overflow-hidden">
+              <div class="h-full bg-success rounded-full transition-all" style="width:${Math.round(this.exScore/this.exTotal*100)}%"></div>
+            </div>
+            <button class="btn btn-ghost btn-sm" @click=${()=>{this.exCard=null;this.exScore=0;this.exTotal=0;}}>Reset</button>
+          </div>
+        `:nothing}
+      </div>
+      ${!this.exCard?html`
+        <div class="card bg-base-100 border border-base-300 max-w-lg mx-auto">
+          <div class="card-body items-center text-center gap-4 py-16">
+            <div class="text-6xl">✏️</div>
+            <h2 class="text-2xl font-bold">Vocabulary Quiz</h2>
+            <p class="text-base text-gray-600">See a French word — choose the correct English meaning from four options.</p>
+            <button class="btn btn-primary btn-lg mt-2" @click=${()=>this._newExercise()}>Start Quiz</button>
+          </div>
+        </div>
+      `:html`
+        <div class="max-w-2xl mx-auto">
+          <div class="card bg-base-100 border border-base-300 mb-6">
+            <div class="card-body items-center text-center gap-4 py-10">
+              <div class="flex gap-2 justify-center flex-wrap">
+                ${this.exCard.lvl?html`<span class="badge ${LVL_BADGE[this.exCard.lvl]}">${this.exCard.lvl}</span>`:nothing}
+                ${this.exCard.pos?html`<span class="badge ${POS_BADGE[this.exCard.pos]}">${POS_LABELS[this.exCard.pos]}</span>`:nothing}
+              </div>
+              <div class="text-5xl font-semibold">${this.exCard.fr}</div>
+              <div class="text-base text-gray-500">What does this mean in English?</div>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+            ${this.exChoices.map(choice=>html`
+              <button class="btn btn-lg h-auto py-4 px-5 text-left leading-snug justify-start
+                ${this.exAnswered===null?'btn-outline':
+                  choice.fr===this.exCard.fr?'btn-success text-white':
+                  choice===this.exAnswered?'btn-error text-white':
+                  'btn-outline opacity-40'}"
+                ?disabled=${this.exAnswered!==null}
+                @click=${()=>this._answerEx(choice)}>
+                ${choice.en}
+              </button>
+            `)}
+          </div>
+          ${this.exAnswered!==null?html`
+            <div class="flex flex-col items-center gap-3">
+              <div class="text-xl font-semibold ${this.exAnswered.fr===this.exCard.fr?'text-green-700':'text-red-700'}">
+                ${this.exAnswered.fr===this.exCard.fr?'✓ Correct!':'✗ Not quite'}
+              </div>
+              ${this.exAnswered.fr!==this.exCard.fr?html`
+                <div class="text-base text-gray-600">The answer was: <strong>${this.exCard.en}</strong></div>
+                ${this.exCard.note?html`<div class="text-base text-gray-500 italic">${this.exCard.note}</div>`:nothing}
+              `:nothing}
+              <button class="btn btn-primary mt-2" @click=${()=>this._newExercise()}>Next →</button>
+            </div>
+          `:nothing}
+        </div>
+      `}
+    `;
+  }
+  _faux(){
+    return html`
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        ${FAUX.map(f=>html`
+          <div class="card card-bordered bg-base-100">
+            <div class="card-body p-4">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="font-bold text-red-700">${f.word}</span>
+                <span class="badge bg-red-100 text-red-600 border-transparent badge-sm">Faux ami</span>
+              </div>
+              <div class="space-y-1 text-sm">
+                <div><span class="text-xs text-base-content/40 uppercase mr-1">Means:</span><strong>${f.fr}</strong></div>
+                <div><span class="text-xs text-base-content/40 uppercase mr-1">NOT:</span><span class="text-red-700">${f.ew}</span></div>
+                <div><span class="text-xs text-base-content/40 uppercase mr-1">Instead:</span>${f.c}</div>
+              </div>
+              ${f.w?html`<div class="bg-warning/10 border border-warning/30 rounded-lg text-sm mt-3 p-3 text-base-content/70 leading-relaxed">${f.w}</div>`:nothing}
+            </div>
+          </div>
+        `)}
+      </div>
+    `;
+  }
+  _syn(){
+    return html`
+      <div class="text-xs font-bold uppercase tracking-widest text-base-content/40 mb-4">Synonyms &amp; Confusable Groups</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        ${SYN.map(s=>html`
+          <div class="card card-bordered bg-base-100">
+            <div class="card-body p-4">
+              <h3 class="font-semibold text-sm mb-2">${s.theme}</h3>
+              <div class="flex flex-wrap gap-1 mb-2">
+                ${s.words.map((w,i)=>html`<span class="badge badge-sm ${i===0?'bg-gray-200 text-gray-700 border-transparent':'bg-gray-100 text-gray-700 border-transparent'}">${w}</span>`)}
+              </div>
+              ${s.note?html`<p class="text-xs text-base-content/60 leading-relaxed">${s.note}</p>`:nothing}
+            </div>
+          </div>
+        `)}
+      </div>
+    `;
+  }
 }
-
-function showTab(n){
-  const keys=['vocab','cards','faux','syn','grammar'];
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',keys[i]===n));
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.getElementById('sec-'+n).classList.add('active');
-}
-
-rv();buildFaux();buildSyn();loadCards();buildGrammar();
+customElements.define('french-app',FrenchApp);
 </script>
 </body>
 </html>
