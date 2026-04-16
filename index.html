@@ -974,7 +974,15 @@ const CONJ={
 function _computeConj(fr){
   const isRefl=/^(se |s')/i.test(fr);
   const base=fr.replace(/^(se |s')/i,'').toLowerCase().trim();
-  if(CONJ[base])return{data:CONJ[base],isRefl,display:fr};
+  if(CONJ[base]){
+    if(isRefl){
+      const d=CONJ[base];
+      const pp=d.pc[0].split(' ').pop();
+      const pcAux=["me suis","t'es","s'est","nous sommes","vous êtes","se sont"];
+      return{data:{...d,pc:pcAux.map(a=>a+' '+pp+'(e)')},isRefl,display:fr};
+    }
+    return{data:CONJ[base],isRefl,display:fr};
+  }
   if(base.endsWith('er')){
     const stem=base.slice(0,-2);
     const isGer=stem.endsWith('g');const isCer=stem.endsWith('c');
@@ -1836,8 +1844,9 @@ class FrenchApp extends LitElement {
     const fr=this.conjVerb;
     if(!fr)return nothing;
     const result=_computeConj(fr);
-    const tenseData=result?.data?.[this.conjTense]||[];
+    const tenseData=result?.data?.[tenseKey]||[];
     const isRefl=result?.isRefl||false;
+    const tenseKey={'passé composé':'pc'}[this.conjTense]||this.conjTense;
     return html`
       <div class="conj-backdrop open" @click=${()=>this._closeConj()}></div>
       <div class="conj-panel open p-5">
@@ -2112,6 +2121,12 @@ class FrenchApp extends LitElement {
       {emoji:'🏃',verb:'Passer',past:'passé(e)',note:'to pass by'},
     ];
     const etreTable=html`
+      <div class="mb-4">
+        <img src="https://ecole601.com/wp-content/uploads/2023/08/image.png"
+          alt="Maison du Dr et Mme Vandertramp — être verbs visual"
+          class="max-w-full rounded-xl border border-violet-200 shadow-sm"
+          style="max-height:420px;object-fit:contain;">
+      </div>
       <div class="bg-violet-50 border border-violet-200 rounded-xl p-4 mb-3">
         <p class="t-label text-violet-700 font-semibold mb-3">Ces verbes utilisent <strong>ÊTRE</strong> comme auxiliaire au passé composé. Le participe passé s'accorde avec le sujet.</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
