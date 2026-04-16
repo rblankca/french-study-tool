@@ -14,9 +14,14 @@
   .text-base-content\/30,.text-base-content\/40 { color: #6B7280 !important; } /* gray-500, 5.7:1 on white */
   .text-base-content\/50,.text-base-content\/55 { color: #4B5563 !important; } /* gray-600, 7.2:1 on white */
   .text-base-content\/60,.text-base-content\/70 { color: #374151 !important; } /* gray-700, 9.5:1 on white */
+  .vocab-table td,.vocab-table th{font-size:1.5rem !important;line-height:2.1rem !important;}
+  .conj-panel{position:fixed;top:0;right:0;height:100vh;width:460px;max-width:93vw;background:#fff;box-shadow:-4px 0 32px rgba(0,0,0,.13);z-index:50;transform:translateX(110%);transition:transform .28s ease;overflow-y:auto;}
+  .conj-panel.open{transform:translateX(0);}
+  .conj-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:49;opacity:0;pointer-events:none;transition:opacity .28s;}
+  .conj-backdrop.open{opacity:1;pointer-events:auto;}
 </style>
 </head>
-<body class="min-h-screen" style="font-size:18px; background-color:#f0f2f5;">
+<body class="min-h-screen" style="font-size:18px; background-color:#ffffff;">
 <french-app></french-app>
 <script type="importmap">{"imports":{"lit":"https://esm.sh/lit@3"}}</script>
 <script type="module">
@@ -674,6 +679,71 @@ const V=[
 {fr:"C'est trop grand / petit / serré.",en:"It's too big / small / tight.",pos:"exp",lvl:"A2",cat:"clothes",note:"serré = tight/fitted. ample = loose/baggy"},
 {fr:"une tenue",en:"an outfit",pos:"noun",lvl:"A2",cat:"clothes",note:"une tenue décontractée = casual outfit. tenue de soirée = evening wear"},
 {fr:"à rayures / à carreaux / uni(e)",en:"striped / checkered / solid (plain colour)",pos:"exp",lvl:"A2",cat:"clothes",note:"Par Ici Ép. 8: fabric pattern vocabulary"},
+// NEW: city & places (from 2025 PDF notes)
+{fr:"l'arrondissement",en:"the district / borough (of a city)",pos:"noun",lvl:"A2",cat:"city",note:"Paris est divisé en 20 arrondissements"},
+{fr:"la banlieue",en:"the suburb / outskirts",pos:"noun",lvl:"A2",cat:"city",note:"la grande banlieue = far suburbs"},
+{fr:"le carrefour",en:"the crossroads / intersection",pos:"noun",lvl:"A2",cat:"city",note:"also fig. un carrefour d'idées"},
+{fr:"la gendarmerie",en:"the police station (rural/national police)",pos:"noun",lvl:"B1",cat:"city",note:"≠ commissariat (city police)"},
+{fr:"la mairie",en:"the city hall / town hall",pos:"noun",lvl:"A2",cat:"city",note:"le maire = the mayor"},
+{fr:"la ruelle",en:"the narrow alley / lane",pos:"noun",lvl:"B1",cat:"city",note:"≠ une rue (main street)"},
+{fr:"le commissariat",en:"the police station (city police)",pos:"noun",lvl:"A2",cat:"city",note:"≠ gendarmerie (national rural police)"},
+{fr:"l'espace vert",en:"a green space / park",pos:"noun",lvl:"A2",cat:"city",note:"les espaces verts = parks and gardens of a city"},
+{fr:"la cathédrale",en:"the cathedral",pos:"noun",lvl:"A2",cat:"city",note:"Notre-Dame de Paris est une cathédrale gothique"},
+{fr:"le château",en:"the castle / château",pos:"noun",lvl:"A1",cat:"city",note:"château fort = fortified castle. château = also a large country house"},
+{fr:"l'édifice",en:"the edifice / large building",pos:"noun",lvl:"B1",cat:"city",note:"formal word for a monumental building"},
+{fr:"la bâtisse",en:"a large old building",pos:"noun",lvl:"B1",cat:"city",note:"often implies old or imposing"},
+{fr:"l'agent immobilier",en:"the real estate agent",pos:"noun",lvl:"B1",cat:"work",note:"le marché immobilier = the real estate market"},
+{fr:"la spéculation",en:"speculation (financial / real estate)",pos:"noun",lvl:"B1",cat:"work",note:"la spéculation immobilière = real estate speculation"},
+{fr:"le promoteur",en:"the property developer",pos:"noun",lvl:"B1",cat:"work",note:"le promoteur immobilier = real estate developer"},
+// NEW: fait divers / crime vocabulary
+{fr:"alerter",en:"to alert / warn",pos:"verb",lvl:"A2",cat:"city",note:"alerter la police = to alert the police"},
+{fr:"l'arrestation",en:"the arrest",pos:"noun",lvl:"B1",cat:"city",note:"procéder à une arrestation = to make an arrest"},
+{fr:"déposer une plainte",en:"to file a complaint / report a crime",pos:"exp",lvl:"B1",cat:"city",note:"porter plainte = same idea"},
+{fr:"endommager",en:"to damage",pos:"verb",lvl:"B1",cat:"city",note:"les biens endommagés = damaged goods"},
+{fr:"entrer par effraction",en:"to break in / burgle",pos:"exp",lvl:"B1",cat:"city",note:"l'effraction = the break-in. le cambriolage = burglary"},
+// NEW: technology & media (from 2025 PDF)
+{fr:"l'assistant virtuel",en:"the virtual assistant",pos:"noun",lvl:"A2",cat:"media",note:"ex. Siri, Alexa"},
+{fr:"diffuser",en:"to stream / broadcast / spread",pos:"verb",lvl:"A2",cat:"media",note:"diffuser en direct = to stream live"},
+{fr:"l'enceinte",en:"the speaker (audio device)",pos:"noun",lvl:"A2",cat:"media",note:"une enceinte connectée = smart speaker"},
+{fr:"la plateforme",en:"the platform (digital)",pos:"noun",lvl:"A2",cat:"media",note:"une plateforme de streaming = streaming platform"},
+{fr:"la reconnaissance visuelle",en:"facial/visual recognition",pos:"noun",lvl:"B1",cat:"media",note:"la reconnaissance faciale = facial recognition"},
+{fr:"le vidéoprojecteur",en:"the video projector",pos:"noun",lvl:"A2",cat:"media",note:""},
+{fr:"la haute résolution",en:"high resolution",pos:"noun",lvl:"A2",cat:"media",note:"HD / 4K"},
+// NEW: réalité virtuelle vocabulary
+{fr:"l'avatar",en:"the avatar",pos:"noun",lvl:"A2",cat:"media",note:"dans le jeu vidéo ou le métavers"},
+{fr:"le capteur",en:"the sensor / detector",pos:"noun",lvl:"B1",cat:"media",note:"capteur de mouvement = motion sensor"},
+{fr:"le casque de réalité virtuelle",en:"the VR headset",pos:"noun",lvl:"B1",cat:"media",note:""},
+{fr:"la cryptomonnaie",en:"cryptocurrency",pos:"noun",lvl:"B1",cat:"media",note:"le bitcoin est une cryptomonnaie"},
+{fr:"immersif / immersive",en:"immersive",pos:"adj",lvl:"B1",cat:"media",note:"une expérience immersive"},
+{fr:"interactif / interactive",en:"interactive",pos:"adj",lvl:"A2",cat:"media",note:""},
+{fr:"la manette",en:"the game controller / joystick",pos:"noun",lvl:"A2",cat:"media",note:"une manette de jeu"},
+{fr:"le métavers",en:"the metaverse",pos:"noun",lvl:"B1",cat:"media",note:""},
+{fr:"à distance",en:"remotely / at a distance",pos:"exp",lvl:"A2",cat:"media",note:"travailler à distance = to work remotely"},
+// NEW: opinion & argumentation vocabulary (B1)
+{fr:"soutenir",en:"to support / maintain an argument",pos:"verb",lvl:"B1",cat:"school",note:"je soutiens que = I maintain that"},
+{fr:"maintenir",en:"to maintain / uphold",pos:"verb",lvl:"B1",cat:"school",note:"je maintiens mon point de vue = I stand by my position"},
+{fr:"rejeter",en:"to reject",pos:"verb",lvl:"B1",cat:"school",note:"je rejette cette idée = I reject this idea"},
+{fr:"néanmoins",en:"nevertheless / nonetheless",pos:"adv",lvl:"B1",cat:"school",note:"however, opposition — formal"},
+{fr:"toutefois",en:"however / nevertheless",pos:"adv",lvl:"B1",cat:"school",note:"formal written French"},
+{fr:"pourtant",en:"yet / however / still",pos:"adv",lvl:"B1",cat:"school",note:"opposition: il est riche, pourtant il est malheureux"},
+{fr:"du fait de",en:"due to / because of",pos:"exp",lvl:"B1",cat:"school",note:"du fait de la grève = due to the strike"},
+{fr:"grâce à",en:"thanks to",pos:"exp",lvl:"A2",cat:"school",note:"positive cause. ≠ à cause de (neutral/negative)"},
+{fr:"à cause de",en:"because of (neutral/negative)",pos:"exp",lvl:"A2",cat:"school",note:"à cause de la pluie = because of the rain"},
+{fr:"par conséquent",en:"consequently / therefore",pos:"exp",lvl:"B1",cat:"school",note:"formal argumentation"},
+{fr:"en raison de",en:"because of / due to",pos:"exp",lvl:"B1",cat:"school",note:"en raison de la pandémie = due to the pandemic"},
+{fr:"d'après ce que je sais",en:"from what I know",pos:"exp",lvl:"B1",cat:"school",note:"opinion expression"},
+{fr:"en ce qui me concerne",en:"as far as I'm concerned",pos:"exp",lvl:"B1",cat:"school",note:"pour ma part = same idea"},
+{fr:"contrairement à",en:"contrary to / unlike",pos:"exp",lvl:"B1",cat:"school",note:"contrairement à ce que tu penses = contrary to what you think"},
+// NEW: social image vocabulary (from 2025 PDF)
+{fr:"cacher",en:"to hide / conceal",pos:"verb",lvl:"A2",cat:"appearance",note:"≠ trouver"},
+{fr:"camoufler",en:"to camouflage / disguise",pos:"verb",lvl:"B1",cat:"appearance",note:""},
+{fr:"lisser",en:"to smooth out / straighten",pos:"verb",lvl:"B1",cat:"appearance",note:"lisser les cheveux = to straighten hair. lisser la réalité = to smooth out reality"},
+{fr:"se mettre en valeur",en:"to show oneself at one's best",pos:"exp",lvl:"B1",cat:"appearance",note:"met en valeur = flatters / highlights"},
+{fr:"s'exposer",en:"to expose oneself / put oneself out there",pos:"verb",lvl:"B1",cat:"appearance",note:"s'exposer aux critiques = to expose oneself to criticism"},
+{fr:"l'estime de soi",en:"self-esteem",pos:"noun",lvl:"B1",cat:"appearance",note:"avoir une bonne estime de soi = to have good self-esteem"},
+{fr:"s'assumer",en:"to own who you are / accept yourself",pos:"verb",lvl:"B1",cat:"appearance",note:"très utilisé en français actuel"},
+{fr:"se rassurer",en:"to reassure oneself",pos:"verb",lvl:"B1",cat:"appearance",note:""},
+{fr:"être fier / fière de soi",en:"to be proud of oneself",pos:"exp",lvl:"B1",cat:"appearance",note:""},
 ];
 // V_ARRAY_END
 
@@ -734,6 +804,211 @@ const SYN=[
 {theme:"Décéder / mourir — ways to say 'to die'",main:"mourir",words:["mourir (to die — general)","décéder (to die — formal/official)","perdre quelqu'un (to lose someone)","s'éteindre (to go out — poetic)"],note:"Décéder is formal/administrative. Mourir is general. S'éteindre = to go out like a flame (poetic)."},
 ];
 // SYN_ARRAY_END
+
+// V_SYN_START
+const V_SYN={
+"se réveiller":"s'éveiller, sortir du sommeil",
+"se lever":"se mettre debout, se dresser",
+"ranger":"trier, organiser, mettre de l'ordre",
+"nettoyer":"laver, frotter, récurer",
+"balayer":"brosser, nettoyer (au balai)",
+"trier":"classer, séparer, organiser",
+"laver la vaisselle":"faire la vaisselle, laver les assiettes",
+"conduire":"piloter (avion/bateau), manœuvrer",
+"nager":"nager activement ≠ se baigner (casual)",
+"se baigner":"profiter de l'eau ≠ nager (sport actif)",
+"dépenser":"débourser, dilapider, claquer de l'argent",
+"rembourser":"indemniser, restituer, payer en retour",
+"renouveler":"reconduire, prolonger",
+"jardiner":"faire du jardinage, cultiver",
+"tricoter":"faire du tricot, tisser",
+"tousser":"avoir la toux",
+"éternuer":"avoir un éternuement",
+"guérir":"se rétablir, récupérer, se remettre",
+"souffrir":"endurer, pâtir, tolérer",
+"se blesser":"se faire mal, se faire une entorse",
+"s'allonger":"se coucher, s'étendre",
+"s'étirer":"se détendre, s'allonger les muscles",
+"s'énerver":"se fâcher, s'emporter, se mettre en colère",
+"mentir":"tromper, raconter des mensonges",
+"espérer":"souhaiter, désirer, vouloir",
+"vouloir":"souhaiter, désirer, avoir envie de, tenir à",
+"sauver":"secourir, aider, tirer d'affaire",
+"rencontrer":"retrouver, revoir (≠ voir = if already know)",
+"bouger":"se déplacer, remuer, se mouvoir",
+"entendre":"percevoir (passif) ≠ écouter (actif)",
+"écouter":"prêter attention à ≠ entendre (passif)",
+"jeter":"lancer, balancer, envoyer",
+"prêter":"avancer, céder temporairement",
+"mourir":"décéder (formel), s'éteindre (poétique)",
+"se mouvoir":"bouger, se déplacer",
+"nourrir":"alimenter, donner à manger, sustenter",
+"plier":"replier, rabattre, courber",
+"sourire":"rire, être content(e)",
+"crier":"hurler, vociférer, s'exclamer",
+"chuchoter":"murmurer, parler à voix basse",
+"apercevoir":"remarquer, discerner, percevoir",
+"permettre":"autoriser, accorder, laisser",
+"interdire":"prohiber, défendre, ne pas permettre",
+"demander":"solliciter, requérir, réclamer",
+"offrir":"donner, proposer, cadeau",
+"choisir":"sélectionner, opter pour, décider",
+"réussir":"accomplir, parvenir à, y arriver",
+"rater":"échouer, manquer, ne pas réussir",
+"obtenir":"acquérir, se procurer, avoir",
+"adorer":"aimer beaucoup, être fou/folle de",
+"détester":"haïr, ne pas supporter, abhorrer",
+"préférer":"aimer mieux, avoir une préférence pour",
+"craindre":"avoir peur de, redouter, appréhender",
+"sembler":"avoir l'air, paraître, donner l'impression",
+"devenir":"se transformer en, évoluer vers",
+"commencer":"débuter, entamer, se mettre à",
+"finir":"terminer, achever, compléter",
+"continuer":"poursuivre, persévérer",
+"arrêter":"cesser, mettre fin à, stopper",
+"quitter":"partir, laisser, abandonner",
+"rester":"demeurer, ne pas partir",
+"partir":"s'en aller, quitter, prendre la route",
+"arriver":"parvenir, atteindre, venir",
+"entrer":"pénétrer, s'introduire",
+"sortir":"quitter, partir, s'échapper",
+"monter":"grimper, s'élever, aller en haut",
+"descendre":"aller en bas, baisser",
+"tomber":"chuter, faire une chute",
+"lever":"soulever, élever",
+"poser":"mettre, déposer, placer",
+"prendre":"saisir, attraper, emporter",
+"donner":"offrir, remettre, transmettre",
+"recevoir":"obtenir, accueillir, accepter",
+"envoyer":"expédier, transmettre, faire parvenir",
+"apporter":"amener, fournir",
+"chercher":"rechercher, tenter de trouver",
+"trouver":"découvrir, localiser, rencontrer",
+"perdre":"égarer, ne plus avoir",
+"garder":"conserver, maintenir",
+"utiliser":"employer, se servir de, exploiter",
+"créer":"fabriquer, inventer, concevoir",
+"construire":"bâtir, édifier, élaborer",
+"vendre":"céder, commercialiser",
+"acheter":"acquérir, se procurer",
+"payer":"régler, débourser",
+"coûter":"valoir, être à",
+"savoir":"connaître (un fait), être capable de",
+"connaître":"être familier avec ≠ savoir (un fait/how to)",
+"croire":"penser, estimer, supposer",
+"penser":"réfléchir, estimer, croire",
+"comprendre":"saisir, appréhender, réaliser",
+"apprendre":"étudier, s'instruire, mémoriser",
+"enseigner":"instruire, éduquer, former",
+"expliquer":"clarifier, éclaircir, détailler",
+"montrer":"indiquer, faire voir, présenter",
+"rappeler":"se souvenir, remémorer",
+"oublier":"ne plus se rappeler, effacer de la mémoire",
+};
+// V_SYN_END
+
+// CONJ_START
+const PRONOUNS=['je','tu','il/elle/on','nous','vous','ils/elles'];
+const TENSE_NAMES=['présent','imparfait','passé composé','futur','conditionnel','subjonctif','impératif'];
+const CONJ={
+'être':{présent:['suis','es','est','sommes','êtes','sont'],imparfait:['étais','étais','était','étions','étiez','étaient'],pc:['ai été','as été','a été','avons été','avez été','ont été'],futur:['serai','seras','sera','serons','serez','seront'],conditionnel:['serais','serais','serait','serions','seriez','seraient'],subjonctif:['sois','sois','soit','soyons','soyez','soient'],impératif:['—','sois','—','soyons','soyez','—']},
+'avoir':{présent:["ai","as","a","avons","avez","ont"],imparfait:["avais","avais","avait","avions","aviez","avaient"],pc:["ai eu","as eu","a eu","avons eu","avez eu","ont eu"],futur:["aurai","auras","aura","aurons","aurez","auront"],conditionnel:["aurais","aurais","aurait","aurions","auriez","auraient"],subjonctif:["aie","aies","ait","ayons","ayez","aient"],impératif:["—","aie","—","ayons","ayez","—"]},
+'aller':{présent:["vais","vas","va","allons","allez","vont"],imparfait:["allais","allais","allait","allions","alliez","allaient"],pc:["suis allé(e)","es allé(e)","est allé(e)","sommes allé(e)s","êtes allé(e)s","sont allé(e)s"],futur:["irai","iras","ira","irons","irez","iront"],conditionnel:["irais","irais","irait","irions","iriez","iraient"],subjonctif:["aille","ailles","aille","allions","alliez","aillent"],impératif:["—","va","—","allons","allez","—"]},
+'faire':{présent:["fais","fais","fait","faisons","faites","font"],imparfait:["faisais","faisais","faisait","faisions","faisiez","faisaient"],pc:["ai fait","as fait","a fait","avons fait","avez fait","ont fait"],futur:["ferai","feras","fera","ferons","ferez","feront"],conditionnel:["ferais","ferais","ferait","ferions","feriez","feraient"],subjonctif:["fasse","fasses","fasse","fassions","fassiez","fassent"],impératif:["—","fais","—","faisons","faites","—"]},
+'pouvoir':{présent:["peux","peux","peut","pouvons","pouvez","peuvent"],imparfait:["pouvais","pouvais","pouvait","pouvions","pouviez","pouvaient"],pc:["ai pu","as pu","a pu","avons pu","avez pu","ont pu"],futur:["pourrai","pourras","pourra","pourrons","pourrez","pourront"],conditionnel:["pourrais","pourrais","pourrait","pourrions","pourriez","pourraient"],subjonctif:["puisse","puisses","puisse","puissions","puissiez","puissent"],impératif:["—","(impossible)","—","(impossible)","(impossible)","—"]},
+'vouloir':{présent:["veux","veux","veut","voulons","voulez","veulent"],imparfait:["voulais","voulais","voulait","voulions","vouliez","voulaient"],pc:["ai voulu","as voulu","a voulu","avons voulu","avez voulu","ont voulu"],futur:["voudrai","voudras","voudra","voudrons","voudrez","voudront"],conditionnel:["voudrais","voudrais","voudrait","voudrions","voudriez","voudraient"],subjonctif:["veuille","veuilles","veuille","voulions","vouliez","veuillent"],impératif:["—","veuille","—","veuillons","veuillez","—"]},
+'savoir':{présent:["sais","sais","sait","savons","savez","savent"],imparfait:["savais","savais","savait","savions","saviez","savaient"],pc:["ai su","as su","a su","avons su","avez su","ont su"],futur:["saurai","sauras","saura","saurons","saurez","sauront"],conditionnel:["saurais","saurais","saurait","saurions","sauriez","sauraient"],subjonctif:["sache","saches","sache","sachions","sachiez","sachent"],impératif:["—","sache","—","sachons","sachez","—"]},
+'devoir':{présent:["dois","dois","doit","devons","devez","doivent"],imparfait:["devais","devais","devait","devions","deviez","devaient"],pc:["ai dû","as dû","a dû","avons dû","avez dû","ont dû"],futur:["devrai","devras","devra","devrons","devrez","devront"],conditionnel:["devrais","devrais","devrait","devrions","devriez","devraient"],subjonctif:["doive","doives","doive","devions","deviez","doivent"],impératif:["—","(rare)","—","(rare)","(rare)","—"]},
+'venir':{présent:["viens","viens","vient","venons","venez","viennent"],imparfait:["venais","venais","venait","venions","veniez","venaient"],pc:["suis venu(e)","es venu(e)","est venu(e)","sommes venu(e)s","êtes venu(e)s","sont venu(e)s"],futur:["viendrai","viendras","viendra","viendrons","viendrez","viendront"],conditionnel:["viendrais","viendrais","viendrait","viendrions","viendriez","viendraient"],subjonctif:["vienne","viennes","vienne","venions","veniez","viennent"],impératif:["—","viens","—","venons","venez","—"]},
+'revenir':{présent:["reviens","reviens","revient","revenons","revenez","reviennent"],imparfait:["revenais","revenais","revenait","revenions","reveniez","revenaient"],pc:["suis revenu(e)","es revenu(e)","est revenu(e)","sommes revenu(e)s","êtes revenu(e)s","sont revenu(e)s"],futur:["reviendrai","reviendras","reviendra","reviendrons","reviendrez","reviendront"],conditionnel:["reviendrais","reviendrais","reviendrait","reviendrions","reviendriez","reviendraient"],subjonctif:["revienne","reviennes","revienne","revenions","reveniez","reviennent"],impératif:["—","reviens","—","revenons","revenez","—"]},
+'tenir':{présent:["tiens","tiens","tient","tenons","tenez","tiennent"],imparfait:["tenais","tenais","tenait","tenions","teniez","tenaient"],pc:["ai tenu","as tenu","a tenu","avons tenu","avez tenu","ont tenu"],futur:["tiendrai","tiendras","tiendra","tiendrons","tiendrez","tiendront"],conditionnel:["tiendrais","tiendrais","tiendrait","tiendrions","tiendriez","tiendraient"],subjonctif:["tienne","tiennes","tienne","tenions","teniez","tiennent"],impératif:["—","tiens","—","tenons","tenez","—"]},
+'partir':{présent:["pars","pars","part","partons","partez","partent"],imparfait:["partais","partais","partait","partions","partiez","partaient"],pc:["suis parti(e)","es parti(e)","est parti(e)","sommes parti(e)s","êtes parti(e)s","sont parti(e)s"],futur:["partirai","partiras","partira","partirons","partirez","partiront"],conditionnel:["partirais","partirais","partirait","partirions","partiriez","partiraient"],subjonctif:["parte","partes","parte","partions","partiez","partent"],impératif:["—","pars","—","partons","partez","—"]},
+'sortir':{présent:["sors","sors","sort","sortons","sortez","sortent"],imparfait:["sortais","sortais","sortait","sortions","sortiez","sortaient"],pc:["suis sorti(e)","es sorti(e)","est sorti(e)","sommes sorti(e)s","êtes sorti(e)s","sont sorti(e)s"],futur:["sortirai","sortiras","sortira","sortirons","sortirez","sortiront"],conditionnel:["sortirais","sortirais","sortirait","sortirions","sortiriez","sortiraient"],subjonctif:["sorte","sortes","sorte","sortions","sortiez","sortent"],impératif:["—","sors","—","sortons","sortez","—"]},
+'dormir':{présent:["dors","dors","dort","dormons","dormez","dorment"],imparfait:["dormais","dormais","dormait","dormions","dormiez","dormaient"],pc:["ai dormi","as dormi","a dormi","avons dormi","avez dormi","ont dormi"],futur:["dormirai","dormiras","dormira","dormirons","dormirez","dormiront"],conditionnel:["dormirais","dormirais","dormirait","dormirions","dormiriez","dormiraient"],subjonctif:["dorme","dormes","dorme","dormions","dormiez","dorment"],impératif:["—","dors","—","dormons","dormez","—"]},
+'endormir':{présent:["m'endors","t'endors","s'endort","nous endormons","vous endormez","s'endorment"],imparfait:["m'endormais","t'endormais","s'endormait","nous endormions","vous endormiez","s'endormaient"],pc:["me suis endormi(e)","t'es endormi(e)","s'est endormi(e)","nous sommes endormi(e)s","vous êtes endormi(e)s","se sont endormi(e)s"],futur:["m'endormirai","t'endormiras","s'endormira","nous endormirons","vous endormirez","s'endormiront"],conditionnel:["m'endormirais","t'endormirais","s'endormirait","nous endormirions","vous endormiriez","s'endormiraient"],subjonctif:["m'endorme","t'endormes","s'endorme","nous endormions","vous endormiez","s'endorment"],impératif:["—","endors-toi","—","endormons-nous","endormez-vous","—"]},
+'prendre':{présent:["prends","prends","prend","prenons","prenez","prennent"],imparfait:["prenais","prenais","prenait","prenions","preniez","prenaient"],pc:["ai pris","as pris","a pris","avons pris","avez pris","ont pris"],futur:["prendrai","prendras","prendra","prendrons","prendrez","prendront"],conditionnel:["prendrais","prendrais","prendrait","prendrions","prendriez","prendraient"],subjonctif:["prenne","prennes","prenne","prenions","preniez","prennent"],impératif:["—","prends","—","prenons","prenez","—"]},
+'apprendre':{présent:["apprends","apprends","apprend","apprenons","apprenez","apprennent"],imparfait:["apprenais","apprenais","apprenait","apprenions","appreniez","apprenaient"],pc:["ai appris","as appris","a appris","avons appris","avez appris","ont appris"],futur:["apprendrai","apprendras","apprendra","apprendrons","apprendrez","apprendront"],conditionnel:["apprendrais","apprendrais","apprendrait","apprendrions","apprendriez","apprendraient"],subjonctif:["apprenne","apprennes","apprenne","apprenions","appreniez","apprennent"],impératif:["—","apprends","—","apprenons","apprenez","—"]},
+'comprendre':{présent:["comprends","comprends","comprend","comprenons","comprenez","comprennent"],imparfait:["comprenais","comprenais","comprenait","comprenions","compreniez","comprenaient"],pc:["ai compris","as compris","a compris","avons compris","avez compris","ont compris"],futur:["comprendrai","comprendras","comprendra","comprendrons","comprendrez","comprendront"],conditionnel:["comprendrais","comprendrais","comprendrait","comprendrions","comprendriez","comprendraient"],subjonctif:["comprenne","comprennes","comprenne","comprenions","compreniez","comprennent"],impératif:["—","comprends","—","comprenons","comprenez","—"]},
+'mettre':{présent:["mets","mets","met","mettons","mettez","mettent"],imparfait:["mettais","mettais","mettait","mettions","mettiez","mettaient"],pc:["ai mis","as mis","a mis","avons mis","avez mis","ont mis"],futur:["mettrai","mettras","mettra","mettrons","mettrez","mettront"],conditionnel:["mettrais","mettrais","mettrait","mettrions","mettriez","mettraient"],subjonctif:["mette","mettes","mette","mettions","mettiez","mettent"],impératif:["—","mets","—","mettons","mettez","—"]},
+'permettre':{présent:["permets","permets","permet","permettons","permettez","permettent"],imparfait:["permettais","permettais","permettait","permettions","permettiez","permettaient"],pc:["ai permis","as permis","a permis","avons permis","avez permis","ont permis"],futur:["permettrai","permettras","permettra","permettrons","permettrez","permettront"],conditionnel:["permettrais","permettrais","permettrait","permettrions","permettriez","permettraient"],subjonctif:["permette","permettes","permette","permettions","permettiez","permettent"],impératif:["—","permets","—","permettons","permettez","—"]},
+'voir':{présent:["vois","vois","voit","voyons","voyez","voient"],imparfait:["voyais","voyais","voyait","voyions","voyiez","voyaient"],pc:["ai vu","as vu","a vu","avons vu","avez vu","ont vu"],futur:["verrai","verras","verra","verrons","verrez","verront"],conditionnel:["verrais","verrais","verrait","verrions","verriez","verraient"],subjonctif:["voie","voies","voie","voyions","voyiez","voient"],impératif:["—","vois","—","voyons","voyez","—"]},
+'boire':{présent:["bois","bois","boit","buvons","buvez","boivent"],imparfait:["buvais","buvais","buvait","buvions","buviez","buvaient"],pc:["ai bu","as bu","a bu","avons bu","avez bu","ont bu"],futur:["boirai","boiras","boira","boirons","boirez","boiront"],conditionnel:["boirais","boirais","boirait","boirions","boiriez","boiraient"],subjonctif:["boive","boives","boive","buvions","buviez","boivent"],impératif:["—","bois","—","buvons","buvez","—"]},
+'lire':{présent:["lis","lis","lit","lisons","lisez","lisent"],imparfait:["lisais","lisais","lisait","lisions","lisiez","lisaient"],pc:["ai lu","as lu","a lu","avons lu","avez lu","ont lu"],futur:["lirai","liras","lira","lirons","lirez","liront"],conditionnel:["lirais","lirais","lirait","lirions","liriez","liraient"],subjonctif:["lise","lises","lise","lisions","lisiez","lisent"],impératif:["—","lis","—","lisons","lisez","—"]},
+'écrire':{présent:["écris","écris","écrit","écrivons","écrivez","écrivent"],imparfait:["écrivais","écrivais","écrivait","écrivions","écriviez","écrivaient"],pc:["ai écrit","as écrit","a écrit","avons écrit","avez écrit","ont écrit"],futur:["écrirai","écriras","écrira","écrirons","écrirez","écriront"],conditionnel:["écrirais","écrirais","écrirait","écririons","écririez","écriraient"],subjonctif:["écrive","écrives","écrive","écrivions","écriviez","écrivent"],impératif:["—","écris","—","écrivons","écrivez","—"]},
+'dire':{présent:["dis","dis","dit","disons","dites","disent"],imparfait:["disais","disais","disait","disions","disiez","disaient"],pc:["ai dit","as dit","a dit","avons dit","avez dit","ont dit"],futur:["dirai","diras","dira","dirons","direz","diront"],conditionnel:["dirais","dirais","dirait","dirions","diriez","diraient"],subjonctif:["dise","dises","dise","disions","disiez","disent"],impératif:["—","dis","—","disons","dites","—"]},
+'conduire':{présent:["conduis","conduis","conduit","conduisons","conduisez","conduisent"],imparfait:["conduisais","conduisais","conduisait","conduisions","conduisiez","conduisaient"],pc:["ai conduit","as conduit","a conduit","avons conduit","avez conduit","ont conduit"],futur:["conduirai","conduiras","conduira","conduirons","conduirez","conduiront"],conditionnel:["conduirais","conduirais","conduirait","conduirions","conduiriez","conduiraient"],subjonctif:["conduise","conduises","conduise","conduisions","conduisiez","conduisent"],impératif:["—","conduis","—","conduisons","conduisez","—"]},
+'connaître':{présent:["connais","connais","connaît","connaissons","connaissez","connaissent"],imparfait:["connaissais","connaissais","connaissait","connaissions","connaissiez","connaissaient"],pc:["ai connu","as connu","a connu","avons connu","avez connu","ont connu"],futur:["connaîtrai","connaîtras","connaîtra","connaîtrons","connaîtrez","connaîtront"],conditionnel:["connaîtrais","connaîtrais","connaîtrait","connaîtrions","connaîtriez","connaîtraient"],subjonctif:["connaisse","connaisses","connaisse","connaissions","connaissiez","connaissent"],impératif:["—","connais","—","connaissons","connaissez","—"]},
+'recevoir':{présent:["reçois","reçois","reçoit","recevons","recevez","reçoivent"],imparfait:["recevais","recevais","recevait","recevions","receviez","recevaient"],pc:["ai reçu","as reçu","a reçu","avons reçu","avez reçu","ont reçu"],futur:["recevrai","recevras","recevra","recevrons","recevrez","recevront"],conditionnel:["recevrais","recevrais","recevrait","recevrions","recevriez","recevraient"],subjonctif:["reçoive","reçoives","reçoive","recevions","receviez","reçoivent"],impératif:["—","reçois","—","recevons","recevez","—"]},
+'mourir':{présent:["meurs","meurs","meurt","mourons","mourez","meurent"],imparfait:["mourais","mourais","mourait","mourions","mouriez","mouraient"],pc:["suis mort(e)","es mort(e)","est mort(e)","sommes mort(e)s","êtes mort(e)s","sont mort(e)s"],futur:["mourrai","mourras","mourra","mourrons","mourrez","mourront"],conditionnel:["mourrais","mourrais","mourrait","mourrions","mourriez","mourraient"],subjonctif:["meure","meures","meure","mourions","mouriez","meurent"],impératif:["—","meurs","—","mourons","mourez","—"]},
+'courir':{présent:["cours","cours","court","courons","courez","courent"],imparfait:["courais","courais","courait","courions","couriez","couraient"],pc:["ai couru","as couru","a couru","avons couru","avez couru","ont couru"],futur:["courrai","courras","courra","courrons","courrez","courront"],conditionnel:["courrais","courrais","courrait","courrions","courriez","courraient"],subjonctif:["coure","coures","coure","courions","couriez","courent"],impératif:["—","cours","—","courons","courez","—"]},
+'ouvrir':{présent:["ouvre","ouvres","ouvre","ouvrons","ouvrez","ouvrent"],imparfait:["ouvrais","ouvrais","ouvrait","ouvrions","ouvriez","ouvraient"],pc:["ai ouvert","as ouvert","a ouvert","avons ouvert","avez ouvert","ont ouvert"],futur:["ouvrirai","ouvriras","ouvrira","ouvrirons","ouvrirez","ouvriront"],conditionnel:["ouvrirais","ouvrirais","ouvrirait","ouvririons","ouvririez","ouvriraient"],subjonctif:["ouvre","ouvres","ouvre","ouvrions","ouvriez","ouvrent"],impératif:["—","ouvre","—","ouvrons","ouvrez","—"]},
+'offrir':{présent:["offre","offres","offre","offrons","offrez","offrent"],imparfait:["offrais","offrais","offrait","offrions","offriez","offraient"],pc:["ai offert","as offert","a offert","avons offert","avez offert","ont offert"],futur:["offrirai","offriras","offrira","offrirons","offrirez","offriront"],conditionnel:["offrirais","offrirais","offrirait","offririons","offririez","offriraient"],subjonctif:["offre","offres","offre","offrions","offriez","offrent"],impératif:["—","offre","—","offrons","offrez","—"]},
+'souffrir':{présent:["souffre","souffres","souffre","souffrons","souffrez","souffrent"],imparfait:["souffrais","souffrais","souffrait","souffrions","souffriez","souffraient"],pc:["ai souffert","as souffert","a souffert","avons souffert","avez souffert","ont souffert"],futur:["souffrirai","souffriras","souffrira","souffrirons","souffrirez","souffriront"],conditionnel:["souffrirais","souffrirais","souffrirait","souffririons","souffririez","souffriraient"],subjonctif:["souffre","souffres","souffre","souffrions","souffriez","souffrent"],impératif:["—","souffre","—","souffrons","souffrez","—"]},
+'mentir':{présent:["mens","mens","ment","mentons","mentez","mentent"],imparfait:["mentais","mentais","mentait","mentions","mentiez","mentaient"],pc:["ai menti","as menti","a menti","avons menti","avez menti","ont menti"],futur:["mentirai","mentiras","mentira","mentirons","mentirez","mentiront"],conditionnel:["mentirais","mentirais","mentirait","mentirions","mentiriez","mentiraient"],subjonctif:["mente","mentes","mente","mentions","mentiez","mentent"],impératif:["—","mens","—","mentons","mentez","—"]},
+'rire':{présent:["ris","ris","rit","rions","riez","rient"],imparfait:["riais","riais","riait","riions","riiez","riaient"],pc:["ai ri","as ri","a ri","avons ri","avez ri","ont ri"],futur:["rirai","riras","rira","rirons","rirez","riront"],conditionnel:["rirais","rirais","rirait","ririons","ririez","riraient"],subjonctif:["rie","ries","rie","riions","riiez","rient"],impératif:["—","ris","—","rions","riez","—"]},
+'croire':{présent:["crois","crois","croit","croyons","croyez","croient"],imparfait:["croyais","croyais","croyait","croyions","croyiez","croyaient"],pc:["ai cru","as cru","a cru","avons cru","avez cru","ont cru"],futur:["croirai","croiras","croira","croirons","croirez","croiront"],conditionnel:["croirais","croirais","croirait","croirions","croiriez","croiraient"],subjonctif:["croie","croies","croie","croyions","croyiez","croient"],impératif:["—","crois","—","croyons","croyez","—"]},
+'plaire':{présent:["plais","plais","plaît","plaisons","plaisez","plaisent"],imparfait:["plaisais","plaisais","plaisait","plaisions","plaisiez","plaisaient"],pc:["ai plu","as plu","a plu","avons plu","avez plu","ont plu"],futur:["plairai","plairas","plaira","plairons","plairez","plairont"],conditionnel:["plairais","plairais","plairait","plairions","plairiez","plairaient"],subjonctif:["plaise","plaises","plaise","plaisions","plaisiez","plaisent"],impératif:["—","plais","—","plaisons","plaisez","—"]},
+'valoir':{présent:["vaux","vaux","vaut","valons","valez","valent"],imparfait:["valais","valais","valait","valions","valiez","valaient"],pc:["ai valu","as valu","a valu","avons valu","avez valu","ont valu"],futur:["vaudrai","vaudras","vaudra","vaudrons","vaudrez","vaudront"],conditionnel:["vaudrais","vaudrais","vaudrait","vaudrions","vaudriez","vaudraient"],subjonctif:["vaille","vailles","vaille","valions","valiez","vaillent"],impératif:["—","vaux","—","valons","valez","—"]},
+'naître':{présent:["nais","nais","naît","naissons","naissez","naissent"],imparfait:["naissais","naissais","naissait","naissions","naissiez","naissaient"],pc:["suis né(e)","es né(e)","est né(e)","sommes né(e)s","êtes né(e)s","sont né(e)s"],futur:["naîtrai","naîtras","naîtra","naîtrons","naîtrez","naîtront"],conditionnel:["naîtrais","naîtrais","naîtrait","naîtrions","naîtriez","naîtraient"],subjonctif:["naisse","naisses","naisse","naissions","naissiez","naissent"],impératif:["—","nais","—","naissons","naissez","—"]},
+'entendre':{présent:["entends","entends","entend","entendons","entendez","entendent"],imparfait:["entendais","entendais","entendait","entendions","entendiez","entendaient"],pc:["ai entendu","as entendu","a entendu","avons entendu","avez entendu","ont entendu"],futur:["entendrai","entendras","entendra","entendrons","entendrez","entendront"],conditionnel:["entendrais","entendrais","entendrait","entendrions","entendriez","entendraient"],subjonctif:["entende","entendes","entende","entendions","entendiez","entendent"],impératif:["—","entends","—","entendons","entendez","—"]},
+'perdre':{présent:["perds","perds","perd","perdons","perdez","perdent"],imparfait:["perdais","perdais","perdait","perdions","perdiez","perdaient"],pc:["ai perdu","as perdu","a perdu","avons perdu","avez perdu","ont perdu"],futur:["perdrai","perdras","perdra","perdrons","perdrez","perdront"],conditionnel:["perdrais","perdrais","perdrait","perdrions","perdriez","perdraient"],subjonctif:["perde","perdes","perde","perdions","perdiez","perdent"],impératif:["—","perds","—","perdons","perdez","—"]},
+'répondre':{présent:["réponds","réponds","répond","répondons","répondez","répondent"],imparfait:["répondais","répondais","répondait","répondions","répondiez","répondaient"],pc:["ai répondu","as répondu","a répondu","avons répondu","avez répondu","ont répondu"],futur:["répondrai","répondras","répondra","répondrons","répondrez","répondront"],conditionnel:["répondrais","répondrais","répondrait","répondrions","répondriez","répondraient"],subjonctif:["réponde","répondes","réponde","répondions","répondiez","répondent"],impératif:["—","réponds","—","répondons","répondez","—"]},
+'attendre':{présent:["attends","attends","attend","attendons","attendez","attendent"],imparfait:["attendais","attendais","attendait","attendions","attendiez","attendaient"],pc:["ai attendu","as attendu","a attendu","avons attendu","avez attendu","ont attendu"],futur:["attendrai","attendras","attendra","attendrons","attendrez","attendront"],conditionnel:["attendrais","attendrais","attendrait","attendrions","attendriez","attendraient"],subjonctif:["attende","attendes","attende","attendions","attendiez","attendent"],impératif:["—","attends","—","attendons","attendez","—"]},
+'descendre':{présent:["descends","descends","descend","descendons","descendez","descendent"],imparfait:["descendais","descendais","descendait","descendions","descendiez","descendaient"],pc:["suis descendu(e)","es descendu(e)","est descendu(e)","sommes descendu(e)s","êtes descendu(e)s","sont descendu(e)s"],futur:["descendrai","descendras","descendra","descendrons","descendrez","descendront"],conditionnel:["descendrais","descendrais","descendrait","descendrions","descendriez","descendraient"],subjonctif:["descende","descendes","descende","descendions","descendiez","descendent"],impératif:["—","descends","—","descendons","descendez","—"]},
+'asseoir':{présent:["m'assieds","t'assieds","s'assied","nous asseyons","vous asseyez","s'asseyent"],imparfait:["m'asseyais","t'asseyais","s'asseyait","nous asseyions","vous asseyiez","s'asseyaient"],pc:["me suis assis(e)","t'es assis(e)","s'est assis(e)","nous sommes assis(e)s","vous êtes assis(e)s","se sont assis(e)s"],futur:["m'assiérai","t'assiéras","s'assiéra","nous assiérons","vous assiérez","s'assiéront"],conditionnel:["m'assiérais","t'assiérais","s'assiérait","nous assiérions","vous assiériez","s'assiéraient"],subjonctif:["m'asseye","t'asseyes","s'asseye","nous asseyions","vous asseyiez","s'asseyent"],impératif:["—","assieds-toi","—","asseyons-nous","asseyez-vous","—"]},
+};
+// CONJ_END
+
+function _computeConj(fr){
+  const isRefl=/^(se |s')/i.test(fr);
+  const base=fr.replace(/^(se |s')/i,'').toLowerCase().trim();
+  if(CONJ[base])return{data:CONJ[base],isRefl,display:fr};
+  if(base.endsWith('er')){
+    const stem=base.slice(0,-2);
+    const isGer=stem.endsWith('g');const isCer=stem.endsWith('c');
+    const nsStem=isGer?stem+'e':isCer?stem.slice(0,-1)+'ç':stem;
+    const aux=isRefl?'être':'avoir';
+    const pp=stem+'é';
+    const pcAux=isRefl?['me suis','t\'es','s\'est','nous sommes','vous êtes','se sont']:['ai','as','a','avons','avez','ont'];
+    const pcPP=isRefl?pp+'(e)':pp;
+    return{data:{
+      présent:[stem+'e',stem+'es',stem+'e',nsStem+'ons',stem+'ez',stem+'ent'],
+      imparfait:[nsStem+'ais',nsStem+'ais',nsStem+'ait',stem+'ions',stem+'iez',nsStem+'aient'],
+      pc:pcAux.map((a,i)=>a+' '+pcPP),
+      futur:[base+'rai',base+'ras',base+'ra',base+'rons',base+'rez',base+'ront'],
+      conditionnel:[base+'rais',base+'rais',base+'rait',base+'rions',base+'riez',base+'raient'],
+      subjonctif:[stem+'e',stem+'es',stem+'e',stem+'ions',stem+'iez',stem+'ent'],
+      impératif:['—',stem+'e','—',nsStem+'ons',stem+'ez','—'],
+    },isRefl,display:fr};
+  }
+  if(base.endsWith('ir')){
+    const stem=base.slice(0,-2);
+    const pcAux=isRefl?['me suis','t\'es','s\'est','nous sommes','vous êtes','se sont']:['ai','as','a','avons','avez','ont'];
+    const pcPP=isRefl?stem+'i(e)':stem+'i';
+    return{data:{
+      présent:[stem+'is',stem+'is',stem+'it',stem+'issons',stem+'issez',stem+'issent'],
+      imparfait:[stem+'issais',stem+'issais',stem+'issait',stem+'issions',stem+'issiez',stem+'issaient'],
+      pc:pcAux.map(a=>a+' '+pcPP),
+      futur:[base+'rai',base+'ras',base+'ra',base+'rons',base+'rez',base+'ront'],
+      conditionnel:[base+'rais',base+'rais',base+'rait',base+'rions',base+'riez',base+'raient'],
+      subjonctif:[stem+'isse',stem+'isses',stem+'isse',stem+'issions',stem+'issiez',stem+'issent'],
+      impératif:['—',stem+'is','—',stem+'issons',stem+'issez','—'],
+    },isRefl,display:fr};
+  }
+  if(base.endsWith('re')){
+    const stem=base.slice(0,-2);
+    return{data:{
+      présent:[stem+'s',stem+'s',stem,stem+'ons',stem+'ez',stem+'ent'],
+      imparfait:[stem+'ais',stem+'ais',stem+'ait',stem+'ions',stem+'iez',stem+'aient'],
+      pc:['ai','as','a','avons','avez','ont'].map(a=>a+' '+stem+'u'),
+      futur:[base+'rai',base+'ras',base+'ra',base+'rons',base+'rez',base+'ront'],
+      conditionnel:[base+'rais',base+'rais',base+'rait',base+'rions',base+'riez',base+'raient'],
+      subjonctif:[stem+'e',stem+'es',stem+'e',stem+'ions',stem+'iez',stem+'ent'],
+      impératif:['—',stem+'s','—',stem+'ons',stem+'ez','—'],
+    },isRefl,display:fr};
+  }
+  return null;
+}
 
 // GRAMMAR_TOPICS_START
 const GRAMMAR_TOPICS=[
@@ -959,6 +1234,14 @@ const GRAMMAR_TOPICS=[
   ],
   tips:['Hamza: "Specific time marker? → passé composé. Habit or no clear end? → imparfait."','Camille: "With avoir, participe passé does NOT change… UNLESS COD comes BEFORE the verb." (accord du COD)'],
   warnings:['With être, the participe passé must agree: +e for feminine, +s for plural, +es for feminine plural.','NEVER put ne…pas around the participe passé: Je n\'ai pas mangé ✓ NOT je n\'ai mangé pas ✗'],
+  irregulars:[
+    {label:'Participes passés irréguliers — en -É',items:[['ÊTRE','été'],['ALLER','allé(e)'],['NAÎTRE','né(e)']]},
+    {label:'Participes passés irréguliers — en -I',items:[['DORMIR','dormi'],['PARTIR','parti(e)'],['SORTIR','sorti(e)'],['MENTIR','menti'],['SERVIR','servi'],['SENTIR','senti']]},
+    {label:'Participes passés irréguliers — en -IS',items:[['PRENDRE','pris'],['APPRENDRE','appris'],['COMPRENDRE','compris'],['METTRE','mis'],['PERMETTRE','permis'],['PROMETTRE','promis']]},
+    {label:'Participes passés irréguliers — en -U',items:[['AVOIR','eu'],['DEVOIR','dû'],['POUVOIR','pu'],['RECEVOIR','reçu'],['SAVOIR','su'],['VOIR','vu'],['VOULOIR','voulu'],['COURIR','couru'],['VENIR','venu(e)'],['BOIRE','bu'],['CROIRE','cru'],['LIRE','lu'],['CONNAÎTRE','connu'],['ATTENDRE','attendu'],['DESCENDRE','descendu(e)'],['ENTENDRE','entendu'],['PERDRE','perdu'],['RÉPONDRE','répondu']]},
+    {label:'Participes passés irréguliers — en -T/-RT',items:[['ÉCRIRE','écrit'],['FAIRE','fait'],['DIRE','dit'],['CONDUIRE','conduit'],['MOURIR','mort(e)'],['OFFRIR','offert'],['OUVRIR','ouvert'],['SOUFFRIR','souffert']]},
+    {label:'DR MRS VANDERTRAMP — verbes avec ÊTRE',items:[['DEVENIR','devenu(e)'],['REVENIR','revenu(e)'],['MONTER','monté(e)'],['RESTER','resté(e)'],['SORTIR','sorti(e)'],['VENIR','venu(e)'],['ALLER','allé(e)'],['NAÎTRE','né(e)'],['DESCENDRE','descendu(e)'],['ENTRER','entré(e)'],['RENTRER','rentré(e)'],['TOMBER','tombé(e)'],['RETOURNER','retourné(e)'],['ARRIVER','arrivé(e)'],['MOURIR','mort(e)'],['PARTIR','parti(e)']]},
+  ],
 },
 {
   level:'A2',id:'imparfait',title:"L'imparfait",desc:'Habits, descriptions & background past',
@@ -983,6 +1266,10 @@ const GRAMMAR_TOPICS=[
   ],
   clueWords:["toujours","souvent","d'habitude","en général","chaque jour","tous les jours","tous les dimanches","quand j'étais enfant","avant","autrefois","à l'époque"],
   tips:['Hamza: "Descriptions and emotions → imparfait. Specific time → passé composé."',"Camille warning: imparfait endings look like conditionnel — don't confuse them! Conditionnel uses the INFINITIVE as stem. Imparfait uses the NOUS-PRESENT stem."],
+  irregulars:[
+    {label:'Être — le seul vrai irrégulier de l\'imparfait',items:[['J\'','étais'],['Tu','étais'],['Il/Elle','était'],['Nous','étions'],['Vous','étiez'],['Ils/Elles','étaient']]},
+    {label:'Autres verbes irréguliers — stem = nous-présent (exemples)',items:[['BOIRE (buvons →)','buvais'],['CONDUIRE (conduisons →)','conduisais'],['CONNAÎTRE (connaissons →)','connaissais'],['CROIRE (croyons →)','croyais'],['DIRE (disons →)','disais'],['ÉCRIRE (écrivons →)','écrivais'],['LIRE (lisons →)','lisais'],['PRENDRE (prenons →)','prenais'],['RECEVOIR (recevons →)','recevais'],['VENIR (venons →)','venais'],['VOIR (voyons →)','voyais']]},
+  ],
 },
 {
   level:'A2',id:'futur',title:'Futur proche & futur simple',desc:'Going to (proche) vs will (simple)',
@@ -1025,6 +1312,9 @@ const GRAMMAR_TOPICS=[
     {label:'Pourrait / on pourrait — suggestions',body:'Making soft suggestions.',example:'On pourrait aller au cinéma. Tu pourrais lui parler directement.'},
   ],
   tips:["KEY: 'Nous irons' (futur: we WILL go — certain) vs 'nous irions' (conditionnel: we WOULD go — hypothetical). Same stem, different endings."],
+  irregulars:[
+    {label:'Radical irrégulier — même que le futur simple',items:[['ALLER','ir-'],['AVOIR','aur-'],['DEVOIR','devr-'],['ÊTRE','ser-'],['FAIRE','fer-'],['FALLOIR','faudr- (il faudrait)'],['POUVOIR','pourr-'],['SAVOIR','saur-'],['TENIR','tiendr-'],['VALOIR','voudr-'],['VENIR','viendr-'],['VOIR','verr-'],['VOULOIR','voudr-']]},
+  ],
 },
 {
   level:'A2',id:'pronouns',title:'COD & COI pronouns',desc:'Direct & indirect object pronouns',
@@ -1149,6 +1439,11 @@ const GRAMMAR_TOPICS=[
   subjonctifTriggers:['vouloir que','falloir que','douter que','craindre que','avoir peur que','être content(e) que','être triste que','il est important que','il est nécessaire que','il est dommage que','pour que','afin que','à moins que','bien que','pourvu que','avant que'],
   tips:['Camille: "Je veux qu\'elle → subjonctif. Je suis certaine qu\'elle → NOT subjonctif." Wish/doubt vs certainty.','On espère que = NOT subjonctif! Even though "hope" feels like a wish, it uses indicatif.'],
   warnings:['Subjonctif ONLY when TWO DIFFERENT subjects! If same subject → use infinitive. "Je veux partir" ✓ NOT "je veux que je parte" ✗'],
+  irregulars:[
+    {label:'Subjonctif irrégulier — être',items:[['que je','sois'],['que tu','sois'],["qu'il/elle",'soit'],['que nous','soyons'],['que vous','soyez'],["qu'ils/elles",'soient']]},
+    {label:'Subjonctif irrégulier — avoir',items:[['que j\'','aie'],['que tu','aies'],["qu'il/elle",'ait'],['que nous','ayons'],['que vous','ayez'],["qu'ils/elles",'aient']]},
+    {label:'Autres verbes irréguliers',items:[['ALLER','aille / allions'],['FAIRE','fasse / fassions'],['POUVOIR','puisse / puissions'],['SAVOIR','sache / sachions'],['VOULOIR','veuille / voulions'],['VALOIR','vaille / valions']]},
+  ],
 },
 {
   level:'B1',id:'plus-que-parfait',title:'Le plus-que-parfait',desc:'Had done — the past before the past',
@@ -1270,6 +1565,163 @@ const GRAMMAR_TOPICS=[
   ],
   tips:['Camille: BIEN QUE needs subjonctif. MÊME SI needs indicatif. This distinction is frequently tested.'],
 },
+{
+  level:'A2',id:'passe-recent',title:'Passé récent — venir de',desc:"I just did something — venir de + infinitif",
+  formula:'Présent of venir + DE + infinitif',
+  overview:"Express something that JUST happened. Uses the present tense of 'venir' + 'de' + infinitive. Very common in spoken French. In past narration (telling a story), use imparfait of venir + de to express 'had just done.'",
+  uses:['Immediate past: something just happened','Je viens de manger = I just ate','Contrast with: je vais manger (immediate future)'],
+  examples:[
+    {fr:"Je viens de manger.",en:"I just ate.",note:"présent of venir + de + manger"},
+    {fr:"Elle vient de partir.",en:"She just left.",note:"venir de with partir (no reflexive needed)"},
+    {fr:"Nous venons d'arriver.",en:"We just arrived.",note:"venir de + arriver → d' before vowel"},
+    {fr:"Il venait de sortir quand j'ai appelé.",en:"He had just left when I called.",note:"in past narration: imparfait of venir + de"},
+  ],
+  rules:[
+    {label:'Formation au présent',body:'Conjugate VENIR in présent + DE + infinitive:',conjugation:[['je viens de','+ infinitif'],['tu viens de','+ infinitif'],['il/elle vient de','+ infinitif'],['nous venons de','+ infinitif'],['vous venez de','+ infinitif'],['ils/elles viennent de','+ infinitif']],example:'Je viens de manger. Elle vient de finir. Nous venons d\'arriver.'},
+    {label:'Formation dans le passé',body:'Replace présent of venir with IMPARFAIT:',example:'Il venait de partir quand tu as appelé. Elle venait de s\'endormir.'},
+  ],
+  tips:["Venir de = just did (past). Aller + infinitif = about to do (future). 'Je viens de manger' vs 'je vais manger.'"],
+},
+{
+  level:'A2',id:'depuis',title:'Depuis — duration & starting point',desc:'Has been doing for / since — présent + depuis',
+  formula:'Présent tense + depuis + time duration or date',
+  overview:"Depuis expresses an action that STARTED in the past and CONTINUES now. Unlike English (which uses the past), French uses the PRÉSENT tense with depuis. This is a common trap.",
+  uses:["Ongoing action: J'apprends le français depuis 2 ans","Starting point: Je vis à Montréal depuis 2019","How long: Depuis combien de temps?"],
+  examples:[
+    {fr:"J'apprends le français depuis deux ans.",en:"I have been learning French for two years.",note:"présent tense (not passé composé) because it's still ongoing"},
+    {fr:"Elle habite ici depuis 2019.",en:"She has been living here since 2019.",note:"depuis + specific year = starting point"},
+    {fr:"Depuis combien de temps tu attends?",en:"How long have you been waiting?",note:"question form with depuis combien de temps"},
+    {fr:"Je ne l'ai pas vu depuis des semaines.",en:"I haven't seen him for weeks.",note:"with negative + passé composé = has NOT done since"},
+  ],
+  rules:[
+    {label:'Présent + depuis (ongoing action)',body:'',example:"J'habite ici depuis 3 ans. (I've been living here for 3 years.)\nElle apprend le piano depuis l'enfance."},
+    {label:'Depuis combien de temps? / Depuis quand?',body:'Two question forms:',example:"Depuis combien de temps tu travailles ici? (How long?)\nDepuis quand tu travailles ici? (Since when?)"},
+    {label:'Negative + passé composé',body:'When action STOPPED, use passé composé with ne…pas depuis.',example:"Je n'ai pas dormi depuis hier. (I haven't slept since yesterday.)\nIl n'a pas mangé depuis 24h."},
+  ],
+  warnings:["NEVER use passé composé for ongoing actions with depuis. 'J'ai appris le français depuis 2 ans' ✗ — use présent: 'J'apprends le français depuis 2 ans' ✓"],
+},
+{
+  level:'A2',id:'savoir-connaitre',title:'Savoir vs connaître',desc:'Two verbs for "to know" — completely different uses',
+  formula:'Savoir = facts / how to do | Connaître = familiarity with person or place',
+  overview:"French has two verbs for 'to know' — they are NOT interchangeable. Savoir = knowing a fact or HOW to do something. Connaître = being familiar with a person, place, or situation. Swapping them is a major error.",
+  uses:['Savoir: knows a fact, knows HOW to','Connaître: knows a person, is familiar with a place'],
+  examples:[
+    {fr:"Je sais nager.",en:"I know how to swim.",note:"savoir + infinitif = know how to do something"},
+    {fr:"Tu sais quelle heure il est?",en:"Do you know what time it is?",note:"savoir + question clause = know a fact"},
+    {fr:"Je connais Marie.",en:"I know Marie.",note:"connaître + person = familiar with someone"},
+    {fr:"Elle connaît bien Paris.",en:"She knows Paris well.",note:"connaître + place = familiar with a city"},
+    {fr:"Je ne sais pas.",en:"I don't know.",note:"know a fact → savoir"},
+  ],
+  rules:[
+    {label:'SAVOIR — conjugation présent',body:'',conjugation:[['je','sais'],['tu','sais'],['il/elle','sait'],['nous','savons'],['vous','savez'],['ils/elles','savent']],example:'Je sais parler français. Tu sais cuisiner? Nous savons la réponse.'},
+    {label:'CONNAÎTRE — conjugation présent',body:'',conjugation:[['je','connais'],['tu','connais'],['il/elle','connaît'],['nous','connaissons'],['vous','connaissez'],['ils/elles','connaissent']],example:'Je connais ta sœur. Tu connais ce restaurant? Nous connaissons Paris.'},
+    {label:'SAVOIR — what follows',body:'',example:'Savoir + infinitif (how to): Je sais conduire.\nSavoir + que clause (fact): Je sais qu\'elle est là.\nSavoir + question word: Je sais pourquoi.'},
+    {label:'CONNAÎTRE — what follows',body:'',example:'Connaître + person: Je connais Marc.\nConnaître + place: Je connais bien Lyon.\nConnaître + situation: Elle connaît les difficultés.'},
+  ],
+  warnings:["NEVER say 'Je connais nager' ✗ — that's savoir! 'Je sais nager' ✓","NEVER say 'Je sais Marc' ✗ — that's connaître! 'Je connais Marc' ✓"],
+},
+{
+  level:'A2',id:'pronoms-demonstratifs',title:'Les pronoms démonstratifs',desc:'Celui, celle, ceux, celles — this one / that one',
+  formula:'CELUI (m.sg) | CELLE (f.sg) | CEUX (m.pl) | CELLES (f.pl)',
+  overview:"Demonstrative pronouns replace a noun previously mentioned, pointing to a specific one. They always agree with the gender and number of the noun they replace. Add -CI (near) or -LÀ (far) to distinguish two options. Can also be followed by de (possession) or a relative clause.",
+  uses:['Point to a specific thing: celui-ci vs celui-là','Show possession: celui de Marie','Add a relative clause: celui qui chante'],
+  examples:[
+    {fr:"Tu préfères ce pull ou celui-là?",en:"Do you prefer this sweater or that one?",note:"celui-là: masc. sg (pull is masculine)"},
+    {fr:"J'aime cette robe et celle de Marie.",en:"I like this dress and Marie's.",note:"celle de = the one belonging to (possession)"},
+    {fr:"Ceux qui parlent français lèvent la main.",en:"Those who speak French raise their hand.",note:"ceux qui = those who (masc. pl + relative clause)"},
+    {fr:"Ces pommes-ci sont meilleures que celles-là.",en:"These apples are better than those ones.",note:"-ci = closer, -là = farther"},
+  ],
+  rules:[
+    {label:'Agreement table',body:'Agrees with the noun replaced:',conjugation:[['masculin singulier','celui'],['féminin singulier','celle'],['masculin pluriel','ceux'],['féminin pluriel','celles']],example:'Ce livre ou celui-là? Cette table ou celle-ci? Ces sacs ou ceux-là?'},
+    {label:'+ -CI or -LÀ (two options)',body:'Add to distinguish near vs far:',example:'Je préfère celui-ci. (this one, near)\nJe préfère celui-là. (that one, far)\nCelles-ci ou celles-là?'},
+    {label:'+ DE (possession)',body:'Celui de = the one belonging to:',example:"C'est le sac de Marie? Oui, c'est celui de Marie.\nCe sont tes livres? Non, ce sont ceux de ma sœur."},
+    {label:'+ QUI / QUE (relative clause)',body:'Celui qui = the one who/that:',example:"Celui qui parle est mon frère. (the one who speaks)\nCelle que tu cherches n'est pas là. (the one you're looking for)"},
+  ],
+},
+{
+  level:'A2',id:'place-adjectif',title:'La place de l\'adjectif',desc:'Most adjectives go AFTER the noun (≠ English!)',
+  formula:'NOUN + adjective (general rule) | BAGS adjectives go BEFORE',
+  overview:"In French, most adjectives go AFTER the noun — the opposite of English. A small group of common adjectives (BAGS: Beauty, Age, Goodness, Size) always go before the noun. Some adjectives change meaning depending on their position.",
+  uses:['After: une voiture rouge, une femme intelligente','Before (BAGS): un beau jardin, un petit chien, une vieille maison'],
+  examples:[
+    {fr:"Un film intéressant.",en:"An interesting film.",note:"intéressant goes AFTER (most adjectives do)"},
+    {fr:"Un beau film.",en:"A beautiful film.",note:"beau is a BAGS adjective → BEFORE noun"},
+    {fr:"Un grand homme.",en:"A great man.",note:"grand BEFORE = great (figurative)"},
+    {fr:"Un homme grand.",en:"A tall man.",note:"grand AFTER = physically tall"},
+    {fr:"Mon ancien professeur.",en:"My former teacher.",note:"ancien BEFORE = former"},
+    {fr:"Une maison ancienne.",en:"An old house.",note:"ancien AFTER = old (actually old)"},
+  ],
+  rules:[
+    {label:'BAGS adjectives — always BEFORE noun',body:'Beauty, Age, Goodness, Size:',conjugation:[['Beauty:','beau/belle, joli(e), magnifique'],['Age:','jeune, vieux/vieille, nouveau/nouvelle, ancien(ne)'],['Goodness:','bon(ne), mauvais(e), meilleur(e)'],['Size:','grand(e), petit(e), gros(se), long(ue), court(e)']],example:'Un beau jardin. Un jeune homme. Une bonne idée. Un grand appartement.'},
+    {label:'Most adjectives — AFTER noun',body:'Nationality, colour, shape, religion, physical qualities:',example:'Un livre rouge. Une femme française. Un homme intelligent. Une table ronde.'},
+    {label:'Adjectives that change meaning by position',body:'',conjugation:[['grand BEFORE','great (Napoleon était un grand homme)'],['grand AFTER','tall (Il est grand)'],['ancien BEFORE','former (mon ancien patron)'],['ancien AFTER','old/ancient (une ville ancienne)'],['seul BEFORE','only (mon seul ami)'],['seul AFTER','alone (je suis seul)'],['même BEFORE','same (le même résultat)'],['même AFTER','herself/itself (elle-même)']],example:''},
+  ],
+  tips:["Remember BAGS or use this mnemonic: 'Beauty Age Goodness Size go before.' Everything else — especially nationalities and colours — goes after."],
+},
+{
+  level:'A2',id:'negation-complexe',title:'La négation complexe',desc:'Ne…jamais, ne…plus, ne…rien, ne…personne, ne…ni…ni',
+  formula:'ne + verb + jamais / plus / rien / personne / ni…ni',
+  overview:"Beyond ne…pas, French has several negative structures that all follow the same sandwich pattern: NE before the verb and the negative word after. In passé composé, most negative words wrap the auxiliary — except personne which comes after the participe passé.",
+  uses:['Never: ne…jamais','Not anymore: ne…plus','Nothing: ne…rien','Nobody: ne…personne','Neither…nor: ne…ni…ni','Not yet: ne…pas encore'],
+  examples:[
+    {fr:"Je ne mange jamais de viande.",en:"I never eat meat.",note:"ne…jamais = never"},
+    {fr:"Elle ne fume plus.",en:"She doesn't smoke anymore.",note:"ne…plus = not anymore"},
+    {fr:"Il ne dit rien.",en:"He says nothing.",note:"ne…rien = nothing"},
+    {fr:"Je n'aime ni le café ni le thé.",en:"I like neither coffee nor tea.",note:"ne…ni…ni = neither…nor"},
+    {fr:"Je n'ai encore rien mangé.",en:"I haven't eaten anything yet.",note:"ne…pas encore / ne…rien combined"},
+    {fr:"Nous n'avons vu personne.",en:"We didn't see anyone.",note:"ne…personne: personne comes AFTER the participe passé in PC"},
+  ],
+  rules:[
+    {label:'Standard position — wrap the conjugated verb',body:'NE before, negative word after:',example:'Je ne mange jamais de sucre.\nElle ne fume plus.\nIl ne dit rien.'},
+    {label:'In passé composé — wrap the AUXILIARY',body:'Exception: personne comes after the participe.',example:'Je n\'ai jamais mangé de sushi. ✓\nElle n\'a plus fumé. ✓\nJe n\'ai rien dit. ✓\nMais: Je n\'ai vu personne. ✓ (personne after participe!)'},
+    {label:'NE…NI…NI — neither…nor',body:'Both nouns lose their article (usually).',example:'Il n\'aime ni le sport ni la musique.\nElle ne veut ni partir ni rester.'},
+    {label:'Combination negatives',body:'Can combine ne…plus and ne…jamais:',example:'Elle ne fume plus jamais. (She never smokes anymore.)\nJe n\'ai plus rien à dire. (I have nothing more to say.)'},
+  ],
+  clueWords:['ne…jamais = never','ne…plus = not anymore','ne…rien = nothing','ne…personne = nobody','ne…ni…ni = neither…nor','ne…pas encore = not yet','ne…que = only (restriction)','ne…nulle part = nowhere'],
+  warnings:["In passé composé: 'je n'ai rien mangé' (rien wraps auxiliary) BUT 'je n'ai vu personne' (personne goes after participe). Different rules for rien vs personne!"],
+},
+{
+  level:'B1',id:'connecteurs',title:'Les connecteurs logiques',desc:'Cause, consequence, opposition, concession',
+  formula:'Cause: car/puisque/à cause de | Conséquence: donc/par conséquent | Opposition: cependant/pourtant',
+  overview:"Connectors link ideas and show the logical relationship between them. Essential for B1+ writing and argumentation. Grouped by function: cause, consequence, opposition/concession, and addition.",
+  uses:['Structure an argument','Show cause and effect','Express contrast or concession','Add information coherently'],
+  examples:[
+    {fr:"J'ai raté le bus, par conséquent je suis arrivée en retard.",en:"I missed the bus, consequently I arrived late.",note:"par conséquent = consequence"},
+    {fr:"Bien qu'elle soit fatiguée, elle continue à travailler.",en:"Although she is tired, she continues to work.",note:"bien que + subjonctif = concession"},
+    {fr:"Il est riche, pourtant il est malheureux.",en:"He's rich, yet he's unhappy.",note:"pourtant = opposition between two facts"},
+    {fr:"Grâce à ton aide, j'ai réussi.",en:"Thanks to your help, I succeeded.",note:"grâce à = cause (positive)"},
+    {fr:"À cause de la pluie, on est restés.",en:"Because of the rain, we stayed.",note:"à cause de = cause (neutral/negative)"},
+  ],
+  rules:[
+    {label:'CAUSE — why something happened',body:'',conjugation:[['parce que','because + clause'],['car','for/because + clause (written)'],['puisque','since (reason already known)'],['à cause de','because of + noun (neutral)'],['grâce à','thanks to + noun (positive)'],['en raison de','due to + noun (formal)']],example:"Je reste parce qu'il pleut. Car il est tard, je pars. Puisque tu insistes...\nÀ cause du bruit, je n'ai pas dormi. Grâce à toi, j'ai réussi."},
+    {label:'CONSÉQUENCE — what resulted',body:'',conjugation:[['donc','so/therefore'],['alors','so/then (spoken)'],['par conséquent','consequently (formal)'],['ainsi','thus/so (formal)'],["c'est pourquoi","that's why"],['du coup','as a result (casual)']],example:"Il pleut, donc je prends un parapluie. Elle travaille bien, alors elle réussit.\nC'est pourquoi je préfère marcher."},
+    {label:'OPPOSITION — contrast two ideas',body:'',conjugation:[['mais','but'],['cependant','however (formal)'],['pourtant','yet/however'],['néanmoins','nevertheless'],['toutefois','however (written)'],['alors que','whereas'],['tandis que','while/whereas']],example:'Il est riche, pourtant il est malheureux. Elle est gentille, cependant elle peut être stricte.'},
+    {label:'ADDITION — add information',body:'',conjugation:[['de plus','moreover/furthermore'],['en outre','furthermore (formal)'],['aussi','also (written)'],['de même','likewise'],['par ailleurs','besides/furthermore']],example:'Il parle français. De plus, il parle espagnol. En outre, il comprend l\'italien.'},
+  ],
+  tips:["Puisque vs parce que: puisque = the reason is already known or obvious. Parce que = you're explaining why for the first time.","Grâce à vs à cause de: grâce à is positive (thanks to your help). À cause de is neutral/negative (because of the noise)."],
+},
+{
+  level:'B1',id:'accord-participe',title:"L'accord du participe passé",desc:'When the participe passé must agree — the full rules',
+  hard:true,
+  formula:'Avec ÊTRE → always agrees | Avec AVOIR → only if COD comes BEFORE verb',
+  overview:"The agreement rules for the participe passé. Two completely different systems depending on whether être or avoir is the auxiliary. With être: always agree with the subject. With avoir: only agree if the COD (direct object) comes BEFORE the verb — either as a pronoun or in a relative clause.",
+  uses:['Être verbs: je suis allé(e), nous sommes partis','Reflexive: elle s\'est levée','Avoir + COD before verb: la pomme qu\'il a mangée'],
+  examples:[
+    {fr:"Elle est allée au marché.",en:"She went to the market.",note:"être verb → allé agrees with elle → allée"},
+    {fr:"Ils se sont levés à 7h.",en:"They got up at 7.",note:"reflexive = être → levés agrees with ils"},
+    {fr:"Nous avons vu un film.",en:"We saw a film.",note:"avoir + COD after verb → no agreement"},
+    {fr:"Le film que nous avons vu était super.",en:"The film we saw was great.",note:"que = COD BEFORE the verb → vu stays unchanged (masc.)"},
+    {fr:"Les photos qu'il a prises sont belles.",en:"The photos he took are beautiful.",note:"que = les photos (fem. pl.) → prises agrees (fem. pl.)"},
+    {fr:"Je l'ai vue hier.",en:"I saw her yesterday.",note:"la → l' = COD BEFORE verb → vue agrees (fem.)"},
+  ],
+  rules:[
+    {label:'Avec ÊTRE — always agree with subject',body:'',example:"Elle est **partie**. (+e for feminine)\nIls sont **partis**. (+s for plural)\nElles sont **parties**. (+es for feminine plural)\nNous sommes **allées**. (all female group → +es)"},
+    {label:'Verbes pronominaux (reflexive) — always être',body:'Participe agrees with the reflexive COD (usually the subject):',example:"Elle s'est **levée**. (she raised herself → subject = COD)\nIls se sont **parlé**. (they spoke to each other → COI, not COD → no agreement!)"},
+    {label:'Avec AVOIR — NO agreement by default',body:'',example:"J'ai mangé une pomme. (no agreement even though pomme is fem.)\nNous avons vu le film. (no agreement)"},
+    {label:'Avec AVOIR — agreement if COD before verb',body:'Triggered by: pronoun COD, or relative que:',example:"Je **l'**ai vue. (l' = la pomme, fem. → **vue**)\nLa pomme que j'ai **mangée**. (que = la pomme, fem. sg → **mangée**)\nLes fleurs qu'il a **achetées**. (que = les fleurs, fem. pl → **achetées**)"},
+  ],
+  warnings:["COI pronouns (lui, leur) do NOT trigger agreement! 'Je lui ai parlé' → parlé stays unchanged.","Se parler, se téléphoner, se sourire — reflexive COI verbs do NOT trigger agreement."],
+},
 ];
 // GRAMMAR_TOPICS_END
 
@@ -1281,6 +1733,7 @@ class FrenchApp extends LitElement {
     flashMode:{state:true}, cardDeck:{state:true},
     exCard:{state:true}, exChoices:{state:true}, exAnswered:{state:true},
     exScore:{state:true}, exTotal:{state:true}, exCat:{state:true},
+    conjVerb:{state:true}, conjTense:{state:true},
   };
   createRenderRoot(){return this;}
   constructor(){
@@ -1291,6 +1744,7 @@ class FrenchApp extends LitElement {
     this.cardDeck=[...V];
     this.exCard=null; this.exChoices=[]; this.exAnswered=null;
     this.exScore=0; this.exTotal=0; this.exCat='';
+    this.conjVerb=null; this.conjTense='présent';
   }
   get filteredVocab(){
     const q=this.vocabSearch.toLowerCase().trim();
@@ -1357,6 +1811,56 @@ class FrenchApp extends LitElement {
     this.exAnswered=choice; this.exTotal++;
     if(choice.fr===this.exCard.fr)this.exScore++;
   }
+  _synFor(fr){
+    if(V_SYN[fr])return V_SYN[fr];
+    const base=fr.replace(/^(se |s')/i,'').trim();
+    return V_SYN[base]||'';
+  }
+  _openConj(fr){this.conjVerb=fr;this.conjTense='présent';}
+  _closeConj(){this.conjVerb=null;}
+  _conjPanel(){
+    const fr=this.conjVerb;
+    if(!fr)return nothing;
+    const result=_computeConj(fr);
+    const tenseData=result?.data?.[this.conjTense]||[];
+    const isRefl=result?.isRefl||false;
+    return html`
+      <div class="conj-backdrop open" @click=${()=>this._closeConj()}></div>
+      <div class="conj-panel open p-5">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <div class="text-2xl font-bold">${fr}</div>
+            ${isRefl?html`<span class="badge bg-sky-100 text-sky-700 border-transparent text-xs mt-1">⟲ Verbe pronominal (réflexif)</span>`:nothing}
+          </div>
+          <button class="btn btn-ghost btn-sm btn-square text-xl" @click=${()=>this._closeConj()}>✕</button>
+        </div>
+        ${isRefl?html`<div class="text-xs text-base-content/50 italic mb-3 bg-sky-50 rounded-lg p-2">Les formes du verbe de base sont affichées — ajoutez le pronom réflexif : <strong>je me / tu te / il se / nous nous / vous vous / ils se</strong></div>`:nothing}
+        <div class="flex flex-wrap gap-1 mb-4">
+          ${TENSE_NAMES.map(t=>html`
+            <button class="btn btn-xs ${this.conjTense===t?'btn-primary':'btn-outline'}"
+              @click=${()=>this.conjTense=t}>${t}</button>
+          `)}
+        </div>
+        ${result?html`
+          <div class="overflow-x-auto rounded-lg border border-base-300">
+            <table class="table table-sm w-full">
+              <thead><tr><th class="text-xs text-base-content/40">Pronom</th><th class="text-xs text-base-content/40">Forme</th></tr></thead>
+              <tbody>
+                ${PRONOUNS.map((p,i)=>html`<tr>
+                  <td class="text-sm text-base-content/50 font-mono">${p}</td>
+                  <td class="font-semibold text-base">${tenseData[i]||'—'}</td>
+                </tr>`)}
+              </tbody>
+            </table>
+          </div>
+        `:html`<div class="alert text-sm">Conjugaison non disponible pour ce verbe.</div>`}
+        <div class="mt-4 pt-3 border-t border-base-300">
+          <button class="btn btn-ghost btn-sm gap-2 text-base-content/50"
+            @click=${()=>this._speak(fr)}>🔊 Prononcer</button>
+        </div>
+      </div>
+    `;
+  }
   render(){
     const NAV=[['vocab','📚','Vocabulary'],['grammar','📖','Grammar'],['cards','🃏','Flashcards'],['exercises','✏️','Exercises']];
     return html`
@@ -1382,6 +1886,7 @@ class FrenchApp extends LitElement {
       <div class="max-w-7xl mx-auto p-6 pb-16">
         ${this.tab==='vocab'?this._vocab():this.tab==='grammar'?this._grammar():this.tab==='cards'?this._cards():this._exercises()}
       </div>
+      ${this._conjPanel()}
     `;
   }
   _vocab(){
@@ -1420,14 +1925,18 @@ class FrenchApp extends LitElement {
         <span class="text-base text-base-content/50 self-center">${vocab.length} words</span>
       </div>
       <div class="overflow-x-auto rounded-lg border border-base-300 max-h-[70vh] overflow-y-auto">
-        <table class="table table-zebra">
+        <table class="table table-zebra vocab-table">
           <thead class="sticky top-0 bg-base-200">
-            <tr><th>French</th><th>English</th><th>Type</th><th>Level</th><th>Note</th></tr>
+            <tr><th>French</th><th>English</th><th>Synonymes</th><th>Type</th><th>Level</th><th>Note</th></tr>
           </thead>
           <tbody>
-            ${vocab.map(v=>html`<tr>
-              <td class="font-medium">${v.fr}</td>
+            ${vocab.map(v=>html`<tr class="${v.pos==='verb'?'cursor-pointer hover:bg-violet-50':''}"
+              @click=${v.pos==='verb'?()=>this._openConj(v.fr):null}>
+              <td class="font-medium">
+                ${v.pos==='verb'?html`<span class="inline-flex items-center gap-1">${v.fr}<span class="text-violet-400 text-xs" title="Voir conjugaison">⊞</span></span>`:v.fr}
+              </td>
               <td>${v.en}</td>
+              <td class="text-sm text-base-content/40 italic max-w-xs">${this._synFor(v.fr)||''}</td>
               <td><span class="badge badge-sm ${POS_BADGE[v.pos]}">${POS_LABELS[v.pos]}</span></td>
               <td><span class="badge badge-sm ${LVL_BADGE[v.lvl]}">${v.lvl}</span></td>
               <td class="text-sm text-base-content/50 italic">${v.note||''}</td>
@@ -1589,6 +2098,23 @@ class FrenchApp extends LitElement {
               </div>
             `)}
           </div>
+        </div>
+      `:nothing}
+
+      ${t.irregulars?.length?html`
+        <div class="mb-5">${sec('Formes irrégulières')}
+          ${t.irregulars.map(group=>html`
+            <div class="mb-4">
+              <div class="text-xs font-semibold text-base-content/50 uppercase tracking-wide mb-2">${group.label}</div>
+              <div class="flex flex-wrap gap-1.5">
+                ${group.items.map(([v,f])=>html`
+                  <span class="badge bg-violet-100 text-violet-800 border-transparent font-mono" style="font-size:0.85rem;padding:0.3rem 0.6rem">
+                    ${v} → <strong>${f}</strong>
+                  </span>
+                `)}
+              </div>
+            </div>
+          `)}
         </div>
       `:nothing}
 
