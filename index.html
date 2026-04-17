@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="light">
+<html lang="fr" translate="no" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1859,9 +1859,9 @@ class FrenchApp extends LitElement {
     const fr=this.conjVerb;
     if(!fr)return nothing;
     const result=_computeConj(fr);
+    const tenseKey={'passé composé':'pc'}[this.conjTense]||this.conjTense;
     const tenseData=result?.data?.[tenseKey]||[];
     const isRefl=result?.isRefl||false;
-    const tenseKey={'passé composé':'pc'}[this.conjTense]||this.conjTense;
     return html`
       <div class="conj-backdrop open" @click=${()=>this._closeConj()}></div>
       <div class="conj-panel open p-5">
