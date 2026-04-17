@@ -1049,7 +1049,7 @@ const GRAMMAR_TOPICS=[
   rules:[
     {label:'Group 1 — -ER verbs (largest group)',body:'Remove -ER, add endings:',conjugation:[['je','parle'],['tu','parles'],['il/elle','parle'],['nous','parlons'],['vous','parlez'],['ils/elles','parlent']],example:'Je mange une pomme. Elle habite à Montréal. Nous parlons français.'},
     {label:'Group 2 — -IR verbs',body:'Remove -IR, add endings with -iss- for nous/vous/ils:',conjugation:[['je','finis'],['tu','finis'],['il/elle','finit'],['nous','finissons'],['vous','finissez'],['ils/elles','finissent']],example:'Elle finit son travail. Nous réussissons. Vous choisissez.'},
-    {label:'4 key irregular verbs — must memorize',body:'être, avoir, aller, faire:',conjugation:[['être →','suis/es/est/sommes/êtes/sont'],['avoir →','ai/as/a/avons/avez/ont'],['aller →','vais/vas/va/allons/allez/vont'],['faire →','fais/fais/fait/faisons/faites/font']],example:"Je suis fatiguée. J'ai faim. Je vais à l'école. On fait du sport."},
+    {label:'4 key irregular verbs — must memorize',body:'',conjugation:[['être →',''],['je','suis'],['tu','es'],['il/elle/on','est'],['nous','sommes'],['vous','êtes'],['ils/elles','sont'],['avoir →',''],['je','ai'],['tu','as'],['il/elle/on','a'],['nous','avons'],['vous','avez'],['ils/elles','ont'],['aller →',''],['je','vais'],['tu','vas'],['il/elle/on','va'],['nous','allons'],['vous','allez'],['ils/elles','vont'],['faire →',''],['je','fais'],['tu','fais'],['il/elle/on','fait'],['nous','faisons'],['vous','faites'],['ils/elles','font']],example:"Je suis fatiguée. J'ai faim. Je vais à l'école. On fait du sport."},
     {label:'-GER verbs: add E before -ONS',body:'Keeps the soft G sound.',example:'Nous mangeons ✓ (not mangons). Nous nageons, nous partageons, nous voyageons.'},
     {label:'-OYer / -AYer verbs: Y → I before silent endings',body:'Silent endings = je, tu, il, ils.',example:"Envoyer → j'envoie, tu envoies, il envoie. Nettoyer → je nettoie la maison."},
   ],
@@ -1757,6 +1757,8 @@ class FrenchApp extends LitElement {
     conjVerb:{state:true}, conjTense:{state:true},
     grammarView:{state:true},
     vocabGen:{state:true},
+    showAddModal:{state:true}, addInput:{state:true}, addLang:{state:true},
+    addLoading:{state:true}, addDraft:{state:true}, customWords:{state:true},
   };
   createRenderRoot(){return this;}
   constructor(){
@@ -1769,10 +1771,13 @@ class FrenchApp extends LitElement {
     this.exScore=0; this.exTotal=0; this.exCat='';
     this.conjVerb=null; this.conjTense='présent';
     this.grammarView='topics'; this.vocabGen='';
+    this.showAddModal=false; this.addInput=''; this.addLang='en';
+    this.addLoading=false; this.addDraft=null;
+    this.customWords=JSON.parse(localStorage.getItem('frenchCustomWords')||'[]');
   }
   get filteredVocab(){
     const q=this.vocabSearch.toLowerCase().trim();
-    return V.filter(v=>{
+    return [...V,...this.customWords].filter(v=>{
       if(this.vocabCat&&v.cat!==this.vocabCat)return false;
       if(this.vocabPos&&v.pos!==this.vocabPos)return false;
       if(this.vocabLvl&&v.lvl!==this.vocabLvl)return false;
@@ -1800,10 +1805,160 @@ class FrenchApp extends LitElement {
     );
   }
   _speak(text){
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang='fr-FR'; u.rate=0.85;
     window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(u);
+    const doSpeak=()=>{
+      const u=new SpeechSynthesisUtterance(text);
+      u.lang='fr-FR'; u.rate=0.82; u.pitch=1;
+      const voices=window.speechSynthesis.getVoices();
+      const fr=voices.filter(v=>v.lang.startsWith('fr'));
+      const best=fr.find(v=>/google/i.test(v.name)&&!v.localService)
+        ||fr.find(v=>!v.localService)
+        ||fr.find(v=>v.lang==='fr-FR')
+        ||fr.find(v=>v.lang==='fr-CA')
+        ||fr[0];
+      if(best)u.voice=best;
+      window.speechSynthesis.speak(u);
+    };
+    if(window.speechSynthesis.getVoices().length===0){
+      window.speechSynthesis.onvoiceschanged=doSpeak;
+    }else doSpeak();
+  }
+  async _lookupWord(){
+    const text=this.addInput.trim();
+    if(!text)return;
+    this.addLoading=true; this.addDraft=null;
+    const hasFr=/[àâäéèêëîïôùûüÿçœæ]/.test(text);
+    const isFr=this.addLang==='fr'||hasFr;
+    const langpair=isFr?'fr|en':'en|fr';
+    try{
+      const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${langpair}`);
+      const d=await r.json();
+      const raw=(d.responseData?.translatedText||'').replace(/^MYMEMORY.*$/i,'').trim();
+      const fr=isFr?text:raw;
+      const en=isFr?raw:text;
+      const isVerb=/^to /i.test(en.trim())||/^(se |s')/i.test(fr.trim());
+      const hasArticle=/^(le |la |un |une |l')/i.test(fr.trim());
+      const pos=isVerb?'verb':hasArticle?'noun':'adj';
+      const gen=fr.match(/^(le |un )/i)?'m':fr.match(/^(la |une )/i)?'f':undefined;
+      this.addDraft={fr,en,pos,gen,lvl:'A2',cat:'daily',note:'',custom:true,id:Date.now()};
+    }catch(e){
+      this.addDraft={fr:isFr?text:'',en:isFr?'':text,pos:'noun',lvl:'A2',cat:'daily',note:'',custom:true,id:Date.now()};
+    }
+    this.addLoading=false;
+  }
+  _saveCustomWord(){
+    if(!this.addDraft?.fr?.trim())return;
+    const word={...this.addDraft,id:this.addDraft.id||Date.now()};
+    const updated=[...this.customWords,word];
+    this.customWords=updated;
+    localStorage.setItem('frenchCustomWords',JSON.stringify(updated));
+    this.showAddModal=false; this.addDraft=null; this.addInput='';
+  }
+  _deleteCustomWord(id){
+    const updated=this.customWords.filter(w=>w.id!==id);
+    this.customWords=updated;
+    localStorage.setItem('frenchCustomWords',JSON.stringify(updated));
+  }
+  _addWordModal(){
+    if(!this.showAddModal)return nothing;
+    const d=this.addDraft;
+    return html`
+      <div class="fixed inset-0 bg-black/40 z-50 flex items-start justify-center pt-16 px-4"
+        @click=${(e)=>{if(e.target===e.currentTarget)this.showAddModal=false;}}>
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg" @click=${e=>e.stopPropagation()}>
+          <div class="flex items-center justify-between p-5 border-b border-base-200">
+            <h2 class="t-h2">Ajouter un mot</h2>
+            <button class="btn btn-ghost btn-sm btn-square" @click=${()=>this.showAddModal=false}>✕</button>
+          </div>
+          <div class="p-5 space-y-4">
+            <div class="flex gap-2">
+              <div class="flex rounded-xl border border-base-300 overflow-hidden shrink-0">
+                <button class="px-3 py-2 t-label transition-colors ${this.addLang==='en'?'bg-base-content text-base-100':'hover:bg-base-200'}"
+                  @click=${()=>this.addLang='en'}>English</button>
+                <button class="px-3 py-2 t-label transition-colors ${this.addLang==='fr'?'bg-base-content text-base-100':'hover:bg-base-200'}"
+                  @click=${()=>this.addLang='fr'}>Français</button>
+              </div>
+              <input class="input input-bordered flex-1"
+                placeholder="${this.addLang==='en'?'e.g. to run, a chair…':'ex. courir, une chaise…'}"
+                .value=${this.addInput}
+                @input=${e=>this.addInput=e.target.value}
+                @keydown=${e=>e.key==='Enter'&&this._lookupWord()}>
+              <button class="btn btn-primary shrink-0" @click=${()=>this._lookupWord()}
+                ?disabled=${this.addLoading||!this.addInput.trim()}>
+                ${this.addLoading?html`<span class="loading loading-spinner loading-xs"></span>`:html`Chercher`}
+              </button>
+            </div>
+            ${d?html`
+              <div class="border border-base-200 rounded-xl p-4 space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <div class="t-sec text-base-content/40 mb-1">Français</div>
+                    <input class="input input-bordered input-sm w-full" .value=${d.fr}
+                      @input=${e=>this.addDraft={...d,fr:e.target.value}}>
+                  </div>
+                  <div>
+                    <div class="t-sec text-base-content/40 mb-1">English</div>
+                    <input class="input input-bordered input-sm w-full" .value=${d.en}
+                      @input=${e=>this.addDraft={...d,en:e.target.value}}>
+                  </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                  <div>
+                    <div class="t-sec text-base-content/40 mb-1">Type</div>
+                    <select class="select select-bordered select-sm w-full"
+                      @change=${e=>this.addDraft={...d,pos:e.target.value}}>
+                      ${Object.entries(POS_LABELS).map(([v,l])=>html`<option value="${v}" ?selected=${d.pos===v}>${l}</option>`)}
+                    </select>
+                  </div>
+                  <div>
+                    <div class="t-sec text-base-content/40 mb-1">Genre</div>
+                    <select class="select select-bordered select-sm w-full"
+                      @change=${e=>this.addDraft={...d,gen:e.target.value||undefined}}>
+                      <option value="">—</option>
+                      <option value="m" ?selected=${d.gen==='m'}>Masc.</option>
+                      <option value="f" ?selected=${d.gen==='f'}>Fém.</option>
+                      <option value="mf" ?selected=${d.gen==='mf'}>M/F</option>
+                    </select>
+                  </div>
+                  <div>
+                    <div class="t-sec text-base-content/40 mb-1">Level</div>
+                    <select class="select select-bordered select-sm w-full"
+                      @change=${e=>this.addDraft={...d,lvl:e.target.value}}>
+                      ${['A1','A2','B1','B2'].map(l=>html`<option value="${l}" ?selected=${d.lvl===l}>${l}</option>`)}
+                    </select>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <div class="t-sec text-base-content/40 mb-1">Catégorie</div>
+                    <select class="select select-bordered select-sm w-full"
+                      @change=${e=>this.addDraft={...d,cat:e.target.value}}>
+                      ${CATS.map(([v,l])=>html`<option value="${v}" ?selected=${d.cat===v}>${l}</option>`)}
+                    </select>
+                  </div>
+                  <div>
+                    <div class="t-sec text-base-content/40 mb-1">Note (optional)</div>
+                    <input class="input input-bordered input-sm w-full" placeholder="Note…"
+                      .value=${d.note||''}
+                      @input=${e=>this.addDraft={...d,note:e.target.value}}>
+                  </div>
+                </div>
+                <div class="flex justify-end pt-1">
+                  <button class="btn btn-primary btn-sm" @click=${()=>this._saveCustomWord()}
+                    ?disabled=${!d.fr?.trim()}>
+                    ✓ Sauvegarder
+                  </button>
+                </div>
+              </div>
+            `:this.addLoading?nothing:html`
+              <p class="t-caption text-base-content/40 text-center py-3">
+                Entrez un mot et cliquez Chercher — la traduction, le genre et le type seront détectés automatiquement.
+              </p>
+            `}
+          </div>
+        </div>
+      </div>
+    `;
   }
   _rebuildDeck(){
     let base=[];
@@ -1925,6 +2080,7 @@ class FrenchApp extends LitElement {
         ${this.tab==='vocab'?this._vocab():this.tab==='grammar'?this._grammar():this.tab==='cards'?this._cards():this._exercises()}
       </div>
       ${this._conjPanel()}
+      ${this._addWordModal()}
     `;
   }
   _vocab(){
@@ -1967,6 +2123,10 @@ class FrenchApp extends LitElement {
           <option value="mf" ?selected=${this.vocabGen==='mf'}>M/F</option>
         </select>
         <span class="t-label text-base-content/50 self-center">${vocab.length} mots</span>
+        <button class="btn btn-sm btn-outline ml-auto"
+          @click=${()=>{this.showAddModal=true;this.addDraft=null;this.addInput='';this.addLang='en';}}>
+          + Ajouter un mot
+        </button>
       </div>
       <div class="overflow-x-auto rounded-lg border border-base-300 max-h-[70vh] overflow-y-auto">
         <table class="table table-zebra vocab-table">
@@ -1975,7 +2135,12 @@ class FrenchApp extends LitElement {
           </thead>
           <tbody>
             ${vocab.map(v=>{const gen=this._genderOf(v);return html`<tr>
-              <td class="font-medium" style="min-width:200px">${v.fr}</td>
+              <td class="font-medium" style="min-width:200px">
+                <div class="flex items-center gap-1.5">
+                  ${v.custom?html`<span class="text-amber-500 shrink-0" title="Custom word">★</span>`:nothing}
+                  <span>${v.fr}</span>
+                </div>
+              </td>
               <td>${v.en}</td>
               <td class="t-caption text-base-content/50 max-w-[14rem]">${this._synFor(v.fr)||''}</td>
               <td>
@@ -1988,7 +2153,14 @@ class FrenchApp extends LitElement {
               </td>
               <td>${gen?html`<span class="badge badge-sm ${gen==='m'?'bg-sky-100 text-sky-700 border-transparent':gen==='f'?'bg-rose-100 text-rose-700 border-transparent':gen==='mf'?'bg-violet-100 text-violet-700 border-transparent':'bg-gray-100 text-gray-500 border-transparent'}">${gen==='m'?'masc.':gen==='f'?'fém.':gen==='mf'?'m/f':'pl.'}</span>`:nothing}</td>
               <td><span class="badge badge-sm ${LVL_BADGE[v.lvl]}">${v.lvl}</span></td>
-              <td class="t-caption text-base-content/50">${v.note||''}</td>
+              <td class="t-caption text-base-content/50">
+                ${v.custom?html`<div class="flex items-center justify-between gap-2 min-w-0">
+                  <span class="truncate">${v.note||''}</span>
+                  <button class="btn btn-ghost btn-xs text-error shrink-0 opacity-40 hover:opacity-100"
+                    title="Delete custom word"
+                    @click=${(e)=>{e.stopPropagation();this._deleteCustomWord(v.id);}}>✕</button>
+                </div>`:v.note||''}
+              </td>
             </tr>`;})}
           </tbody>
         </table>
@@ -2316,9 +2488,11 @@ class FrenchApp extends LitElement {
                 ${r.body?html`<p class="t-body text-base-content/60 mb-3">${this._markup(r.body)}</p>`:nothing}
                 ${r.conjugation?.length?html`
                   <table class="table table-xs border border-base-300 rounded-lg mb-3 w-auto">
-                    <tbody>${r.conjugation.map(([p,f])=>html`<tr>
-                      <td class="t-label text-base-content/50 font-mono pr-4">${p}</td>
-                      <td class="t-body font-medium">${this._markup(f)}</td>
+                    <tbody>${r.conjugation.map(([p,f])=>f===''?html`<tr>
+                      <td colspan="2" class="t-label font-bold text-violet-700 pt-3 pb-0.5 border-t border-base-200 first:border-t-0 first:pt-1">${p}</td>
+                    </tr>`:html`<tr>
+                      <td class="t-label text-base-content/50 font-mono pr-6 w-28">${p}</td>
+                      <td class="t-body font-bold">${this._markup(f)}</td>
                     </tr>`)}</tbody>
                   </table>
                 `:nothing}
